@@ -1,0 +1,26 @@
+/* List of papers and notes */
+div.article-title {
+    font-size: 18px;
+}
+a {
+    color: #337ab7;
+}
+a:hover {
+    text-decoration: underline;
+    color: #337ab7;
+}
+.article-journal, .article-pages, .article-coauthor {
+    color: #777;
+}
+
+span.article-journal {
+    font-style: italic;
+}
+
+span.article-title{
+    padding-left: 5px; /* To avoid title being too close to the glyph icon */
+}
+p.abstract {
+    color: #777;
+    font-size: 18px;
+}

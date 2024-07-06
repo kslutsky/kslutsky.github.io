@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Konstantin Slutsky's Homepage</title>
+
+    <!-- KaTeX scripts -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css"
+        integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+
+    <!-- Font Awesome for glyph icons-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css"
+        integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
+
+    <!-- Custom styles -->
+    <link href="resources/css/index.css" rel="stylesheet">
+    <link href="resources/css/navbar.css" rel="stylesheet">
+    <link href="resources/css/profile.css" rel="stylesheet">
+    <link href="resources/css/papers.css" rel="stylesheet">
+    <link href="resources/css/teaching.css" rel="stylesheet">
+</head>
+
+<body onload="renderMathInElement(document.body);">
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#top-navbar"
+            aria-controls="top-navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <span class="navbar-brand d-flex flex-fill"></span>
+        <div class="collapse navbar-collapse text-center" id="top-navbar">
+            <ul class="navbar-nav justify-content-center d-flex flex-fill">
+		<li class="nav-item">
+                    <a class="nav-link" href="#secBorelDynamics">Borel Dynamics</a>
+                </li>
+		<li class="nav-item">
+                    <a class="nav-link" href="#secTopologicalGroups">Topological Dynamics</a>
+                </li>
+		<li class="nav-item">
+                    <a class="nav-link" href="#secAutonomousSystems">Autonomous Systems</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#lecture-notes">Lecture Notes</a>
+                </li>
+            </ul>
+        </div>
+        <div class="d-flex flex-fill">
+            <!--spacer-->
+        </div>
+    </nav>
+
+    <main role="main" class="container">
+
+        <!-- Profile section -->
+        <div class="row">
+            <div class="col-md-4">
+                <img id="ksl-portrait-photo" src="./resources/kslutsky.jpg" alt="Konstantin Slutsky">
+            </div>
+            <div class="col-md-8">
+                <h1 id="name">Konstantin Slutsky</h1>
+                <p id="occupation">Assistant Professor<span id="occupation-at">at
+                        <a href="https://math.iastate.edu/">Iowa State University</a>
+                    </span></p>
+                <h3 id="research-interests">Research Interests</h3>
+                <p>Descriptive set theory, ergodic theory, topological dynamics, motion planning.</p>
+            </div>
+        </div>
+
+        <!-- List of papers and preprints -->
+        <h3 class="section" id="research">Publications</h3>
+        <p class="abstract">List of publications grouped by topics.</p>
+        <h4 class="section" id="secBorelDynamics">Borel Dynamics and Ergodic Theory</h4>
+        <ul class="list-unstyled list-of-papers">
+            <li class="article">
+                <div class="article-title">
+                    <div class="article-reference">
+                        <a href="papers/L1-full-groups.pdf"><i class="fas fa-file fa-sm"></i><span
+                                class="article-title">L1 full groups of flows</span></a>
+                        <span class="article-coauthor">(with F. Le Mâitre)</span>
+                        <span class="article-journal">preprint.</span>
+                    </div>
+                </div>
+                <p class="abstract">
+                    We introduce the concept of an L1 full group associated with a measure-preserving action
+                    of a Polish normed group on a standard probability space. Such groups are shown to carry a
+                    natural separable complete metric, and are thus Polish. Our construction generalizes L1 full
+                    groups of actions of discrete groups, which have been studied recently by the first author.
+                </p>
+                <p class="abstract">
+                    We show that under minor assumptions on the actions, topological derived subgroups of
+                    L1 full groups are topologically simple and&mdash;when the acting group is locally compact
+                    and amenable&mdash;are whirly amenable and generically
+                    <span style="white-space: nowrap;">two-generated.</span>
+                    L1 full groups of actions of compactly generated locally compact Polish groups are
+                    shown to remember the L1 orbit equivalence class of the action.
+                </p>
+                <p class="abstract">
+                    For measure-preserving actions of the real line (also known as measure-preserving flows),
+                    the topological derived subgroup of an L1 full groups is shown to coincide with the kernel
+                    of the index map, which implies that L1 full groups of free measure-preserving flows are
+                    topologically finitely generated if and only if the flow admits finitely many ergodic components.
+                    The latter is in a striking contrast to the case of
+                    <span style="white-space: nowrap;">\( \mathbb{Z} \)-actions</span>,
+                    where the number of topological generators is controlled by the entropy of the action.
+                </p>
+                <p class="abstract">
+                    We also study the coarse geometry of the L1 full groups. The L1 norm on the
+                    derived subgroup of the L1 full group of an aperiodic action of a locally compact
+                    amenable group is proved to be maximal in the sense of Rosendal. For measure-preserving flows,
+                    this holds for the L1 norm on all of the L1 full group
+                </p>
+            </li>
+            <li class="article">
+                <div class="article-title">
+                    <div class="article-reference">
+                        <a href="papers/Katok-representation-theorem-for-Borel-flows.pdf"><i class="fas fa-file fa-sm"></i><span
+                                class="article-title">Katok's special representation theorem
+                            for multidimensional Borel flows</span></a>
+			<span class="article-journal">Ergod. Th. &amp; Dynam. Sys.</span>
+                        <span class="article-pages">(2023), 1-18.</span>
+                    </div>
+                </div>
+                <p class="abstract">
+                    Katok's special representation theorem states that any free ergodic measure-preserving
+                    <span style="white-space: nowrap;">\(\mathbb{R}^{d}\)-flow</span> can be realized as a special flow
+                    over a <span style="white-space: nowrap;">\(\mathbb{Z}^{d}\)-action.</span>  It
+                    provides a multidimensional generalization of the "flow under a function" construction.  We
+                    prove the analog of Katok's theorem in the framework of Borel dynamics and show that, likewise,
+                    all free Borel <span style="white-space: nowrap;">\(\mathbb{R}^{d}\)-flows</span> emerge from
+                    <span style="white-space: nowrap;">\(\mathbb{Z}^{d}\)-actions</span> through the special
+                    flow construction using bi-Lipschitz cocycles.
+                </p>
+            </li>
+            <li class="article">
+                <div class="article-title">
+                    <div class="article-reference">
+                        <a href="papers/Smooth-orbit-equivalence.pdf"><i class="fas fa-file fa-sm"></i><span
+                                class="article-title">Smooth orbit equivalence of multidimensional Borel flows</span></a>
+                        <span class="article-journal">Adv. Math.</span>
+                        <span class="article-pages">381 (2021), 107626.</span>
+                    </div>
+                </div>
+                <p class="abstract">
+                    Free Borel <span style="white-space: nowrap;">\( \mathbb{R}^d \)-flows</span>
+                    are smoothly equivalent if there is a Borel bijection
+                    between the phase spaces that maps orbits onto orbits and is a
+                    <span style="white-space: nowrap;">\(C^\infty\)-smooth</span> orientation
+                    preserving diffeomorphism between orbits.  We show that all free non-tame Borel
+                    <span style="white-space: nowrap;">\(\mathbb{R}^d\)-flows</span>
+                    are smoothly equivalent in every dimension \(d \ge 2\).  This answers
+                    a question of B.&nbsp;Miller and C.&nbsp;Rosendal.
+                </p>
+            </li>
+            <li class="article">
+                <div class="article-title">
+                    <div class="article-reference">
+                        <a href="papers/Time-change-equivalence.pdf"><i class="fas fa-file fa-sm"></i><span
+                                class="article-title">On
+                                time change equivalence of Borel flows</span></a>
+                        <span class="article-journal"> Fund. Math.</span>
+                        <span class="article-pages">247 (2019), no. 1, 1–24.</span>
+                    </div>
+                </div>
+                <p class="abstract">
+                    This paper addresses the notion of time change equivalence for Borel
+                    <span style="white-space: nowrap;">\(\mathbb{R}^d\)-flows.</span> We show that all free <span style="white-space: nowrap;">\(\mathbb{R}^d\)-flows</span> are time change equivalent
+                    up to a compressible set. An appropriate version of this
+                    result for non-free flows is also given.
+                </p>
+            </li>
+            <li class="article">
+                <div class="article-title">
+                    <div class="article-reference">
+                        <a href="papers/Regular-cross-sections.pdf"><i class="fas fa-file fa-sm"></i><span
+                                class="article-title">Regular cross sections of Borel flows</span></a>
+                        <span class="article-journal"> J. Eur. Math. Soc. (JEMS)</span>
+                        <span class="article-pages"> 21 (2019), no. 7, 1985–2050.</span>
+                    </div>
+                </div>
+                <p class="abstract"> Any free Borel flow is shown to admit a cross section with only two possible
+                    distances between adjacent points. Non smooth flows are proved to be Lebesgue
+                    orbit equivalent if and only if they admit the
+                    same number of invariant ergodic probability measures.</p>
+            </li>
+            <li class="article">
+                <div class="article-title">
+                    <div class="article-reference">
+                        <a href="papers/Lebesgue-orbit-equivalence.pdf"><i class="fas fa-file fa-sm"></i><span
+                                class="article-title">Lebesgue orbit equivalence of multidimensional Borel
+                                flows</span></a>
+                        <span class="article-journal">Ergod. Th. &amp; Dynam. Sys.</span>
+                        <span class="article-pages">37 (2017), no. 6, 1966–1996.</span>
+                    </div>
+                </div>
+                <p class="abstract">The main result of the paper is classification of free multidimensional Borel flows
+                    up to Lebesgue Orbit
+                    Equivalence, by which we understand an orbit equivalence that preserves the Lebesgue measure on each
+                    orbit. Two non smooth Euclidean flows are shown to be Lebesgue Orbit Equivalence if and only if they
+                    admit the same number of invariant ergodic probability measures.</p>
+            </li>
+        </ul>
+        <h4 class="section" id="secTopologicalGroups">Topological Groups</h4>
+        <ul class="list-unstyled list-of-papers">
+            <li class="article">
+                <div class="article-title">
+                    <div class="article-reference">
+                        <a href="papers/Graev-metrics-free-products.pdf"><i class="fas fa-file fa-sm"></i><span
+                                class="article-title">Graev ultrametrics and free products of Polish groups</span></a>
+                        <span class="article-journal">Forum Math.</span>
+                        <span class="article-pages">28 (2016), no. 3, 437–456.</span>
+                    </div>
+                </div>
+                <p class="abstract">We construct Graev ultrametrics on free products of groups with two-sided invariant
+                    ultrametrics and
+                    HNN extensions of such groups. We also introduce a notion of a free product of general Polish groups
+                    and prove, in particular, that two Polish groups \( G \) and \( H \) can be embedded into a Polish group \( T \) in
+                    such a way that the subgroup of \( T \) generated by \( G \) and \( H \) is isomorphic to the free product \( G*H \).</p>
+            </li>
+            <li class="article">
+                <div class="article-title">
+                    <div class="article-reference">
+                        <a href="papers/Graev-metrics-tsi.pdf"><i class="fas fa-file fa-sm"></i><span
+                                class="article-title">Graev metrics on free products and HNN extensions</span></a>
+                        <span class="article-journal">Trans. Amer. Math. Soc.</span>
+                        <span class="article-pages">366 (2014), no. 12, 6353–6395.</span>
+                    </div>
+                </div>
+                <p class="abstract"> We give a construction of two-sided invariant metrics on free products (possibly
+                    with amalgamation) of
+                    groups with two-sided invariant metrics and, under certain conditions, on HNN extensions of such
+                    groups. Our approach is similar to the Graev's construction of metrics on free groups over pointed
+                    metric spaces.</p>
+            </li>
+            <li class="article">
+                <div class="article-title">
+                    <div class="article-reference">
+                        <a href="papers/Automatic-continuity.pdf"><i class="fas fa-file fa-sm"></i><span
+                                class="article-title">Automatic continuity for homomorphisms into free
+                                products</span></a>
+                        <span class="article-journal">J. Symbolic Logic</span>
+                        <span class="article-pages">78 (2013), no. 4, 1288–1306.</span>
+                    </div>
+                </div>
+                <p class="abstract">A homomorphism from a completely metrizable topological group into a free product of
+                    groups whose image
+                    is not contained in a factor of the free product is shown to be continuous with respect to the
+                    discrete
+                    topology on the range. In particular, any completely metrizable group topology on a free product
+                    is discrete. </p>
+            </li>
+            <li class="article">
+                <div class="article-title">
+                    <div class="article-reference">
+                        <a href="papers/Meager-similarity-classes.pdf"><i class="fas fa-file fa-sm"></i><span
+                                class="article-title">Non-genericity phenomenon in some ordered Fraïssé
+                                classes</span></a>
+                        <span class="article-journal">J. Symbolic Logic</span>
+                        <span class="article-pages">77 (2012), no. 3, 987–1010.</span>
+                    </div>
+                </div>
+                <p class="abstract">We show that every two-dimensional class of topological similarity, and hence every
+                    diagonal conjugacy
+                    class of pairs, is meager in the group of order preserving bijections of the rationals and in the
+                    group of automorphisms of the randomly ordered rational Urysohn space. </p>
+            </li>
+        </ul>
+
+        <h4 class="section" id="secAutonomousSystems">Autonomous Systems</h4>
+        <ul class="list-unstyled list-of-papers">
+            <li class="article">
+                <div class="article-title">
+                    <a href="papers/Minimum-violation-planning-for-autonomous-systems.pdf"><i class="fas fa-file fa-sm"></i><span class="article-title">Minimum-Violation Planning for
+                        Autonomous Systems: Theoretical and Practical Considerations</span></a>
+                    <span class="article-coauthor">(Tichakorn Wongpiromsarn, Konstantin Slutsky, Emilio Frazzoli, Ufuk Topcu)</span>
+                    <span class="article-journal">2021 American Control Conference (ACC),</span>
+                    <span class="article-pages">2021, pp. 4866-4872.</span>
+                </div>
+                <p class="abstract">
+                    This paper considers the problem of computing an optimal trajectory for an autonomous system
+                    that is subject to a set of potentially conflicting rules. First, we introduce the concept of
+                    prioritized safety specifications, where each rule is expressed as a temporal logic formula
+                    with its associated weight and priority. The optimality is defined based on the violation of
+                    such prioritized safety specifications. We then introduce a class of temporal logic formulas
+                    called si-FLTLGX and develop an efficient, incremental sampling-based approach to solve this
+                    minimum-violation planning problem with guarantees on asymptotic optimality. We illustrate the
+                    application of the proposed approach in autonomous vehicles, showing that si-FLTLGX formulas
+                    are sufficiently expressive to describe many traffic rules. Finally, we discuss practical
+                    considerations and present simulation results for a vehicle overtaking scenario.
+                </p>
+            </li>
+            <li class="article">
+                <div class="article-title">
+                    <a href="papers/Hierarchical-multiobjective-spp.pdf"><i class="fas fa-file fa-sm"></i><span class="article-title">Hierarchical
+                        Multiobjective Shortest Path Problems</span></a>
+                    <span class="article-coauthor">(Konstantin Slutsky, Dmitry Yershov, Tichakorn Wongpiromsarn, Emilio Frazzoli)</span>
+                    <span class="article-pages">In: LaValle S.M., Lin M., Ojala T., Shell D., Yu J. (eds)</span>
+                    <span class="article-journal">Algorithmic Foundations of Robotics XIV. WAFR 2020. Springer Proceedings in Advanced Robotics,</span>
+                    <span class="article-pages">vol 17.</span>
+                </div>
+                <p class="abstract">
+                    We consider the shortest path problem on graphs with weights taking values
+                    in Cartesian products of cost monoids.  Such cost structures appear in multiobjective
+                    planning including, for instance, the minimum-violation planning framework.
+                    It is known that these products often do not satisfy the conditions of a cost monoid.
+                    Classical dynamic programming graph search algorithms may
+                    therefore fail to find an optimal solution.
+
+                    We isolate the concept of a regular cost monoid and propose an
+                    iterative search algorithm that finds an optimal path in graphs
+                    weighted by products of such costs.
+                    Our algorithm allows this class of multiobjective planning problems to be
+                    solved in polynomial time.
+                </p>
+            </li>
+            <li class="article">
+                <div class="article-title">
+                    <a href="papers/Behavior-specification-using-rulebooks.pdf"><i class="fas fa-file fa-sm"></i><span
+                            class="article-title">Liability, Ethics, and Culture-Aware Behavior Specification using Rulebooks</span></a>
+                    <span class="article-coauthor">(Andrea Censi, Konstantin Slutsky, Tichakorn Wongpiromsarn,
+                        Dmitry Yershov, Scott Pendleton, James Fu, Emilio Frazzoli)</span>
+                    <span class="article-journal">2019 International Conference on Robotics and Automation
+                        (ICRA),</span> <span class="article-pages">8536–8542.</span>
+                </div>
+                <p class="abstract">
+                    The behavior of self-driving cars must be compatible with an enormous set of conflicting and
+                    ambiguous objectives, from law, from ethics, from the local culture, and so on. This paper describes
+                    a new way to conveniently define the desired behavior for autonomous agents, which we use on the
+                    self-driving cars developed at nuTonomy. We define a "rulebook" as a pre-ordered set of "rules",
+                    each akin to a violation metric on the possible outcomes ("realizations"). The rules are partially
+                    ordered by priority. The semantics of a rulebook imposes a pre-order on the set of realizations. We
+                    study the compositional properties of the rulebooks, and we derive which operations we can allow on
+                    the rulebooks to preserve previously-introduced constraints. While we demonstrate the application of
+                    these techniques in the self-driving domain, the methods are domain-independent.
+                </p>
+            </li>
+        </ul>
+
+        <h4 class="section" id="secMiscellaneous">Miscellaneous</h4>
+        <ul class="list-unstyled list-of-papers">
+            <li class="article">
+                <div class="article-title">
+                    <div class="article-reference">
+                        <a href="papers/2n-sum-range.pdf"><i class="fas fa-file fa-sm"></i><span
+                                class="article-title">Riemann Rearrangement Theorem for some types of
+                                convergence</span></a>
+                        <span class="article-coauthor">(with Y. Dybskiy)</span>
+                        <span class="article-journal">J. Math. Anal. Appl.</span>
+                        <span class="article-pages">373 (2011), no. 2, 605–613.</span>
+                    </div>
+                </div>
+                <p class="abstract">
+                    We reexamine the Riemann Rearrangement Theorem for different types of convergence and classify
+                    possible sum ranges for statistically
+                    convergent series and for series that converge along the 2n-filter.</p>
+            </li>
+        </ul>
+
+        <!-- List of preprints and notes -->
+        <h3 class="section" id="unpublished-notes">Unpublished Notes</h3>
+        <ul class="list-unstyled list-of-papers" id="notesList">
+            <li class="article">
+                <div class="article-title">
+                    <div class="article-reference">
+                        <a href="papers/Cross-sections-with-distance-set.pdf"><i class="fas fa-file fa-sm"></i><span
+                                class="article-title">Cross
+                                sections of Borel flows with restrictions on the distance set</span></a>
+                        <span class="article-journal">preprint.</span>
+                    </div>
+                </div>
+                <p class="abstract"> Given a set of positive reals we provide a necessary and sufficient condition for a
+                    free
+                    Borel flow to admit a cross section with all distances between adjacent points coming from this set.
+                </p>
+            </li>
+        </ul>
+
+        <!-- Lecture notes -->
+        <h3 class="section" id="lecture-notes">Lecture Notes</h3>
+        <ul class="list-of-papers list-unstyled">
+            <li class="article">
+                <div class="article-title">
+                    <div class="article-reference">
+                        <a href="lecture-notes/Topological-full-groups.pdf"><i class="fas fa-book fa-sm"></i><span
+                                class="article-title">Full groups of Cantor minimal systems</span></a>
+                    </div>
+                </div>
+                <p class="abstract">This lecture notes form an eight week introductory course to topological groups of
+                    Cantor systems. Some
+                    of the topics covered by the notes include: Verhsik maps and Bratteli diagrams, flip conjugacy,
+                    commutator
+                    subgroup, amenability of full groups.</p>
+            </li>
+            <li class="article">
+                <div class="article-title">
+                    <div class="article-reference">
+                        <a href="lecture-notes/cber.pdf"><i class="fas fa-book fa-sm"></i><span
+                                class="article-title">Countable Borel equivalence relations</span></a>
+                    </div>
+                </div>
+                <p class="abstract">These are the notes from a semester long course taught at UIC in the Fall of 2015.
+                    They cover compressible
+                    and hyperfinite relations, including Nadkarni's characterization of compressibility, classfification
+                    of hyperfinite relations by Dougherty, Jackson, and Kechris, and some examples of groups that give
+                    rise to hyperfinite relations only, after Jackson, Kechris, and Louveau.</p>
+            </li>
+        </ul>
+    </main>
+    <!-- /.container -->
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"
+        integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
+        crossorigin="anonymous"></script>
+
+    <script>
+        $('.navbar-nav>li a').not('.dropdown-toggle').on('click', function () {
+            $('.navbar-collapse').collapse('hide');
+        });
+    </script>
+</body>
+
+</html>

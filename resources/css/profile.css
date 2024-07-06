@@ -1,0 +1,68 @@
+/* Profile div */
+@media (max-width: 767px) {
+    #ksl-portrait-photo { /* Center the image for small displays */
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #name {
+        text-align: center;
+    }
+
+    #occupation {
+        text-align: center;
+    }
+
+    #research-interests {
+        padding-top: 30px;
+    }
+}
+    
+@media (min-width: 767.1px) {
+    #name {
+        margin-top: 50px !important;
+    }
+}
+
+@media (min-width: 76.1px) {
+    #name {
+        margin-top: 50px !important;
+        margin-left: 0px !important;
+    }
+}
+
+#ksl-portrait-photo {
+    padding-top: 10px;
+    width: 200px;
+}
+
+#profile-info {
+    padding: 0px;
+    margin: 0px;
+}
+#name {
+    padding: 0px;
+    margin: 10px 0px 0px 0px;
+}
+
+#occupation {
+    font-size: 24px;
+}
+
+#research-interests {
+    margin-top: 20px;
+    padding-top: 0px;
+}
+
+#occupation-at {
+    padding-left: 10px;
+}
+
+#occupation-at, #occupation-at a {
+    color: gray;
+}
+
+#research-interests + p {
+    font-size: 18px;
+}
