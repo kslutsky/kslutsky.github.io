@@ -1,13 +1,486 @@
-main.container {
-    margin-top: 100px;
-    padding-bottom: 100px;
+:root {
+    --page-bg: #f4f6fb;
+    --card-bg: #ffffff;
+    --text-primary: #1f2335;
+    --text-muted: #5a6072;
+    --accent: #4f46e5;
+    --accent-dark: #4338ca;
+    --accent-soft: rgba(79, 70, 229, 0.12);
+    --border-color: rgba(15, 23, 42, 0.08);
+    --shadow-soft: 0 16px 30px rgba(15, 23, 42, 0.08);
 }
 
-h3 {
-    padding-top: 60px; /* When navigated to section, gives enough space above 
-                          for the header to be below the navigation bar */
+html,
+body {
+    scroll-behavior: smooth;
 }
 
-h4 {
-    padding-top: 30px; /* Smaller padding for subsections of the publication list" */
+body {
+    font-family:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    color: var(--text-primary);
+    background: linear-gradient(180deg, #eef1ff 0%, #f7f8ff 55%, #f1f3fb 100%);
+    background-attachment: fixed;
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition:
+        color 0.2s ease,
+        opacity 0.2s ease;
+}
+
+a:hover,
+a:focus {
+    color: var(--accent-dark);
+    text-decoration: none;
+}
+
+.main-content {
+    margin-top: 110px;
+    padding-bottom: 120px;
+}
+
+.hero-section {
+    background: linear-gradient(
+        135deg,
+        rgba(79, 70, 229, 0.08),
+        rgba(255, 255, 255, 0.92)
+    );
+    border-radius: 28px;
+    padding: clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: clamp(3rem, 6vw, 4.5rem);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 20px 50px rgba(79, 70, 229, 0.12);
+    backdrop-filter: blur(14px);
+}
+
+.hero-image {
+    display: flex;
+    justify-content: center;
+}
+
+.hero-photo {
+    border-radius: 20px;
+    max-width: 240px;
+    width: 100%;
+    box-shadow: var(--shadow-soft);
+    object-fit: cover;
+}
+
+.hero-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.hero-eyebrow {
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-dark);
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.hero-name {
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.hero-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    margin-bottom: 0.25rem;
+}
+
+.hero-description {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    max-width: 40ch;
+    margin-bottom: 0.5rem;
+}
+
+.hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.hero-tag {
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    border-radius: 999px;
+    padding: 0.45rem 0.95rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.section {
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    font-size: clamp(1.6rem, 3vw, 2.25rem);
+    scroll-margin-top: 120px;
+}
+
+.section::after {
+    content: "";
+    display: block;
+    width: 68px;
+    height: 4px;
+    margin-top: 0.75rem;
+    background: linear-gradient(90deg, var(--accent), rgba(79, 70, 229, 0));
+    border-radius: 999px;
+}
+
+p {
+    margin-bottom: 1.25rem;
+}
+
+p.abstract {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 65ch;
+}
+
+h4.section {
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1.3rem;
+}
+
+.list-of-papers {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.75rem, 3vw, 2.6rem);
+    padding-left: clamp(1.75rem, 3vw, 2.5rem);
+    margin-bottom: clamp(3rem, 5vw, 4rem);
+    border-left: 2px solid rgba(79, 70, 229, 0.18);
+}
+
+.list-of-papers .article {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.55rem, 1.6vw, 0.9rem);
+    padding: clamp(0.65rem, 1.6vw, 1rem) clamp(1rem, 2.2vw, 1.65rem)
+        clamp(0.85rem, 1.6vw, 1.1rem) clamp(1.7rem, 2.5vw, 2.2rem);
+    background: rgba(255, 255, 255, 0.78);
+    border-radius: 18px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 22px 40px rgba(15, 23, 42, 0.08);
+    backdrop-filter: blur(6px);
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+    cursor: pointer;
+}
+
+.list-of-papers .article::before {
+    content: "";
+    position: absolute;
+    left: calc(-1.55rem);
+    top: clamp(1.2rem, 2.5vw, 1.5rem);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.18);
+}
+
+.list-of-papers .article:hover {
+    transform: translateX(6px);
+    box-shadow: 0 28px 48px rgba(15, 23, 42, 0.12);
+    background: rgba(255, 255, 255, 0.93);
+}
+
+.list-of-papers .article::after {
+    content: "";
+    position: absolute;
+    top: clamp(0.9rem, 2vw, 1.2rem);
+    right: clamp(1rem, 2vw, 1.4rem);
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid rgba(79, 70, 229, 0.6);
+    border-bottom: 2px solid rgba(79, 70, 229, 0.6);
+    transform: rotate(45deg);
+    transition: transform 0.25s ease;
+}
+
+.list-of-papers .article:focus-visible {
+    outline: 2px solid rgba(79, 70, 229, 0.45);
+    outline-offset: 4px;
+}
+
+.list-of-papers .article.is-expanded::after {
+    transform: rotate(-135deg);
+}
+
+.article-title {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.article-reference {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0%;
+    width: 100%;
+    min-width: 0;
+    gap: 0.35rem;
+}
+
+.article-journal,
+.article-pages,
+.article-coauthor {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.list-of-papers .article p.abstract {
+    margin-bottom: 0;
+}
+
+.abstract-preview-block {
+    margin-top: clamp(0.3rem, 1vw, 0.5rem);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    width: 100%;
+}
+
+.article-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.2rem;
+}
+
+.article-inline-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid rgba(79, 70, 229, 0.35);
+    background: rgba(79, 70, 229, 0.08);
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--accent-dark);
+    text-decoration: none;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.article-inline-link::after {
+    content: "↗";
+    font-size: 0.65rem;
+}
+
+.article-inline-link:hover,
+.article-inline-link:focus {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+    box-shadow: 0 10px 18px rgba(79, 70, 229, 0.18);
+}
+
+.article-inline-link:focus {
+    outline: 2px solid rgba(79, 70, 229, 0.35);
+    outline-offset: 2px;
+}
+
+.article-full {
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin-top: 0;
+    transition:
+        max-height 0.35s ease,
+        opacity 0.25s ease;
+}
+
+.article-full.is-visible {
+    opacity: 1;
+}
+
+.article.is-expanded .article-full {
+    margin-top: 0.45rem;
+}
+
+.article-full p {
+    margin-bottom: 0.75rem;
+}
+
+.article-full p:last-child {
+    margin-bottom: 0;
+}
+.abstract-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1060;
+}
+
+.abstract-modal.is-open {
+    display: flex;
+}
+
+.abstract-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(6px);
+}
+
+.abstract-modal__dialog {
+    position: relative;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    max-width: min(720px, 90vw);
+    max-height: min(80vh, 720px);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    box-shadow: 0 28px 60px rgba(15, 23, 42, 0.25);
+    z-index: 1;
+}
+
+.abstract-modal__title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.abstract-modal__body {
+    overflow-y: auto;
+    padding-right: 0.25rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+}
+
+.abstract-modal__body p {
+    margin-bottom: 1rem;
+}
+
+.abstract-modal__close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.abstract-modal__close:hover,
+.abstract-modal__close:focus {
+    background: rgba(79, 70, 229, 0.1);
+    color: var(--accent-dark);
+    outline: none;
+}
+
+@media (max-width: 991.98px) {
+    .hero-description {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .main-content {
+        margin-top: 96px;
+        padding-bottom: 80px;
+    }
+
+    .hero-section {
+        text-align: center;
+        padding: 2.25rem 1.5rem;
+    }
+
+    .hero-tags {
+        justify-content: center;
+    }
+
+    .hero-label {
+        margin-top: 0.75rem;
+    }
+
+    .abstract-preview {
+        min-height: auto;
+    }
+
+    .article-links {
+        width: 100%;
+        gap: 0.45rem;
+    }
+
+    .list-of-papers {
+        border-left: none;
+        padding-left: 0;
+        gap: 1.5rem;
+    }
+
+    .list-of-papers .article {
+        padding: 1rem 1.25rem 1.15rem 1.25rem;
+        border-radius: 16px;
+    }
+
+    .list-of-papers .article::before {
+        content: none;
+    }
+
+    .abstract-modal__dialog {
+        max-height: 90vh;
+        padding: 2rem 1.5rem;
+    }
 }

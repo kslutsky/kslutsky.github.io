@@ -1,0 +1,7 @@
+.section + .list-of-papers {
+    margin-top: 1.5rem;
+}
+
+#lecture-notes + .list-of-papers .article i {
+    color: var(--accent);
+}

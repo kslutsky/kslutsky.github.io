@@ -1,0 +1,65 @@
+nav.modern-navbar {
+    background: linear-gradient(90deg, #1f2937, #111827);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 20px rgba(17, 24, 39, 0.25);
+    backdrop-filter: blur(12px);
+}
+
+.modern-navbar .navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+}
+
+.modern-navbar .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+    margin-left: 1.25rem;
+    position: relative;
+    padding-bottom: 0.25rem;
+}
+
+.modern-navbar .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.2s ease;
+}
+
+.modern-navbar .nav-link:hover::after,
+.modern-navbar .nav-link:focus::after,
+.modern-navbar .nav-link:active::after {
+    transform: scaleX(1);
+}
+
+.modern-navbar .nav-link:hover,
+.modern-navbar .nav-link:focus {
+    color: #ffffff !important;
+}
+
+.modern-navbar .navbar-toggler {
+    border: none;
+}
+
+.modern-navbar .navbar-toggler:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+@media (max-width: 991.98px) {
+    .modern-navbar .navbar-nav {
+        padding-top: 1rem;
+    }
+
+    .modern-navbar .nav-link {
+        margin-left: 0;
+        padding: 0.6rem 0;
+    }
+}
