@@ -55,6 +55,7 @@ src/
 │   │   ├── article.ts                      # Zod schemas for article input
 │   │   └── author.ts                       # Zod schemas for author input
 │   ├── bibtex.ts                           # BibTeX string generation
+│   ├── render-math.ts                      # Server-side KaTeX rendering via rehype pipeline
 │   ├── types.ts                            # ActionResult type, shared types
 │   └── constants.ts                        # App config (owner author ID, etc.)
 ├── components/
@@ -118,10 +119,10 @@ CNAME                         # Keep until domain migration
 ## Task Dependency Graph
 
 ```
-Task 1 (Scaffold)
-  ├── Task 2 (DB Schema)
-  │     └── Task 3 (Auth)
-  ├── Task 4 (Validators) ─────────────────────────────┐
+Task 1 (Scaffold + types.ts + env setup)
+  ├── Task 2 (DB Schema) ──────────────────────────────┐
+  ├── Task 3 (Auth) ───────────────────────────────────┤
+  ├── Task 4 (Validators) ─────────────────────────────┤
   ├── Task 5 (arXiv Fetcher) ──────────────────────────┤
   ├── Task 6 (CrossRef Fetcher) ───────────────────────┤
   └── Task 7 (OpenAlex Fetcher) ───────────────────────┤
@@ -147,14 +148,14 @@ Task 1 (Scaffold)
 **Parallelizable groups:**
 - Tasks 2-7 (DB schema, auth, validators, and all three fetchers — all depend only on Task 1)
 - Tasks 12 + 17 (author admin + public layout)
-- Tasks 19-21 (abstract, BibTeX, erratum badge)
+- Tasks 19, then 20 → 21 sequentially (Tasks 20 and 21 both modify `article-card.tsx` — must not run in parallel to avoid merge conflicts)
 
 ---
 
 ## Task 1: Project Scaffolding
 
 **Files:**
-- Create: `package.json`, `tsconfig.json`, `tailwind.config.ts`, `next.config.ts`, `vitest.config.ts`, `drizzle.config.ts`, `.env.local.example`, `src/app/layout.tsx`
+- Create: `package.json`, `tsconfig.json`, `tailwind.config.ts`, `next.config.ts`, `vitest.config.ts`, `drizzle.config.ts`, `.env.local.example`, `src/app/layout.tsx`, `src/lib/types.ts`
 
 - [ ] **Step 1: Create Next.js app**
 
@@ -236,29 +237,7 @@ Add to `package.json` scripts:
 "db:studio": "drizzle-kit studio"
 ```
 
-- [ ] **Step 7: Verify scaffold works**
-
-```bash
-npm run dev
-```
-
-Expected: Next.js dev server starts on localhost:3000.
-
-- [ ] **Step 8: Commit**
-
-```bash
-git add -A
-git commit -m "feat: scaffold Next.js app with Drizzle, Tailwind, Vitest"
-```
-
----
-
-## Task 2: Database Schema + Migration
-
-**Files:**
-- Create: `src/lib/db/schema.ts`, `src/lib/db/index.ts`, `src/lib/types.ts`
-
-- [ ] **Step 1: Create shared types**
+- [ ] **Step 7: Create shared types**
 
 Create `src/lib/types.ts`:
 
@@ -280,7 +259,44 @@ export const TAG_TYPES = ["keyword", "arxiv_subject", "msc_code"] as const;
 export type TagType = (typeof TAG_TYPES)[number];
 ```
 
-- [ ] **Step 2: Create Drizzle schema**
+- [ ] **Step 8: Create `.env.local` from example and configure prerequisites**
+
+```bash
+cp .env.local.example .env.local
+```
+
+Before proceeding to Task 2, you must:
+1. **Create a Neon project** at neon.tech — copy the connection string into `DATABASE_URL`
+2. **Create a GitHub OAuth App** at github.com/settings/developers — set callback URL to `http://localhost:3000/api/auth/callback/github`, copy Client ID and Secret into `AUTH_GITHUB_ID` and `AUTH_GITHUB_SECRET`
+3. **Generate AUTH_SECRET**: run `npx auth secret` and paste the value
+4. **Set ALLOWED_GITHUB_USERNAME** to your GitHub username
+5. **Create a Vercel project** (needed for Blob storage in Task 15) — copy the Blob token into `BLOB_READ_WRITE_TOKEN`. This can be deferred until Task 15 if desired.
+
+- [ ] **Step 9: Verify scaffold works**
+
+```bash
+npm run dev
+```
+
+Expected: Next.js dev server starts on localhost:3000.
+
+- [ ] **Step 10: Commit**
+
+```bash
+git add -A
+git commit -m "feat: scaffold Next.js app with Drizzle, Tailwind, Vitest"
+```
+
+---
+
+## Task 2: Database Schema + Migration
+
+**Files:**
+- Create: `src/lib/db/schema.ts`, `src/lib/db/index.ts`
+
+Note: `src/lib/types.ts` was already created in Task 1, Step 7.
+
+- [ ] **Step 1: Create Drizzle schema**
 
 Create `src/lib/db/schema.ts`:
 
@@ -397,7 +413,7 @@ export const tags = pgTable(
 );
 ```
 
-- [ ] **Step 3: Create DB client**
+- [ ] **Step 2: Create DB client**
 
 Create `src/lib/db/index.ts`:
 
@@ -410,7 +426,7 @@ const sql = neon(process.env.DATABASE_URL!);
 export const db = drizzle(sql, { schema });
 ```
 
-- [ ] **Step 4: Generate and run migration**
+- [ ] **Step 3: Generate and run migration**
 
 ```bash
 npm run db:generate
@@ -418,7 +434,7 @@ npm run db:generate
 
 Expected: Migration files generated in `src/lib/db/migrations/`.
 
-- [ ] **Step 5: Add updatedAt trigger via custom SQL migration**
+- [ ] **Step 4: Add updatedAt trigger via custom SQL migration**
 
 **Important:** Drizzle Kit only runs migration files it generated — manually added `.sql` files are ignored. Run this trigger SQL directly via the Neon console (SQL Editor in the Neon dashboard) or via a separate script: `npx tsx -e "import { neon } from '@neondatabase/serverless'; const sql = neon(process.env.DATABASE_URL!); await sql\`...\`"`. The trigger SQL:
 
@@ -440,7 +456,7 @@ CREATE TRIGGER authors_set_updated_at
   FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 ```
 
-- [ ] **Step 6: Push schema to Neon**
+- [ ] **Step 5: Push schema to Neon**
 
 ```bash
 npm run db:push
@@ -448,7 +464,7 @@ npm run db:push
 
 Expected: Tables created in Neon. Verify via `npm run db:studio`.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add -A
@@ -471,6 +487,7 @@ import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  // Note: requireAuth() helper is defined below for use in server actions
   providers: [GitHub],
   callbacks: {
     async signIn({ profile }) {
@@ -482,6 +499,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 });
+```
+
+Add a `requireAuth()` helper at the bottom of the same file, exported for use in server actions:
+
+```typescript
+export async function requireAuth() {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized");
+  return session;
+}
 ```
 
 - [ ] **Step 2: Create route handler**
@@ -1153,7 +1180,7 @@ git commit -m "feat: add author CRUD server actions"
 Create `src/lib/actions/articles.ts` with:
 - `createArticle` — validates with Zod, checks authorIds/tagIds referential integrity, verifies parent is not an erratum for errata, calls `revalidateTag` on publish
 - `updateArticle` — same validation, always revalidates
-- `softDeleteArticle` — cascades soft-delete to errata (sets same `deletedAt` timestamp for cascade tracking)
+- `softDeleteArticle` — cascades soft-delete to errata. **Must use a single transaction** with a captured `const now = new Date()` to ensure parent and cascade-deleted errata share the exact same `deletedAt` timestamp (used to distinguish cascade-deletes from independent deletes on restore)
 - `restoreArticle` — blocks restoring erratum while parent is trashed; cascade-restores errata that share the same `deletedAt` timestamp
 - `toggleArticleStatus` — with `revalidateTag`
 - `getArticles(includeDeleted)` — ordered by publishedYear DESC, publishedMonth DESC NULLS LAST, publishedDay DESC NULLS LAST, createdAt DESC
@@ -1185,7 +1212,9 @@ git commit -m "feat: add article CRUD server actions with soft-delete cascade"
 
 - [ ] **Step 1: Implement metadata fetch actions**
 
-Create `src/lib/actions/fetch-metadata.ts` with `fetchArxiv`, `fetchDoi`, `fetchAuthorMetadata` — thin wrappers around the fetcher functions that add auth checks and return `ActionResult<T>`.
+Create `src/lib/actions/fetch-metadata.ts` with:
+- `fetchArxiv`, `fetchDoi`, `fetchAuthorMetadata` — thin wrappers around the fetcher functions that add auth checks and return `ActionResult<T>`.
+- `matchAuthors(fetchedNames: string[], fetchedOrcids: (string | undefined)[])` — server action that performs the DB-side author matching logic. For each fetched author: (a) if ORCID is provided, query authors by ORCID (exact match); (b) if no ORCID match, query by case-insensitive normalized Unicode name comparison; (c) if no exact match, query all authors and compute Levenshtein edit distance, returning candidates with distance <= 2. Returns `{ matched: { fetchedName, existingAuthor }[], unmatched: { fetchedName, candidates: Author[] }[] }`. The `AuthorMatcher` client component (Task 14) calls this action and displays the results for user confirmation.
 
 - [ ] **Step 2: Verify it compiles**
 
@@ -1427,7 +1456,11 @@ git commit -m "feat: add streamlined erratum form mode"
 
 ```bash
 cp resources/kslutsky.jpg public/kslutsky.jpg
+cp -r papers/ public/papers/
+cp -r lecture-notes/ public/lecture-notes/
 ```
+
+This ensures existing PDF URLs (e.g., `/papers/Smooth-orbit-equivalence.pdf`) resolve correctly in the Next.js app. These files will be migrated to Vercel Blob in a future iteration.
 
 - [ ] **Step 2: Create navbar**
 
@@ -1477,7 +1510,9 @@ Create `src/components/public/article-list.tsx` — renders flat list of article
 
 - [ ] **Step 3: Create public homepage**
 
-Create `src/app/(public)/page.tsx` — server component that fetches published articles via `unstable_cache` with `tags: ['articles']`. Fetches **published** errata (use `getPublishedErrata`, filtering `status='published'` + `deletedAt IS NULL`) and authors. Builds lookup maps. Renders HeroSection, ArticleList, and a hardcoded Lecture Notes section with links to `/lecture-notes/*.pdf` static files.
+Create `src/app/(public)/page.tsx` — server component that wraps **all** DB queries in a single `unstable_cache` call with `tags: ['articles']`: published articles, **published** errata (filtering `status='published'` + `deletedAt IS NULL`), and all authors. Builds lookup maps. Pre-renders titles and abstracts through the `renderMath()` pipeline (from `src/lib/render-math.ts`). Renders HeroSection, ArticleList, and a hardcoded Lecture Notes section with links to `/lecture-notes/*.pdf` static files.
+
+**Note on Vercel caching:** `unstable_cache` on Vercel serverless uses Vercel's Data Cache (not in-process memory). `revalidateTag('articles')` correctly invalidates across all function instances. Verify this works in Task 22 by checking that mutations immediately reflect on the public page.
 
 - [ ] **Step 4: Verify manually**
 
@@ -1506,7 +1541,18 @@ npm install katex rehype-katex remark-math
 
 - [ ] **Step 2: Create abstract toggle component**
 
-Create `src/components/public/abstract-toggle.tsx` — client component with expand/collapse button (`<button>` with `aria-expanded`). When expanded, renders the abstract text with inline LaTeX via KaTeX. Import `katex/dist/katex.min.css`. Implementation: split abstract on `$...$` delimiters. For each segment, create a `<span>` element. For non-math segments, set `textContent`. For math segments, use `katex.render(tex, spanElement, { throwOnError: false })` — the in-place DOM API that avoids `innerHTML`. Append all spans to a container ref.
+Create `src/components/public/abstract-toggle.tsx` — client component with expand/collapse button (`<button>` with `aria-expanded`). When expanded, renders pre-processed HTML (see below).
+
+**KaTeX rendering strategy (SSR with MathML fallback):** Create a shared utility `src/lib/render-math.ts` that uses the `unified` + `remark-parse` + `remark-math` + `remark-rehype` + `rehype-katex` + `rehype-stringify` pipeline to convert markdown-like text (with `$...$` delimiters) into HTML with MathML fallback. This runs server-side. The public page pre-renders abstracts and titles through this pipeline and passes the resulting sanitized HTML string to client components. Import `katex/dist/katex.min.css` in the root layout.
+
+Install additional dependency:
+```bash
+npm install unified remark-parse remark-math remark-rehype rehype-katex rehype-stringify rehype-sanitize
+```
+
+The `abstract-toggle.tsx` component receives `renderedHtml: string` (pre-rendered and sanitized server-side by our own pipeline via `rehype-sanitize`) and renders it. Since the HTML is generated server-side from our own controlled pipeline and sanitized, it is safe to render.
+
+Similarly, article titles use the same pipeline. Create `src/lib/render-math.ts` as a server-only utility. Titles are rendered in `article-card.tsx` (server component) by calling `renderMath(title)` and outputting the sanitized result.
 
 - [ ] **Step 3: Integrate into article card**
 
@@ -1588,7 +1634,7 @@ git commit -m "feat: add BibTeX export with downloadable .bib files"
 
 - [ ] **Step 1: Create erratum badge component**
 
-Create `src/components/public/erratum-badge.tsx` — compact display: "Erratum (date)" with PDF and DOI links when available. Amber-tinted styling. Not a nested card. Links have 44px min tap targets. No expand toggle (errata rarely have abstracts; if abstract is null, nothing to expand).
+Create `src/components/public/erratum-badge.tsx` — compact display: "Erratum (date)" with PDF and DOI links when available. Amber-tinted styling. Not a nested card. Links have 44px min tap targets. No expand toggle when abstract is null; show an expand/collapse toggle (reusing `AbstractToggle` component) when abstract is non-null.
 
 - [ ] **Step 2: Integrate into article card**
 
@@ -1685,8 +1731,10 @@ Create `src/lib/db/seed.ts` — a script that:
 
 - [ ] **Step 3: Run seed script**
 
+The seed script must import `'dotenv/config'` at the top to load `.env.local`:
+
 ```bash
-npx tsx src/lib/db/seed.ts
+npx tsx --env-file=.env.local src/lib/db/seed.ts
 ```
 
 Verify all 14 articles and their authors appear in the admin panel and on the public page.
@@ -1704,6 +1752,7 @@ git commit -m "feat: add seed script and migrate existing articles"
 
 After all tasks are complete:
 
+**Testing:**
 - [ ] Run full test suite: `npm run test`
 - [ ] Run type check: `npx tsc --noEmit`
 - [ ] Run linter: `npm run lint`
@@ -1714,4 +1763,11 @@ After all tasks are complete:
 - [ ] Verify DOI fetch with a real DOI
 - [ ] Verify erratum creation and display
 - [ ] Verify PDF upload works on Vercel (requires deployment)
+
+**Production deployment:**
+- [ ] Set all 7 environment variables in Vercel dashboard (DATABASE_URL, AUTH_SECRET, AUTH_GITHUB_ID, AUTH_GITHUB_SECRET, ALLOWED_GITHUB_USERNAME, CONTACT_EMAIL, BLOB_READ_WRITE_TOKEN)
+- [ ] Update GitHub OAuth App callback URL to production domain
+- [ ] Add `not-found.tsx` and `error.tsx` error boundary pages
+- [ ] Add security headers in `next.config.ts` (CSP, X-Frame-Options)
 - [ ] Deploy to Vercel and verify in production
+- [ ] Domain migration (deferred — kslutsky.com stays on current site until ready)
