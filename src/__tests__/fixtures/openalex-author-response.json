@@ -1,0 +1,11 @@
+{
+  "id": "https://openalex.org/A5023888391",
+  "display_name": "Konstantin Slutsky",
+  "orcid": "https://orcid.org/0000-0002-1234-5678",
+  "last_known_institutions": [
+    { "display_name": "Iowa State University", "country_code": "US", "type": "education" }
+  ],
+  "works_count": 15,
+  "cited_by_count": 120,
+  "summary_stats": { "h_index": 7 }
+}
