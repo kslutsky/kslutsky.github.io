@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:arxiv="http://arxiv.org/schemas/atom">
+  <entry>
+    <id>http://arxiv.org/abs/2301.12345v2</id>
+    <title>A Very Important Theorem About Groups</title>
+    <summary>We prove that every countable group acts freely on something interesting. This has applications to ergodic theory.</summary>
+    <author><name>Konstantin Slutsky</name></author>
+    <author><name>Jane Doe</name></author>
+    <published>2023-01-30T00:00:00Z</published>
+    <arxiv:primary_category term="math.DS"/>
+    <category term="math.DS"/>
+    <category term="math.GR"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2301.12345v2" rel="related" type="application/pdf"/>
+  </entry>
+</feed>
