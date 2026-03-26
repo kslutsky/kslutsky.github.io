@@ -1,0 +1,30 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "DOI": "10.1007/s00222-024-01234-5",
+    "title": ["Smooth Orbit Equivalence of Flows"],
+    "abstract": "<jats:p>We study smooth orbit equivalence of measure-preserving flows.</jats:p>",
+    "author": [
+      {
+        "given": "Konstantin",
+        "family": "Slutsky",
+        "ORCID": "https://orcid.org/0000-0002-1234-5678",
+        "authenticated-orcid": true
+      },
+      {
+        "given": "Jane",
+        "family": "Doe"
+      }
+    ],
+    "container-title": ["Inventiones Mathematicae"],
+    "volume": "381",
+    "issue": "2",
+    "page": "100-150",
+    "published-print": {
+      "date-parts": [[2024, 3, 15]]
+    },
+    "subject": ["General Mathematics"]
+  }
+}
