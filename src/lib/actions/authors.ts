@@ -43,7 +43,7 @@ export async function updateAuthor(
     return { success: false, error: "Author not found" };
   }
 
-  revalidateTag("articles", "default");
+  revalidateTag("articles");
   return { success: true, data: undefined };
 }
 

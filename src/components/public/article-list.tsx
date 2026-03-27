@@ -64,7 +64,7 @@ export function ArticleList({
       type: a.type,
       authors: resolveAuthorNames(a, authorMap),
       publishedYear: a.publishedYear,
-      createdAtYear: a.createdAt.getFullYear(),
+      createdAtYear: new Date(a.createdAt).getFullYear(),
     }))
   );
 

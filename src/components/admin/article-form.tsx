@@ -284,7 +284,7 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
       title,
       abstract: abstract || undefined,
       pdfUrl: pdfUrl || undefined,
-      pdfSource: pdfSource || undefined,
+      pdfSource: pdfUrl ? pdfSource : undefined,
       journalName: journalName || undefined,
       volume: volume || undefined,
       issue: issue || undefined,

@@ -75,13 +75,17 @@ export async function createArticle(
     }
   }
 
-  const [row] = await db.insert(articles).values(data).returning({ id: articles.id });
+  try {
+    const [row] = await db.insert(articles).values(data).returning({ id: articles.id });
 
-  if (data.status === "published") {
-    revalidateTag("articles", "default");
+    if (data.status === "published") {
+      revalidateTag("articles");
+    }
+
+    return { success: true, data: { id: row.id } };
+  } catch (e) {
+    return { success: false, error: e instanceof Error ? e.message : "Failed to create article" };
   }
-
-  return { success: true, data: { id: row.id } };
 }
 
 export async function updateArticle(
@@ -117,18 +121,22 @@ export async function updateArticle(
     }
   }
 
-  const result = await db
-    .update(articles)
-    .set({ ...data, updatedAt: new Date() })
-    .where(eq(articles.id, id))
-    .returning({ id: articles.id });
+  try {
+    const result = await db
+      .update(articles)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(articles.id, id))
+      .returning({ id: articles.id });
 
-  if (result.length === 0) {
-    return { success: false, error: "Article not found" };
+    if (result.length === 0) {
+      return { success: false, error: "Article not found" };
+    }
+
+    revalidateTag("articles");
+    return { success: true, data: undefined };
+  } catch (e) {
+    return { success: false, error: e instanceof Error ? e.message : "Failed to update article" };
   }
-
-  revalidateTag("articles", "default");
-  return { success: true, data: undefined };
 }
 
 export async function softDeleteArticle(id: string): Promise<ActionResult> {
@@ -158,7 +166,7 @@ export async function softDeleteArticle(id: string): Promise<ActionResult> {
       )
     );
 
-  revalidateTag("articles", "default");
+  revalidateTag("articles");
   return { success: true, data: undefined };
 }
 
@@ -213,7 +221,7 @@ export async function restoreArticle(id: string): Promise<ActionResult> {
       )
     );
 
-  revalidateTag("articles", "default");
+  revalidateTag("articles");
   return { success: true, data: undefined };
 }
 
@@ -238,7 +246,7 @@ export async function toggleArticleStatus(
     .set({ status: newStatus, updatedAt: new Date() })
     .where(eq(articles.id, id));
 
-  revalidateTag("articles", "default");
+  revalidateTag("articles");
   return { success: true, data: undefined };
 }
 

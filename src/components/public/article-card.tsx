@@ -80,7 +80,7 @@ export async function ArticleCard({
       doi: article.doi,
       arxivId: article.arxivId,
       abstract: article.abstract,
-      createdAtYear: article.createdAt.getFullYear(),
+      createdAtYear: new Date(article.createdAt).getFullYear(),
     },
     disambiguationSuffix
   );
