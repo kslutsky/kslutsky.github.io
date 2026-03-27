@@ -1,5 +1,7 @@
 import type { InferSelectModel } from "drizzle-orm";
 import type { articles, authors } from "@/lib/db/schema";
+import { renderMath } from "@/lib/render-math";
+import { AbstractToggle } from "./abstract-toggle";
 
 type Article = InferSelectModel<typeof articles>;
 type Author = InferSelectModel<typeof authors>;
@@ -47,7 +49,7 @@ function getPdfUrl(article: Article): string | null {
 const linkClassName =
   "text-xs font-medium text-indigo-600 hover:text-indigo-800 underline underline-offset-2 decoration-indigo-300 hover:decoration-indigo-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1 rounded-sm";
 
-export function ArticleCard({
+export async function ArticleCard({
   article,
   authorNames,
   errata,
@@ -55,6 +57,10 @@ export function ArticleCard({
 }: ArticleCardProps) {
   const publicationLine = buildPublicationLine(article);
   const pdfUrl = getPdfUrl(article);
+  const renderedTitle = await renderMath(article.title);
+  const renderedAbstract = article.abstract
+    ? await renderMath(article.abstract)
+    : null;
 
   const links: { label: string; href: string }[] = [];
 
@@ -82,9 +88,10 @@ export function ArticleCard({
   return (
     <article className="group">
       <div className="flex items-center gap-2">
-        <h3 className="text-base font-semibold leading-snug text-stone-900">
-          {article.title}
-        </h3>
+        <h3
+          className="text-base font-semibold leading-snug text-stone-900"
+          dangerouslySetInnerHTML={{ __html: renderedTitle }}
+        />
         {showDraftBadge && article.status === "draft" && (
           <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 animate-pulse">
             DRAFT
@@ -126,8 +133,9 @@ export function ArticleCard({
         </div>
       )}
 
-      {/* TODO: Task 19 — Errata display */}
-      {/* TODO: Task 20-21 — Abstract toggle */}
+      {renderedAbstract && (
+        <AbstractToggle renderedHtml={renderedAbstract} id={article.id} />
+      )}
     </article>
   );
 }
