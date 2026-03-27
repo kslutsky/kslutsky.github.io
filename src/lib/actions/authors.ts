@@ -1,0 +1,86 @@
+"use server";
+
+import { eq, sql } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
+import { db } from "@/lib/db";
+import { authors, articles } from "@/lib/db/schema";
+import { requireAuth } from "@/lib/auth";
+import { authorCreateSchema } from "@/lib/validators/author";
+import type { ActionResult } from "@/lib/types";
+
+export async function createAuthor(
+  input: unknown
+): Promise<ActionResult<{ id: string }>> {
+  await requireAuth();
+
+  const parsed = authorCreateSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0].message };
+  }
+
+  const [row] = await db.insert(authors).values(parsed.data).returning({ id: authors.id });
+  return { success: true, data: { id: row.id } };
+}
+
+export async function updateAuthor(
+  id: string,
+  input: unknown
+): Promise<ActionResult> {
+  await requireAuth();
+
+  const parsed = authorCreateSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0].message };
+  }
+
+  const result = await db
+    .update(authors)
+    .set({ ...parsed.data, updatedAt: new Date() })
+    .where(eq(authors.id, id))
+    .returning({ id: authors.id });
+
+  if (result.length === 0) {
+    return { success: false, error: "Author not found" };
+  }
+
+  revalidateTag("articles", "default");
+  return { success: true, data: undefined };
+}
+
+export async function deleteAuthor(id: string): Promise<ActionResult> {
+  await requireAuth();
+
+  // Check referential integrity: any articles referencing this author?
+  const refs = await db
+    .select({ id: articles.id })
+    .from(articles)
+    .where(sql`${articles.authorIds} @> ARRAY[${id}]::uuid[]`)
+    .limit(1);
+
+  if (refs.length > 0) {
+    return {
+      success: false,
+      error: "Cannot delete author: referenced by one or more articles",
+    };
+  }
+
+  const result = await db
+    .delete(authors)
+    .where(eq(authors.id, id))
+    .returning({ id: authors.id });
+
+  if (result.length === 0) {
+    return { success: false, error: "Author not found" };
+  }
+
+  return { success: true, data: undefined };
+}
+
+export async function getAuthors() {
+  return db.select().from(authors).orderBy(authors.name);
+}
+
+export async function getAuthor(id: string) {
+  const [row] = await db.select().from(authors).where(eq(authors.id, id));
+  return row ?? null;
+}
