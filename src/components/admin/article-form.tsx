@@ -65,7 +65,7 @@ interface ArticleFormProps {
 export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
   const router = useRouter();
   const isEdit = !!article;
-  const isErratumMode = !!parent;
+  const isErratum = !!parent;
 
   // Fetch fields
   const [arxivIdInput, setArxivIdInput] = useState(article?.arxivId ?? "");
@@ -74,10 +74,12 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
   const [fetching, setFetching] = useState<"arxiv" | "doi" | null>(null);
 
   // Form fields
-  const [title, setTitle] = useState(article?.title ?? "");
+  const [title, setTitle] = useState(
+    article?.title ?? (isErratum ? `Erratum to "${parent!.title}"` : "")
+  );
   const [abstract, setAbstract] = useState(article?.abstract ?? "");
   const [type, setType] = useState<ArticleType>(
-    isErratumMode ? "erratum" : (article?.type as ArticleType) ?? "preprint"
+    isErratum ? "erratum" : (article?.type as ArticleType) ?? "preprint"
   );
   const [publishedYear, setPublishedYear] = useState(
     article?.publishedYear?.toString() ?? ""
@@ -98,9 +100,9 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
     article?.arxivVersion ?? undefined
   );
 
-  // Authors
+  // Authors — pre-populate from parent in erratum mode
   const [authorIds, setAuthorIds] = useState<string[]>(
-    article?.authorIds ?? []
+    article?.authorIds ?? (isErratum ? parent!.authorIds : [])
   );
   const [authorSearch, setAuthorSearch] = useState("");
   const [showAuthorDropdown, setShowAuthorDropdown] = useState(false);
@@ -112,9 +114,9 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
   const [matchResult, setMatchResult] = useState<MatchResult | null>(null);
   const [showMatcher, setShowMatcher] = useState(false);
 
-  // PDF
+  // PDF — default to "upload" in erratum mode
   const [pdfSource, setPdfSource] = useState<PdfSource>(
-    (article?.pdfSource as PdfSource) ?? "arxiv"
+    (article?.pdfSource as PdfSource) ?? (isErratum ? "upload" : "arxiv")
   );
   const [pdfUrl, setPdfUrl] = useState(article?.pdfUrl ?? "");
 
@@ -122,6 +124,7 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPublishConfirm, setShowPublishConfirm] = useState(false);
+  const [showJournalFields, setShowJournalFields] = useState(false);
 
   // ---------------------------------------------------------------------------
   // Fetch handlers
@@ -273,8 +276,8 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
     setError(null);
 
     const payload = {
-      type: isErratumMode ? ("erratum" as const) : type,
-      parentId: isErratumMode ? parent!.id : undefined,
+      type: isErratum ? ("erratum" as const) : type,
+      parentId: isErratum ? parent!.id : undefined,
       arxivId: arxivIdInput.trim() || undefined,
       arxivVersion: arxivVersion,
       doi: doiInput.trim() || undefined,
@@ -319,6 +322,78 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
   const labelClass = "block text-sm font-medium text-stone-700 mb-1";
 
   // ---------------------------------------------------------------------------
+  // Shared sub-sections
+  // ---------------------------------------------------------------------------
+
+  const pdfSection = (
+    <section className="space-y-4">
+      <h2 className="text-sm font-semibold text-stone-500 uppercase tracking-wider">
+        PDF
+      </h2>
+
+      <div>
+        <label className={labelClass}>PDF Source</label>
+        <div className="flex gap-4">
+          {(["arxiv", "upload", "external"] as const).map((s) => (
+            <label key={s} className="flex items-center gap-2 text-sm text-stone-700">
+              <input
+                type="radio"
+                name="pdf-source"
+                value={s}
+                checked={pdfSource === s}
+                onChange={() => setPdfSource(s)}
+                className="text-indigo-600 focus:ring-indigo-500"
+              />
+              {s === "arxiv"
+                ? "arXiv link (auto)"
+                : s === "upload"
+                  ? "Upload"
+                  : "External URL"}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {pdfSource === "arxiv" && pdfUrl && (
+        <div className="text-sm text-stone-600">
+          <span className="font-medium">URL:</span>{" "}
+          <a
+            href={pdfUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-600 hover:text-indigo-800 underline underline-offset-2"
+          >
+            {pdfUrl}
+          </a>
+        </div>
+      )}
+
+      {pdfSource === "upload" && (
+        <PdfUpload
+          value={pdfUrl}
+          onChange={(url) => setPdfUrl(url)}
+        />
+      )}
+
+      {pdfSource === "external" && (
+        <div>
+          <label htmlFor="article-pdf-url" className={labelClass}>
+            External PDF URL
+          </label>
+          <input
+            id="article-pdf-url"
+            type="url"
+            value={pdfUrl}
+            onChange={(e) => setPdfUrl(e.target.value)}
+            placeholder="https://..."
+            className={inputClass}
+          />
+        </div>
+      )}
+    </section>
+  );
+
+  // ---------------------------------------------------------------------------
   // Render
   // ---------------------------------------------------------------------------
 
@@ -331,75 +406,99 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
       )}
 
       {/* ----------------------------------------------------------------- */}
-      {/* Fetch section                                                     */}
+      {/* Erratum context banner                                            */}
       {/* ----------------------------------------------------------------- */}
-      <section className="space-y-4">
-        <h2 className="text-sm font-semibold text-stone-500 uppercase tracking-wider">
-          Fetch Metadata
-        </h2>
-
-        {/* arXiv fetch */}
-        <div>
-          <label className={labelClass}>arXiv ID</label>
-          <div className="flex rounded-md shadow-sm overflow-hidden">
-            <input
-              type="text"
-              value={arxivIdInput}
-              onChange={(e) => setArxivIdInput(e.target.value)}
-              placeholder="2301.12345 or https://arxiv.org/abs/..."
-              className="flex-1 rounded-none border-y border-l border-stone-300 px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:ring-inset"
-            />
-            <button
-              type="button"
-              onClick={handleFetchArxiv}
-              disabled={fetching !== null || !arxivIdInput.trim()}
-              className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white border border-indigo-600 hover:bg-indigo-700 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {fetching === "arxiv"
-                ? "Fetching..."
-                : hasFetched
-                  ? (
-                      <span className="text-amber-200">
-                        Re-fetch (overwrites)
-                      </span>
-                    )
-                  : "Fetch"}
-            </button>
-          </div>
+      {isErratum && (
+        <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          Creating an erratum for:{" "}
+          <span className="font-medium">{parent!.title}</span>
         </div>
+      )}
 
-        {/* DOI fetch */}
-        <div>
-          <label className={labelClass}>DOI</label>
-          <div className="flex rounded-md shadow-sm overflow-hidden">
-            <input
-              type="text"
-              value={doiInput}
-              onChange={(e) => setDoiInput(e.target.value)}
-              placeholder="10.1234/..."
-              className="flex-1 rounded-none border-y border-l border-stone-300 px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:ring-inset"
-            />
-            <button
-              type="button"
-              onClick={handleFetchDoi}
-              disabled={fetching !== null || !doiInput.trim()}
-              className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white border border-indigo-600 hover:bg-indigo-700 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {fetching === "doi"
-                ? "Fetching..."
-                : hasFetched
-                  ? (
-                      <span className="text-amber-200">
-                        Re-fetch (overwrites)
-                      </span>
-                    )
-                  : "Fetch"}
-            </button>
-          </div>
-        </div>
-      </section>
+      {/* ----------------------------------------------------------------- */}
+      {/* PDF section (shown first in erratum mode)                         */}
+      {/* ----------------------------------------------------------------- */}
+      {isErratum && (
+        <>
+          {pdfSection}
+          <hr className="border-stone-200" />
+        </>
+      )}
 
-      <hr className="border-stone-200" />
+      {/* ----------------------------------------------------------------- */}
+      {/* Fetch section (hidden in erratum mode)                            */}
+      {/* ----------------------------------------------------------------- */}
+      {!isErratum && (
+        <>
+          <section className="space-y-4">
+            <h2 className="text-sm font-semibold text-stone-500 uppercase tracking-wider">
+              Fetch Metadata
+            </h2>
+
+            {/* arXiv fetch */}
+            <div>
+              <label className={labelClass}>arXiv ID</label>
+              <div className="flex rounded-md shadow-sm overflow-hidden">
+                <input
+                  type="text"
+                  value={arxivIdInput}
+                  onChange={(e) => setArxivIdInput(e.target.value)}
+                  placeholder="2301.12345 or https://arxiv.org/abs/..."
+                  className="flex-1 rounded-none border-y border-l border-stone-300 px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:ring-inset"
+                />
+                <button
+                  type="button"
+                  onClick={handleFetchArxiv}
+                  disabled={fetching !== null || !arxivIdInput.trim()}
+                  className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white border border-indigo-600 hover:bg-indigo-700 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {fetching === "arxiv"
+                    ? "Fetching..."
+                    : hasFetched
+                      ? (
+                          <span className="text-amber-200">
+                            Re-fetch (overwrites)
+                          </span>
+                        )
+                      : "Fetch"}
+                </button>
+              </div>
+            </div>
+
+            {/* DOI fetch */}
+            <div>
+              <label className={labelClass}>DOI</label>
+              <div className="flex rounded-md shadow-sm overflow-hidden">
+                <input
+                  type="text"
+                  value={doiInput}
+                  onChange={(e) => setDoiInput(e.target.value)}
+                  placeholder="10.1234/..."
+                  className="flex-1 rounded-none border-y border-l border-stone-300 px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:ring-inset"
+                />
+                <button
+                  type="button"
+                  onClick={handleFetchDoi}
+                  disabled={fetching !== null || !doiInput.trim()}
+                  className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white border border-indigo-600 hover:bg-indigo-700 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {fetching === "doi"
+                    ? "Fetching..."
+                    : hasFetched
+                      ? (
+                          <span className="text-amber-200">
+                            Re-fetch (overwrites)
+                          </span>
+                        )
+                      : "Fetch"}
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <hr className="border-stone-200" />
+        </>
+      )}
 
       {/* ----------------------------------------------------------------- */}
       {/* Fields section                                                    */}
@@ -439,7 +538,7 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
         </div>
 
         {/* Type (hidden in erratum mode) */}
-        {!isErratumMode && (
+        {!isErratum && (
           <div>
             <label className={labelClass}>Type</label>
             <div className="flex gap-4">
@@ -497,57 +596,148 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
           </div>
         </div>
 
-        {/* Journal fields (2x2 grid) */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* Journal fields — always visible in normal mode, collapsible in erratum mode */}
+        {isErratum ? (
           <div>
-            <label htmlFor="article-journal" className={labelClass}>
-              Journal Name
-            </label>
-            <input
-              id="article-journal"
-              type="text"
-              value={journalName}
-              onChange={(e) => setJournalName(e.target.value)}
-              className={inputClass}
-            />
+            <button
+              type="button"
+              onClick={() => setShowJournalFields((v) => !v)}
+              className="flex items-center gap-2 text-sm text-stone-500 hover:text-stone-700 transition-colors duration-150"
+            >
+              <svg
+                className={`h-4 w-4 transition-transform duration-200 ${showJournalFields ? "rotate-90" : ""}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+              Optional — for published errata
+            </button>
+
+            <div
+              className={`overflow-hidden transition-all duration-200 ${
+                showJournalFields ? "max-h-96 mt-4" : "max-h-0"
+              }`}
+            >
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="article-doi" className={labelClass}>
+                    DOI
+                  </label>
+                  <input
+                    id="article-doi"
+                    type="text"
+                    value={doiInput}
+                    onChange={(e) => setDoiInput(e.target.value)}
+                    placeholder="10.1234/..."
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="article-journal" className={labelClass}>
+                    Journal Name
+                  </label>
+                  <input
+                    id="article-journal"
+                    type="text"
+                    value={journalName}
+                    onChange={(e) => setJournalName(e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="article-volume" className={labelClass}>
+                    Volume
+                  </label>
+                  <input
+                    id="article-volume"
+                    type="text"
+                    value={volume}
+                    onChange={(e) => setVolume(e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="article-issue" className={labelClass}>
+                    Issue
+                  </label>
+                  <input
+                    id="article-issue"
+                    type="text"
+                    value={issue}
+                    onChange={(e) => setIssue(e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="article-pages" className={labelClass}>
+                    Pages
+                  </label>
+                  <input
+                    id="article-pages"
+                    type="text"
+                    value={pages}
+                    onChange={(e) => setPages(e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <label htmlFor="article-volume" className={labelClass}>
-              Volume
-            </label>
-            <input
-              id="article-volume"
-              type="text"
-              value={volume}
-              onChange={(e) => setVolume(e.target.value)}
-              className={inputClass}
-            />
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="article-journal" className={labelClass}>
+                Journal Name
+              </label>
+              <input
+                id="article-journal"
+                type="text"
+                value={journalName}
+                onChange={(e) => setJournalName(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="article-volume" className={labelClass}>
+                Volume
+              </label>
+              <input
+                id="article-volume"
+                type="text"
+                value={volume}
+                onChange={(e) => setVolume(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="article-issue" className={labelClass}>
+                Issue
+              </label>
+              <input
+                id="article-issue"
+                type="text"
+                value={issue}
+                onChange={(e) => setIssue(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="article-pages" className={labelClass}>
+                Pages
+              </label>
+              <input
+                id="article-pages"
+                type="text"
+                value={pages}
+                onChange={(e) => setPages(e.target.value)}
+                className={inputClass}
+              />
+            </div>
           </div>
-          <div>
-            <label htmlFor="article-issue" className={labelClass}>
-              Issue
-            </label>
-            <input
-              id="article-issue"
-              type="text"
-              value={issue}
-              onChange={(e) => setIssue(e.target.value)}
-              className={inputClass}
-            />
-          </div>
-          <div>
-            <label htmlFor="article-pages" className={labelClass}>
-              Pages
-            </label>
-            <input
-              id="article-pages"
-              type="text"
-              value={pages}
-              onChange={(e) => setPages(e.target.value)}
-              className={inputClass}
-            />
-          </div>
-        </div>
+        )}
       </section>
 
       <hr className="border-stone-200" />
@@ -657,75 +847,14 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
       <hr className="border-stone-200" />
 
       {/* ----------------------------------------------------------------- */}
-      {/* PDF section                                                       */}
+      {/* PDF section (shown at bottom in normal mode)                      */}
       {/* ----------------------------------------------------------------- */}
-      <section className="space-y-4">
-        <h2 className="text-sm font-semibold text-stone-500 uppercase tracking-wider">
-          PDF
-        </h2>
-
-        <div>
-          <label className={labelClass}>PDF Source</label>
-          <div className="flex gap-4">
-            {(["arxiv", "upload", "external"] as const).map((s) => (
-              <label key={s} className="flex items-center gap-2 text-sm text-stone-700">
-                <input
-                  type="radio"
-                  name="pdf-source"
-                  value={s}
-                  checked={pdfSource === s}
-                  onChange={() => setPdfSource(s)}
-                  className="text-indigo-600 focus:ring-indigo-500"
-                />
-                {s === "arxiv"
-                  ? "arXiv link (auto)"
-                  : s === "upload"
-                    ? "Upload"
-                    : "External URL"}
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {pdfSource === "arxiv" && pdfUrl && (
-          <div className="text-sm text-stone-600">
-            <span className="font-medium">URL:</span>{" "}
-            <a
-              href={pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-indigo-600 hover:text-indigo-800 underline underline-offset-2"
-            >
-              {pdfUrl}
-            </a>
-          </div>
-        )}
-
-        {pdfSource === "upload" && (
-          <PdfUpload
-            value={pdfUrl}
-            onChange={(url) => setPdfUrl(url)}
-          />
-        )}
-
-        {pdfSource === "external" && (
-          <div>
-            <label htmlFor="article-pdf-url" className={labelClass}>
-              External PDF URL
-            </label>
-            <input
-              id="article-pdf-url"
-              type="url"
-              value={pdfUrl}
-              onChange={(e) => setPdfUrl(e.target.value)}
-              placeholder="https://..."
-              className={inputClass}
-            />
-          </div>
-        )}
-      </section>
-
-      <hr className="border-stone-200" />
+      {!isErratum && (
+        <>
+          {pdfSection}
+          <hr className="border-stone-200" />
+        </>
+      )}
 
       {/* ----------------------------------------------------------------- */}
       {/* Action buttons                                                    */}
