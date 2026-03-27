@@ -13,3 +13,9 @@ export type PdfSource = (typeof PDF_SOURCES)[number];
 
 export const TAG_TYPES = ["keyword", "arxiv_subject", "msc_code"] as const;
 export type TagType = (typeof TAG_TYPES)[number];
+
+export const SEMESTERS = ["Fall", "Spring", "Summer"] as const;
+export type Semester = (typeof SEMESTERS)[number];
+
+export const MENTEE_CATEGORIES = ["phd", "postdoc", "masters", "undergraduate"] as const;
+export type MenteeCategory = (typeof MENTEE_CATEGORIES)[number];

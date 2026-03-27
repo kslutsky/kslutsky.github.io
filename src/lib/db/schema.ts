@@ -70,3 +70,53 @@ export const tags = pgTable(
     check("tag_type_check", sql`${table.type} IN ('keyword', 'arxiv_subject', 'msc_code')`),
   ]
 );
+
+export const courses = pgTable(
+  "courses",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    courseNumber: text("course_number").notNull(),
+    courseTitle: text("course_title").notNull(),
+    semester: text("semester").notNull(),
+    year: integer("year").notNull(),
+    institution: text("institution").notNull(),
+    status: text("status").notNull().default("draft"),
+    deletedAt: timestamp("deleted_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("courses_status_idx").on(table.status),
+    index("courses_institution_idx").on(table.institution),
+    check("courses_status_check", sql`${table.status} IN ('draft', 'published')`),
+    check("courses_semester_check", sql`${table.semester} IN ('Fall', 'Spring', 'Summer')`),
+    check("courses_year_check", sql`${table.year} >= 1900 AND ${table.year} <= 2100`),
+  ]
+);
+
+export const mentees = pgTable(
+  "mentees",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: text("name").notNull(),
+    category: text("category").notNull(),
+    institution: text("institution").notNull(),
+    startYear: integer("start_year").notNull(),
+    endYear: integer("end_year"),
+    thesisTitle: text("thesis_title"),
+    firstPosition: text("first_position"),
+    homepage: text("homepage"),
+    status: text("status").notNull().default("draft"),
+    deletedAt: timestamp("deleted_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("mentees_status_idx").on(table.status),
+    index("mentees_category_idx").on(table.category),
+    check("mentees_status_check", sql`${table.status} IN ('draft', 'published')`),
+    check("mentees_category_check", sql`${table.category} IN ('phd', 'postdoc', 'masters', 'undergraduate')`),
+    check("mentees_start_year_check", sql`${table.startYear} >= 1900 AND ${table.startYear} <= 2100`),
+    check("mentees_end_year_check", sql`${table.endYear} IS NULL OR (${table.endYear} >= 1900 AND ${table.endYear} <= 2100)`),
+  ]
+);
