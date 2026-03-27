@@ -1,5 +1,6 @@
 import type { InferSelectModel } from "drizzle-orm";
 import type { articles, authors } from "@/lib/db/schema";
+import { buildDisambiguationMap } from "@/lib/bibtex";
 import { ArticleCard } from "./article-card";
 
 type Article = InferSelectModel<typeof articles>;
@@ -57,6 +58,16 @@ export function ArticleList({
     );
   }
 
+  const disambiguationMap = buildDisambiguationMap(
+    articleList.map((a) => ({
+      id: a.id,
+      type: a.type,
+      authors: resolveAuthorNames(a, authorMap),
+      publishedYear: a.publishedYear,
+      createdAtYear: a.createdAt.getFullYear(),
+    }))
+  );
+
   const yearGroups = groupByYear(articleList);
 
   return (
@@ -76,6 +87,7 @@ export function ArticleList({
                   authorNames={resolveAuthorNames(article, authorMap)}
                   errata={errataByParent.get(article.id) ?? []}
                   showDraftBadge={showDraftBadge}
+                  disambiguationSuffix={disambiguationMap.get(article.id)}
                 />
               ))}
             </div>
@@ -102,6 +114,7 @@ export function ArticleList({
                   authorNames={resolveAuthorNames(article, authorMap)}
                   errata={errataByParent.get(article.id) ?? []}
                   showDraftBadge={showDraftBadge}
+                  disambiguationSuffix={disambiguationMap.get(article.id)}
                 />
               ))}
             </div>

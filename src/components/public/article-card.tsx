@@ -1,7 +1,10 @@
 import type { InferSelectModel } from "drizzle-orm";
 import type { articles, authors } from "@/lib/db/schema";
 import { renderMath } from "@/lib/render-math";
+import { generateBibtex } from "@/lib/bibtex";
 import { AbstractToggle } from "./abstract-toggle";
+import { BibtexButton } from "./bibtex-button";
+import { ErratumBadge } from "./erratum-badge";
 
 type Article = InferSelectModel<typeof articles>;
 type Author = InferSelectModel<typeof authors>;
@@ -12,6 +15,7 @@ interface ArticleCardProps {
   authorNames: string[];
   errata: Erratum[];
   showDraftBadge?: boolean;
+  disambiguationSuffix?: string;
 }
 
 function buildPublicationLine(article: Article): string | null {
@@ -54,6 +58,7 @@ export async function ArticleCard({
   authorNames,
   errata,
   showDraftBadge,
+  disambiguationSuffix,
 }: ArticleCardProps) {
   const publicationLine = buildPublicationLine(article);
   const pdfUrl = getPdfUrl(article);
@@ -61,6 +66,24 @@ export async function ArticleCard({
   const renderedAbstract = article.abstract
     ? await renderMath(article.abstract)
     : null;
+
+  const bibtex = generateBibtex(
+    {
+      type: article.type as "preprint" | "published" | "erratum",
+      title: article.title,
+      authors: authorNames,
+      journalName: article.journalName,
+      volume: article.volume,
+      issue: article.issue,
+      pages: article.pages,
+      publishedYear: article.publishedYear,
+      doi: article.doi,
+      arxivId: article.arxivId,
+      abstract: article.abstract,
+      createdAtYear: article.createdAt.getFullYear(),
+    },
+    disambiguationSuffix
+  );
 
   const links: { label: string; href: string }[] = [];
 
@@ -111,31 +134,50 @@ export async function ArticleCard({
         </p>
       )}
 
-      {links.length > 0 && (
-        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-          {links.map((link, i) => (
-            <span key={link.label} className="inline-flex items-center gap-x-3">
-              {i > 0 && (
-                <span className="text-stone-300" aria-hidden="true">
-                  &middot;
-                </span>
-              )}
-              <a
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={linkClassName}
-              >
-                {link.label}
-              </a>
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+        {links.map((link, i) => (
+          <span key={link.label} className="inline-flex items-center gap-x-3">
+            {i > 0 && (
+              <span className="text-stone-300" aria-hidden="true">
+                &middot;
+              </span>
+            )}
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={linkClassName}
+            >
+              {link.label}
+            </a>
+          </span>
+        ))}
+        <span className="inline-flex items-center gap-x-3">
+          {links.length > 0 && (
+            <span className="text-stone-300" aria-hidden="true">
+              &middot;
             </span>
-          ))}
-        </div>
-      )}
+          )}
+          <BibtexButton bibtex={bibtex} />
+        </span>
+      </div>
 
       {renderedAbstract && (
         <AbstractToggle renderedHtml={renderedAbstract} id={article.id} />
       )}
+
+      {errata?.map(async (erratum) => {
+        const renderedErratumAbstract = erratum.abstract
+          ? await renderMath(erratum.abstract)
+          : undefined;
+        return (
+          <ErratumBadge
+            key={erratum.id}
+            erratum={erratum}
+            renderedAbstract={renderedErratumAbstract}
+          />
+        );
+      })}
     </article>
   );
 }
