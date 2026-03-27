@@ -12,6 +12,12 @@ export function Navbar() {
         </Link>
         <div className="flex items-center gap-6">
           <a
+            href="#preprints"
+            className="text-sm font-medium text-stone-500 hover:text-stone-900 transition-colors duration-150"
+          >
+            Preprints
+          </a>
+          <a
             href="#publications"
             className="text-sm font-medium text-stone-500 hover:text-stone-900 transition-colors duration-150"
           >

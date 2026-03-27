@@ -94,10 +94,10 @@ export function parseArxivResponse(xml: string): ArxivResult {
     categories.push(categoryMatch[1]);
   }
 
-  // Extract PDF link (link with title="pdf")
-  const pdfLinkMatch = entry.match(/<link[^>]+title="pdf"[^>]+href="([^"]+)"/);
-  if (!pdfLinkMatch) throw new Error("No PDF link found in arXiv entry");
-  const pdfUrl = pdfLinkMatch[1];
+  // Extract PDF link (link with title="pdf" — attribute order varies)
+  const pdfLinkMatch = entry.match(/<link[^>]+href="([^"]+)"[^>]+title="pdf"/);
+  const pdfLinkMatchAlt = entry.match(/<link[^>]+title="pdf"[^>]+href="([^"]+)"/);
+  const pdfUrl = (pdfLinkMatch ?? pdfLinkMatchAlt)?.[1] ?? `https://arxiv.org/pdf/${arxivId}`;
 
   return {
     arxivId,

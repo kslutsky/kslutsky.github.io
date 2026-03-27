@@ -33,7 +33,7 @@ export const articleCreateSchema = z
     doi: doiSchema.optional(),
     title: z.string().min(1, "Title is required"),
     abstract: z.string().optional(),
-    pdfUrl: z.string().url().optional(),
+    pdfUrl: z.string().min(1).optional(), // Accepts both absolute URLs and relative paths like /papers/...
     pdfSource: z.enum(PDF_SOURCES).optional(),
     journalName: z.string().optional(),
     volume: z.string().optional(),

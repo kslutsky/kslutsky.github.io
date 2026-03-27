@@ -79,15 +79,30 @@ export default async function HomePage() {
     }
   }
 
+  const preprints = publishedArticles.filter((a) => a.type === "preprint");
+  const published = publishedArticles.filter((a) => a.type === "published");
+
   return (
     <>
       <HeroSection />
+
+      {preprints.length > 0 && (
+        <section id="preprints" className="mt-16">
+          <h2 className="text-2xl font-semibold text-stone-900">Preprints</h2>
+          <div className="mt-2 h-0.5 w-16 bg-gradient-to-r from-indigo-500 to-transparent rounded-full" />
+          <ArticleList
+            articles={preprints}
+            authorMap={authorMap}
+            errataByParent={errataByParent}
+          />
+        </section>
+      )}
 
       <section id="publications" className="mt-16">
         <h2 className="text-2xl font-semibold text-stone-900">Publications</h2>
         <div className="mt-2 h-0.5 w-16 bg-gradient-to-r from-indigo-500 to-transparent rounded-full" />
         <ArticleList
-          articles={publishedArticles}
+          articles={published}
           authorMap={authorMap}
           errataByParent={errataByParent}
         />
