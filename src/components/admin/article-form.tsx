@@ -66,6 +66,7 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
   const router = useRouter();
   const isEdit = !!article;
   const isErratum = !!parent;
+  const isLectureNotes = article?.type === "lecture_notes" || false;
 
   // Fetch fields
   const [arxivIdInput, setArxivIdInput] = useState(article?.arxivId ?? "");
@@ -114,9 +115,9 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
   const [matchResult, setMatchResult] = useState<MatchResult | null>(null);
   const [showMatcher, setShowMatcher] = useState(false);
 
-  // PDF — default to "upload" in erratum mode
+  // PDF — default to "upload" in erratum and lecture notes mode
   const [pdfSource, setPdfSource] = useState<PdfSource>(
-    (article?.pdfSource as PdfSource) ?? (isErratum ? "upload" : "arxiv")
+    (article?.pdfSource as PdfSource) ?? (isErratum || type === "lecture_notes" ? "upload" : "arxiv")
   );
   const [pdfUrl, setPdfUrl] = useState(article?.pdfUrl ?? "");
 
@@ -416,9 +417,9 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
       )}
 
       {/* ----------------------------------------------------------------- */}
-      {/* PDF section (shown first in erratum mode)                         */}
+      {/* PDF section (shown first in erratum and lecture notes mode)        */}
       {/* ----------------------------------------------------------------- */}
-      {isErratum && (
+      {(isErratum || type === "lecture_notes") && (
         <>
           {pdfSection}
           <hr className="border-stone-200" />
@@ -426,9 +427,9 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
       )}
 
       {/* ----------------------------------------------------------------- */}
-      {/* Fetch section (hidden in erratum mode)                            */}
+      {/* Fetch section (hidden in erratum and lecture notes mode)           */}
       {/* ----------------------------------------------------------------- */}
-      {!isErratum && (
+      {!isErratum && type !== "lecture_notes" && (
         <>
           <section className="space-y-4">
             <h2 className="text-sm font-semibold text-stone-500 uppercase tracking-wider">
@@ -541,18 +542,21 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
         {!isErratum && (
           <div>
             <label className={labelClass}>Type</label>
-            <div className="flex gap-4">
-              {(["preprint", "published", "erratum"] as const).map((t) => (
+            <div className="flex flex-wrap gap-4">
+              {(["preprint", "published", "lecture_notes", "erratum"] as const).map((t) => (
                 <label key={t} className="flex items-center gap-2 text-sm text-stone-700">
                   <input
                     type="radio"
                     name="article-type"
                     value={t}
                     checked={type === t}
-                    onChange={() => setType(t)}
+                    onChange={() => {
+                      setType(t);
+                      if (t === "lecture_notes") setPdfSource("upload");
+                    }}
                     className="text-indigo-600 focus:ring-indigo-500"
                   />
-                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                  {t === "lecture_notes" ? "Lecture Notes" : t.charAt(0).toUpperCase() + t.slice(1)}
                 </label>
               ))}
             </div>
@@ -596,8 +600,8 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
           </div>
         </div>
 
-        {/* Journal fields — always visible in normal mode, collapsible in erratum mode */}
-        {isErratum ? (
+        {/* Journal fields — hidden for lecture notes, collapsible for erratum, visible otherwise */}
+        {type === "lecture_notes" ? null : isErratum ? (
           <div>
             <button
               type="button"
@@ -849,7 +853,7 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
       {/* ----------------------------------------------------------------- */}
       {/* PDF section (shown at bottom in normal mode)                      */}
       {/* ----------------------------------------------------------------- */}
-      {!isErratum && (
+      {!isErratum && type !== "lecture_notes" && (
         <>
           {pdfSection}
           <hr className="border-stone-200" />

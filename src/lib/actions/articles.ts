@@ -288,13 +288,30 @@ export async function getPublishedArticles() {
       and(
         eq(articles.status, "published"),
         isNull(articles.deletedAt),
-        sql`${articles.type} != 'erratum'`
+        sql`${articles.type} NOT IN ('erratum', 'lecture_notes')`
       )
     )
     .orderBy(
       sql`${articles.publishedYear} DESC NULLS LAST`,
       sql`${articles.publishedMonth} DESC NULLS LAST`,
       sql`${articles.publishedDay} DESC NULLS LAST`,
+      desc(articles.createdAt)
+    );
+}
+
+export async function getPublishedLectureNotes() {
+  return db
+    .select()
+    .from(articles)
+    .where(
+      and(
+        eq(articles.type, "lecture_notes"),
+        eq(articles.status, "published"),
+        isNull(articles.deletedAt)
+      )
+    )
+    .orderBy(
+      sql`${articles.publishedYear} DESC NULLS LAST`,
       desc(articles.createdAt)
     );
 }

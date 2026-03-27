@@ -35,7 +35,7 @@ export const articles = pgTable(
     index("articles_status_idx").on(table.status),
     index("articles_author_ids_gin_idx").using("gin", table.authorIds),
     index("articles_tag_ids_gin_idx").using("gin", table.tagIds),
-    check("type_check", sql`${table.type} IN ('preprint', 'published', 'erratum')`),
+    check("type_check", sql`${table.type} IN ('preprint', 'published', 'erratum', 'lecture_notes')`),
     check("status_check", sql`${table.status} IN ('draft', 'published')`),
     check("erratum_parent_check", sql`(${table.type} = 'erratum' AND ${table.parentId} IS NOT NULL) OR (${table.type} != 'erratum' AND ${table.parentId} IS NULL)`),
     check("pdf_source_check", sql`${table.pdfSource} IS NULL OR ${table.pdfSource} IN ('arxiv', 'upload', 'external')`),

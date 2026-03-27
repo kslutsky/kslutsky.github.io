@@ -2,7 +2,7 @@ export type ActionResult<T = void> =
   | { success: true; data: T }
   | { success: false; error: string };
 
-export const ARTICLE_TYPES = ["preprint", "published", "erratum"] as const;
+export const ARTICLE_TYPES = ["preprint", "published", "erratum", "lecture_notes"] as const;
 export type ArticleType = (typeof ARTICLE_TYPES)[number];
 
 export const ARTICLE_STATUSES = ["draft", "published"] as const;
