@@ -5,6 +5,7 @@ import { generateBibtex } from "@/lib/bibtex";
 import { AbstractToggle } from "./abstract-toggle";
 import { BibtexButton } from "./bibtex-button";
 import { ErratumBadge } from "./erratum-badge";
+import { ExternalLink, FileText, Link2 } from "lucide-react";
 
 type Article = InferSelectModel<typeof articles>;
 type Author = InferSelectModel<typeof authors>;
@@ -47,11 +48,14 @@ function getPdfUrl(article: Article): string | null {
   ) {
     return article.pdfUrl;
   }
+  if (article.pdfUrl) {
+    return article.pdfUrl;
+  }
   return null;
 }
 
-const linkClassName =
-  "text-xs font-medium text-indigo-600 hover:text-indigo-800 underline underline-offset-2 decoration-indigo-300 hover:decoration-indigo-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1 rounded-sm";
+const iconLinkClass =
+  "inline-flex items-center gap-1 text-xs font-medium text-stone-400 hover:text-indigo-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1 rounded-sm min-h-[44px] sm:min-h-0";
 
 export async function ArticleCard({
   article,
@@ -85,87 +89,84 @@ export async function ArticleCard({
     disambiguationSuffix
   );
 
-  const links: { label: string; href: string }[] = [];
-
-  if (article.arxivId) {
-    links.push({
-      label: "arXiv",
-      href: `https://arxiv.org/abs/${article.arxivId}`,
-    });
-  }
-
-  if (article.doi) {
-    links.push({
-      label: "DOI",
-      href: `https://doi.org/${article.doi}`,
-    });
-  }
-
-  if (pdfUrl) {
-    links.push({
-      label: "PDF",
-      href: pdfUrl,
-    });
-  }
-
   return (
     <article className="group">
-      <div className="flex items-center gap-2">
+      {/* Title */}
+      <div className="flex items-start gap-2">
         <h3
           className="text-base font-semibold leading-snug text-stone-900"
           dangerouslySetInnerHTML={{ __html: renderedTitle }}
         />
         {showDraftBadge && article.status === "draft" && (
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 animate-pulse">
+          <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 animate-pulse">
             DRAFT
           </span>
         )}
       </div>
 
+      {/* Authors */}
       {authorNames.length > 0 && (
-        <p className="mt-1 text-sm text-stone-500">
+        <p className="mt-2 text-sm text-stone-600">
           {authorNames.join(", ")}
         </p>
       )}
 
+      {/* Publication info */}
       {publicationLine && (
-        <p className="mt-0.5 text-sm text-stone-400 italic">
+        <p className="mt-1 text-xs text-stone-400 italic">
           {publicationLine}
         </p>
       )}
 
-      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-        {links.map((link, i) => (
-          <span key={link.label} className="inline-flex items-center gap-x-3">
-            {i > 0 && (
-              <span className="text-stone-300" aria-hidden="true">
-                &middot;
-              </span>
-            )}
-            <a
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={linkClassName}
-            >
-              {link.label}
-            </a>
-          </span>
-        ))}
-        <span className="inline-flex items-center gap-x-3">
-          {links.length > 0 && (
-            <span className="text-stone-300" aria-hidden="true">
-              &middot;
-            </span>
-          )}
-          <BibtexButton bibtex={bibtex} />
-        </span>
+      {/* Action row: icons + abstract toggle */}
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        {article.arxivId && (
+          <a
+            href={`https://arxiv.org/abs/${article.arxivId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`View on arXiv: ${article.title}`}
+            className={iconLinkClass}
+          >
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>arXiv</span>
+          </a>
+        )}
+
+        {article.doi && (
+          <a
+            href={`https://doi.org/${article.doi}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`View DOI record: ${article.title}`}
+            className={iconLinkClass}
+          >
+            <Link2 className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>DOI</span>
+          </a>
+        )}
+
+        {pdfUrl && (
+          <a
+            href={pdfUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Download PDF: ${article.title}`}
+            className={iconLinkClass}
+          >
+            <FileText className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>PDF</span>
+          </a>
+        )}
+
+        <BibtexButton bibtex={bibtex} title={article.title} />
+
+        {renderedAbstract && (
+          <AbstractToggle renderedHtml={renderedAbstract} id={article.id} />
+        )}
       </div>
 
-      {renderedAbstract && (
-        <AbstractToggle renderedHtml={renderedAbstract} id={article.id} />
-      )}
-
+      {/* Errata */}
       {errata?.map(async (erratum) => {
         const renderedErratumAbstract = erratum.abstract
           ? await renderMath(erratum.abstract)

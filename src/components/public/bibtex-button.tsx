@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Clipboard, Check } from "lucide-react";
 
-export function BibtexButton({ bibtex }: { bibtex: string }) {
+export function BibtexButton({ bibtex, title }: { bibtex: string; title: string }) {
   const [copied, setCopied] = useState(false);
 
   async function handleClick() {
@@ -14,9 +15,23 @@ export function BibtexButton({ bibtex }: { bibtex: string }) {
   return (
     <button
       onClick={handleClick}
-      className="relative text-xs font-medium text-indigo-600 hover:text-indigo-800 underline underline-offset-2 decoration-indigo-300 hover:decoration-indigo-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1 rounded-sm"
+      aria-label={`Copy BibTeX citation for ${title}`}
+      className="inline-flex items-center gap-1 text-xs font-medium text-stone-400 hover:text-indigo-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1 rounded-sm min-h-[44px] sm:min-h-0"
     >
-      {copied ? "Copied!" : "BibTeX"}
+      {copied ? (
+        <>
+          <Check className="h-3.5 w-3.5" aria-hidden="true" />
+          <span>Copied</span>
+        </>
+      ) : (
+        <>
+          <Clipboard className="h-3.5 w-3.5" aria-hidden="true" />
+          <span>Cite</span>
+        </>
+      )}
+      <span className="sr-only" aria-live="polite">
+        {copied ? "Citation copied to clipboard" : ""}
+      </span>
     </button>
   );
 }

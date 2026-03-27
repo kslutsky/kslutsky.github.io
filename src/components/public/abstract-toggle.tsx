@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronRight } from "lucide-react";
 
 export function AbstractToggle({
   renderedHtml,
@@ -12,27 +13,22 @@ export function AbstractToggle({
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div>
+    <>
       <button
         onClick={() => setExpanded(!expanded)}
         aria-expanded={expanded}
         aria-controls={`abstract-${id}`}
-        className="inline-flex items-center gap-1 text-xs font-medium text-indigo-600
-                   hover:text-indigo-800 transition-colors rounded-sm mt-3
-                   focus-visible:outline-none focus-visible:ring-2
-                   focus-visible:ring-indigo-600 focus-visible:ring-offset-1"
+        className="inline-flex items-center gap-1 text-xs font-medium text-stone-400 hover:text-indigo-600 transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-1 min-h-[44px] sm:min-h-0"
       >
-        <span
-          className={`inline-block transition-transform duration-200 ${expanded ? "rotate-90" : ""}`}
+        <ChevronRight
+          className={`h-3.5 w-3.5 transition-transform duration-200 ${expanded ? "rotate-90" : ""}`}
           aria-hidden="true"
-        >
-          &#9656;
-        </span>
-        {expanded ? "Hide abstract" : "Abstract"}
+        />
+        {expanded ? "Hide" : "Abstract"}
       </button>
       <div
         id={`abstract-${id}`}
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`basis-full overflow-hidden transition-all duration-300 ease-in-out ${
           expanded ? "max-h-[48rem] opacity-100 mt-3" : "max-h-0 opacity-0"
         }`}
       >
@@ -41,6 +37,6 @@ export function AbstractToggle({
           dangerouslySetInnerHTML={{ __html: renderedHtml }}
         />
       </div>
-    </div>
+    </>
   );
 }

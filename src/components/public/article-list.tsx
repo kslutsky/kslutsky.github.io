@@ -71,7 +71,7 @@ export function ArticleList({
   const yearGroups = groupByYear(articleList);
 
   return (
-    <div className="mt-8 flex flex-col gap-10">
+    <div className="mt-8 flex flex-col gap-6">
       {yearGroups.map(([year, groupArticles], groupIndex) => (
         <div key={year ?? "no-year"}>
           {/* Mobile: stacked layout */}
@@ -79,7 +79,7 @@ export function ArticleList({
             <h3 className="text-sm font-semibold tabular-nums text-stone-300 mb-4">
               {year ?? ""}
             </h3>
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-5">
               {groupArticles.map((article) => (
                 <ArticleCard
                   key={article.id}
@@ -98,7 +98,7 @@ export function ArticleList({
             className={`hidden sm:flex gap-8 md:gap-12 ${
               groupIndex === 0
                 ? ""
-                : "pt-10 border-t border-stone-200"
+                : "pt-6 border-t border-stone-200"
             }`}
           >
             <div className="w-12 shrink-0 pt-0.5">
