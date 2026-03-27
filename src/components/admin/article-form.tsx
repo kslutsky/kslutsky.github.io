@@ -8,6 +8,7 @@ import { fetchArxiv, fetchDoi, matchAuthors } from "@/lib/actions/fetch-metadata
 import type { MatchResult } from "@/lib/actions/fetch-metadata";
 import ConfirmDialog from "@/components/admin/confirm-dialog";
 import AuthorMatcher from "@/components/admin/author-matcher";
+import PdfUpload from "@/components/admin/pdf-upload";
 import type { ArticleType, PdfSource } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
@@ -701,9 +702,10 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
         )}
 
         {pdfSource === "upload" && (
-          <div className="rounded-md border border-dashed border-stone-300 bg-stone-50 px-4 py-6 text-center text-sm text-stone-500">
-            File upload will be available in a future update.
-          </div>
+          <PdfUpload
+            value={pdfUrl}
+            onChange={(url) => setPdfUrl(url)}
+          />
         )}
 
         {pdfSource === "external" && (
