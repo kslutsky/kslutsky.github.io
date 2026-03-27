@@ -1,0 +1,173 @@
+"use server";
+
+import { eq, isNull, isNotNull, sql } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
+import { db } from "@/lib/db";
+import { courses } from "@/lib/db/schema";
+import { requireAuth } from "@/lib/auth";
+import { courseCreateSchema } from "@/lib/validators/course";
+import type { ActionResult } from "@/lib/types";
+
+// ---------------------------------------------------------------------------
+// Ordering helper
+// ---------------------------------------------------------------------------
+
+const courseOrdering = [
+  courses.institution,
+  sql`${courses.year} DESC`,
+  sql`CASE ${courses.semester} WHEN 'Fall' THEN 1 WHEN 'Summer' THEN 2 WHEN 'Spring' THEN 3 END ASC`,
+] as const;
+
+// ---------------------------------------------------------------------------
+// Mutations
+// ---------------------------------------------------------------------------
+
+export async function createCourse(
+  input: unknown
+): Promise<ActionResult<{ id: string }>> {
+  await requireAuth();
+
+  const parsed = courseCreateSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0].message };
+  }
+
+  const data = parsed.data;
+
+  try {
+    const [row] = await db.insert(courses).values(data).returning({ id: courses.id });
+
+    if (data.status === "published") {
+      revalidateTag("academic");
+    }
+
+    return { success: true, data: { id: row.id } };
+  } catch (e) {
+    return { success: false, error: e instanceof Error ? e.message : "Failed to create course" };
+  }
+}
+
+export async function updateCourse(
+  id: string,
+  input: unknown
+): Promise<ActionResult> {
+  await requireAuth();
+
+  const parsed = courseCreateSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0].message };
+  }
+
+  const data = parsed.data;
+
+  try {
+    const result = await db
+      .update(courses)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(courses.id, id))
+      .returning({ id: courses.id });
+
+    if (result.length === 0) {
+      return { success: false, error: "Course not found" };
+    }
+
+    revalidateTag("academic");
+    return { success: true, data: undefined };
+  } catch (e) {
+    return { success: false, error: e instanceof Error ? e.message : "Failed to update course" };
+  }
+}
+
+export async function softDeleteCourse(id: string): Promise<ActionResult> {
+  await requireAuth();
+
+  const now = new Date();
+
+  const result = await db
+    .update(courses)
+    .set({ deletedAt: now, updatedAt: now })
+    .where(eq(courses.id, id))
+    .returning({ id: courses.id });
+
+  if (result.length === 0) {
+    return { success: false, error: "Course not found or already deleted" };
+  }
+
+  revalidateTag("academic");
+  return { success: true, data: undefined };
+}
+
+export async function restoreCourse(id: string): Promise<ActionResult> {
+  await requireAuth();
+
+  const result = await db
+    .update(courses)
+    .set({ deletedAt: null, updatedAt: new Date() })
+    .where(eq(courses.id, id))
+    .returning({ id: courses.id });
+
+  if (result.length === 0) {
+    return { success: false, error: "Course not found or not deleted" };
+  }
+
+  revalidateTag("academic");
+  return { success: true, data: undefined };
+}
+
+export async function toggleCourseStatus(id: string): Promise<ActionResult> {
+  await requireAuth();
+
+  const [course] = await db
+    .select({ id: courses.id, status: courses.status })
+    .from(courses)
+    .where(eq(courses.id, id));
+
+  if (!course) {
+    return { success: false, error: "Course not found" };
+  }
+
+  const newStatus = course.status === "draft" ? "published" : "draft";
+
+  await db
+    .update(courses)
+    .set({ status: newStatus, updatedAt: new Date() })
+    .where(eq(courses.id, id));
+
+  revalidateTag("academic");
+  return { success: true, data: undefined };
+}
+
+// ---------------------------------------------------------------------------
+// Queries
+// ---------------------------------------------------------------------------
+
+export async function getCourses(includeDeleted?: boolean) {
+  if (includeDeleted) {
+    return db
+      .select()
+      .from(courses)
+      .where(isNotNull(courses.deletedAt))
+      .orderBy(...courseOrdering);
+  }
+
+  return db
+    .select()
+    .from(courses)
+    .where(isNull(courses.deletedAt))
+    .orderBy(...courseOrdering);
+}
+
+export async function getPublishedCourses() {
+  return db
+    .select()
+    .from(courses)
+    .where(
+      sql`${courses.status} = 'published' AND ${courses.deletedAt} IS NULL`
+    )
+    .orderBy(...courseOrdering);
+}
+
+export async function getCourse(id: string) {
+  const [row] = await db.select().from(courses).where(eq(courses.id, id));
+  return row ?? null;
+}
