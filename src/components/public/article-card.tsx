@@ -29,10 +29,9 @@ function buildPublicationLine(article: Article): string | null {
     return parts.join(", ");
   }
 
-  if (article.type === "preprint" && article.arxivId) {
-    const versionSuffix =
-      article.arxivVersion != null ? ` v${article.arxivVersion}` : "";
-    return `Preprint, arXiv:${article.arxivId}${versionSuffix}`;
+  if (article.type === "preprint") {
+    // No publication line for preprints — the section header and arXiv link are sufficient
+    return null;
   }
 
   return null;
