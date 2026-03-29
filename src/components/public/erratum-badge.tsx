@@ -5,7 +5,7 @@ import { AbstractToggle } from "./abstract-toggle";
 type Erratum = InferSelectModel<typeof articles>;
 
 const linkClassName =
-  "text-xs font-medium text-indigo-600 hover:text-indigo-800 underline underline-offset-2 decoration-indigo-300 hover:decoration-indigo-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1 rounded-sm";
+  "text-xs font-medium text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1 rounded-sm";
 
 interface ErratumBadgeProps {
   erratum: Erratum;
@@ -50,12 +50,12 @@ export function ErratumBadge({ erratum, renderedAbstract }: ErratumBadgeProps) {
           Erratum
         </span>
         {dateStr && (
-          <span className="text-xs text-stone-400">{dateStr}</span>
+          <span className="text-xs text-[var(--text-muted)]">{dateStr}</span>
         )}
         {erratumLinks.map((link, i) => (
           <span key={link.label} className="inline-flex items-center gap-x-2">
             {(i > 0 || dateStr) && (
-              <span className="text-stone-300" aria-hidden="true">
+              <span className="text-[var(--text-muted)]" aria-hidden="true">
                 &middot;
               </span>
             )}

@@ -24,7 +24,7 @@ function formatYearRange(startYear: number, endYear: number | null): string {
 
 export function MenteeList({ mentees }: { mentees: Mentee[] }) {
   if (mentees.length === 0) {
-    return <p className="mt-6 text-sm text-stone-500">No students listed yet.</p>;
+    return <p className="mt-6 text-sm text-[var(--text-secondary)]">No students listed yet.</p>;
   }
 
   const groups = new Map<string, Mentee[]>();
@@ -39,9 +39,9 @@ export function MenteeList({ mentees }: { mentees: Mentee[] }) {
       {CATEGORY_ORDER.filter((cat) => groups.has(cat)).map((cat, catIndex) => (
         <div
           key={cat}
-          className={catIndex === 0 ? "" : "pt-6 border-t border-stone-200"}
+          className={catIndex === 0 ? "" : "pt-6 border-t border-[var(--border)]"}
         >
-          <h3 className="text-lg font-semibold text-stone-800 border-b border-stone-200 pb-2 mb-4">
+          <h3 className="text-lg font-semibold text-[var(--text-primary)] border-b border-[var(--border)] pb-2 mb-4">
             {CATEGORY_LABELS[cat]}
           </h3>
 
@@ -50,7 +50,7 @@ export function MenteeList({ mentees }: { mentees: Mentee[] }) {
               <div key={m.id}>
                 {/* Mobile: stacked */}
                 <div className="sm:hidden">
-                  <p className="text-sm font-semibold tabular-nums text-stone-300 mb-1">
+                  <p className="text-sm font-semibold tabular-nums text-[var(--text-muted)] mb-1">
                     {formatYearRange(m.startYear, m.endYear)}
                   </p>
                   {m.homepage ? (
@@ -58,21 +58,21 @@ export function MenteeList({ mentees }: { mentees: Mentee[] }) {
                       href={m.homepage}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-base font-semibold leading-snug text-indigo-600 hover:text-indigo-800 underline underline-offset-2 decoration-indigo-300 hover:decoration-indigo-600 transition-colors"
+                      className="text-base font-semibold leading-snug text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors"
                     >
                       {m.name}
                     </a>
                   ) : (
-                    <p className="text-base font-semibold leading-snug text-stone-900">{m.name}</p>
+                    <p className="text-base font-semibold leading-snug text-[var(--text-primary)]">{m.name}</p>
                   )}
-                  <p className="mt-1 text-xs text-stone-400 italic">{m.institution}</p>
+                  <p className="mt-1 text-xs text-[var(--text-muted)] italic">{m.institution}</p>
                   {m.thesisTitle && (
-                    <p className="mt-1 text-xs text-stone-400 italic">
+                    <p className="mt-1 text-xs text-[var(--text-muted)] italic">
                       Thesis: &ldquo;{m.thesisTitle}&rdquo;
                     </p>
                   )}
                   {m.firstPosition && (
-                    <p className="mt-1 text-xs text-stone-400">
+                    <p className="mt-1 text-xs text-[var(--text-muted)]">
                       Now: {m.firstPosition}
                     </p>
                   )}
@@ -81,7 +81,7 @@ export function MenteeList({ mentees }: { mentees: Mentee[] }) {
                 {/* Desktop: year-range left column */}
                 <div className="hidden sm:flex gap-8 md:gap-12">
                   <div className="w-12 shrink-0 pt-0.5">
-                    <span className="text-sm font-semibold tabular-nums text-stone-300 whitespace-nowrap">
+                    <span className="text-sm font-semibold tabular-nums text-[var(--text-muted)] whitespace-nowrap">
                       {formatYearRange(m.startYear, m.endYear)}
                     </span>
                   </div>
@@ -91,21 +91,21 @@ export function MenteeList({ mentees }: { mentees: Mentee[] }) {
                         href={m.homepage}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-base font-semibold leading-snug text-indigo-600 hover:text-indigo-800 underline underline-offset-2 decoration-indigo-300 hover:decoration-indigo-600 transition-colors"
+                        className="text-base font-semibold leading-snug text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors"
                       >
                         {m.name}
                       </a>
                     ) : (
-                      <p className="text-base font-semibold leading-snug text-stone-900">{m.name}</p>
+                      <p className="text-base font-semibold leading-snug text-[var(--text-primary)]">{m.name}</p>
                     )}
-                    <p className="mt-1 text-xs text-stone-400 italic">{m.institution}</p>
+                    <p className="mt-1 text-xs text-[var(--text-muted)] italic">{m.institution}</p>
                     {m.thesisTitle && (
-                      <p className="mt-1 text-xs text-stone-400 italic">
+                      <p className="mt-1 text-xs text-[var(--text-muted)] italic">
                         Thesis: &ldquo;{m.thesisTitle}&rdquo;
                       </p>
                     )}
                     {m.firstPosition && (
-                      <p className="mt-1 text-xs text-stone-400">
+                      <p className="mt-1 text-xs text-[var(--text-muted)]">
                         Now: {m.firstPosition}
                       </p>
                     )}

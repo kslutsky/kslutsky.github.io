@@ -1,7 +1,7 @@
 export function Footer() {
   return (
-    <footer className="bg-stone-900 py-10">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center text-sm text-stone-400">
+    <footer className="bg-[var(--bg-footer)] py-10">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center text-sm text-[var(--text-muted)]">
         <p>
           Konstantin Slutsky &middot; Department of Mathematics, Iowa State
           University
@@ -9,7 +9,7 @@ export function Footer() {
         <p className="mt-1">
           <a
             href="mailto:kslutsky@iastate.edu"
-            className="hover:text-stone-200 transition-colors duration-150"
+            className="hover:text-[var(--accent)] transition-colors duration-150"
           >
             kslutsky@iastate.edu
           </a>

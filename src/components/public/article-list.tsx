@@ -54,7 +54,7 @@ export function ArticleList({
 }: ArticleListProps) {
   if (articleList.length === 0) {
     return (
-      <p className="mt-6 text-sm text-stone-500">No articles published yet.</p>
+      <p className="mt-6 text-sm text-[var(--text-secondary)]">No articles published yet.</p>
     );
   }
 
@@ -76,7 +76,7 @@ export function ArticleList({
         <div key={year ?? "no-year"}>
           {/* Mobile: stacked layout */}
           <div className="sm:hidden">
-            <h3 className="text-sm font-semibold tabular-nums text-stone-300 mb-4">
+            <h3 className="text-sm font-semibold tabular-nums text-[var(--text-muted)] mb-4">
               {year ?? ""}
             </h3>
             <div className="flex flex-col gap-5">
@@ -98,11 +98,11 @@ export function ArticleList({
             className={`hidden sm:flex gap-8 md:gap-12 ${
               groupIndex === 0
                 ? ""
-                : "pt-6 border-t border-stone-200"
+                : "pt-6 border-t border-[var(--border)]"
             }`}
           >
             <div className="w-12 shrink-0 pt-0.5">
-              <span className="text-sm font-semibold tabular-nums text-stone-300">
+              <span className="text-sm font-semibold tabular-nums text-[var(--text-muted)]">
                 {year ?? ""}
               </span>
             </div>

@@ -29,15 +29,15 @@ export default async function TeachingPage() {
       <div className="mb-8">
         <Link
           href="/"
-          className="text-sm font-medium text-stone-400 hover:text-indigo-600 transition-colors"
+          className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors"
         >
           &larr; Back to homepage
         </Link>
       </div>
-      <h1 className="text-3xl font-bold tracking-tight text-stone-900 mb-2">
+      <h1 className="text-3xl font-bold tracking-tight text-[var(--text-primary)] mb-2">
         Full Teaching Record
       </h1>
-      <div className="h-1 w-16 rounded-full bg-gradient-to-r from-indigo-500 to-transparent mb-10" />
+      <div className="h-1 w-16 rounded-full mb-10" style={{ background: `linear-gradient(90deg, var(--gradient-accent), transparent)` }} />
       <TeachingList courses={allCourses} />
     </div>
   );

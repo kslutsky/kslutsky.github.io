@@ -54,7 +54,7 @@ function getPdfUrl(article: Article): string | null {
 }
 
 const iconLinkClass =
-  "inline-flex items-center gap-1 text-xs font-medium text-stone-400 hover:text-indigo-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1 rounded-sm min-h-[44px] sm:min-h-0";
+  "inline-flex items-center gap-1 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1 rounded-sm min-h-[44px] sm:min-h-0";
 
 export async function ArticleCard({
   article,
@@ -93,7 +93,7 @@ export async function ArticleCard({
       {/* Title */}
       <div className="flex items-start gap-2">
         <h3
-          className="text-base font-semibold leading-snug text-stone-900"
+          className="text-base font-semibold leading-snug text-[var(--text-primary)]"
           dangerouslySetInnerHTML={{ __html: renderedTitle }}
         />
         {showDraftBadge && article.status === "draft" && (
@@ -105,14 +105,14 @@ export async function ArticleCard({
 
       {/* Authors */}
       {authorNames.length > 0 && (
-        <p className="mt-2 text-sm text-stone-600">
+        <p className="mt-2 text-sm text-[var(--text-secondary)]">
           {authorNames.join(", ")}
         </p>
       )}
 
       {/* Publication info */}
       {publicationLine && (
-        <p className="mt-1 text-xs text-stone-400 italic">
+        <p className="mt-1 text-xs text-[var(--text-muted)] italic">
           {publicationLine}
         </p>
       )}

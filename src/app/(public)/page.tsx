@@ -99,7 +99,7 @@ const getAcademicData = unstable_cache(
 );
 
 const viewAllClass =
-  "text-sm font-medium text-stone-400 hover:text-indigo-600 transition-colors duration-150 whitespace-nowrap inline-flex items-center gap-1 group";
+  "text-sm font-medium text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors duration-150 whitespace-nowrap inline-flex items-center gap-1 group";
 
 function SectionHeading({
   children,
@@ -113,10 +113,10 @@ function SectionHeading({
   return (
     <div className="flex items-baseline justify-between mb-8">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight text-stone-900">
+        <h2 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">
           {children}
         </h2>
-        <div className="mt-2 h-1 w-16 rounded-full bg-gradient-to-r from-indigo-500 to-transparent" />
+        <div className="mt-2 h-1 w-16 rounded-full" style={{ background: `linear-gradient(90deg, var(--gradient-accent), transparent)` }} />
       </div>
       {viewAllHref && (
         <Link href={viewAllHref} className={viewAllClass}>
@@ -167,7 +167,7 @@ export default async function HomePage() {
 
       {/* Preprints */}
       {preprints.length > 0 && (
-        <section id="preprints" className="bg-stone-50">
+        <section id="preprints" className="bg-[var(--bg-secondary)]">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
             <SectionHeading>Preprints</SectionHeading>
             <ArticleList
@@ -180,7 +180,7 @@ export default async function HomePage() {
       )}
 
       {/* Selected Publications */}
-      <section id="publications" className="bg-white">
+      <section id="publications" className="bg-[var(--bg-primary)]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
           <SectionHeading
             viewAllHref="/publications"
@@ -206,7 +206,7 @@ export default async function HomePage() {
 
       {/* Lecture Notes */}
       {lectureNotes.length > 0 && (
-        <section id="lecture-notes" className="bg-stone-50">
+        <section id="lecture-notes" className="bg-[var(--bg-secondary)]">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
             <SectionHeading>Lecture Notes</SectionHeading>
             <ArticleList
@@ -219,7 +219,7 @@ export default async function HomePage() {
       )}
 
       {/* Recent Teaching */}
-      <section id="teaching" className="bg-white">
+      <section id="teaching" className="bg-[var(--bg-primary)]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
           <SectionHeading
             viewAllHref="/teaching"
@@ -232,7 +232,7 @@ export default async function HomePage() {
       </section>
 
       {/* Students */}
-      <section id="students" className="bg-stone-50">
+      <section id="students" className="bg-[var(--bg-secondary)]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
           <SectionHeading>Students</SectionHeading>
           <MenteeList mentees={publishedMentees} />

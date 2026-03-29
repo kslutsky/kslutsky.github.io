@@ -92,6 +92,14 @@ export function VoronoiCanvas({
     function draw(Delaunay: DelaunayType, t: number) {
       if (W === 0 || H === 0) return;
 
+      const style = getComputedStyle(document.documentElement);
+      const r = parseInt(style.getPropertyValue('--voronoi-fill-r'));
+      const g = parseInt(style.getPropertyValue('--voronoi-fill-g'));
+      const b = parseInt(style.getPropertyValue('--voronoi-fill-b'));
+      const lineOpacity = parseFloat(style.getPropertyValue('--voronoi-line-opacity'));
+      const fillMin = parseFloat(style.getPropertyValue('--voronoi-fill-min'));
+      const fillRange = parseFloat(style.getPropertyValue('--voronoi-fill-range'));
+
       const positions = getPositions(t);
       const delaunay = new Delaunay(positions);
       const voronoi = delaunay.voronoi([0, 0, W, H]);
@@ -114,7 +122,7 @@ export function VoronoiCanvas({
         const centX = sumX / polygon.length;
         const centY = sumY / polygon.length;
         const dist = Math.hypot(centX - cx, centY - cy) / maxDist;
-        const alpha = 0.04 + (1 - dist) * 0.06;
+        const alpha = fillMin + (1 - dist) * fillRange;
 
         ctx!.beginPath();
         ctx!.moveTo(polygon[0][0], polygon[0][1]);
@@ -122,9 +130,9 @@ export function VoronoiCanvas({
           ctx!.lineTo(polygon[j][0], polygon[j][1]);
         }
         ctx!.closePath();
-        ctx!.fillStyle = `rgba(99,102,241,${alpha.toFixed(3)})`;
+        ctx!.fillStyle = `rgba(${r},${g},${b},${alpha.toFixed(3)})`;
         ctx!.fill();
-        ctx!.strokeStyle = "rgba(99,102,241,0.13)";
+        ctx!.strokeStyle = `rgba(${r},${g},${b},${lineOpacity})`;
         ctx!.lineWidth = 1;
         ctx!.stroke();
       }
@@ -182,11 +190,29 @@ export function VoronoiCanvas({
     );
     io.observe(canvas);
 
+    // Watch for data-theme attribute changes (manual theme toggle)
+    const mo = new MutationObserver(() => {
+      // Next animation frame will pick up new CSS variable values automatically
+    });
+    mo.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
+    // Watch for system color scheme preference changes
+    const darkMq = window.matchMedia("(prefers-color-scheme: dark)");
+    const onSchemeChange = () => {
+      // Next animation frame will pick up new CSS variable values automatically
+    };
+    darkMq.addEventListener("change", onSchemeChange);
+
     return () => {
       cancelled = true;
       cancelAnimationFrame(rafId);
       ro.disconnect();
       io.disconnect();
+      mo.disconnect();
+      darkMq.removeEventListener("change", onSchemeChange);
     };
   }, [pointCount]);
 

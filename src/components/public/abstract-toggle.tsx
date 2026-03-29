@@ -18,7 +18,7 @@ export function AbstractToggle({
         onClick={() => setExpanded(!expanded)}
         aria-expanded={expanded}
         aria-controls={`abstract-${id}`}
-        className="inline-flex items-center gap-1 text-xs font-medium text-stone-400 hover:text-indigo-600 transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-1 min-h-[44px] sm:min-h-0"
+        className="inline-flex items-center gap-1 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1 min-h-[44px] sm:min-h-0"
       >
         <ChevronRight
           className={`h-3.5 w-3.5 transition-transform duration-200 ${expanded ? "rotate-90" : ""}`}
@@ -33,7 +33,7 @@ export function AbstractToggle({
         }`}
       >
         <div
-          className="max-w-prose text-sm text-stone-600 leading-relaxed"
+          className="max-w-prose text-sm text-[var(--text-secondary)] leading-relaxed"
           dangerouslySetInnerHTML={{ __html: renderedHtml }}
         />
       </div>

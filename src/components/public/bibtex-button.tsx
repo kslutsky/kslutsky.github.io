@@ -16,7 +16,7 @@ export function BibtexButton({ bibtex, title }: { bibtex: string; title: string 
     <button
       onClick={handleClick}
       aria-label={`Copy BibTeX citation for ${title}`}
-      className="inline-flex items-center gap-1 text-xs font-medium text-stone-400 hover:text-indigo-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1 rounded-sm min-h-[44px] sm:min-h-0"
+      className="inline-flex items-center gap-1 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1 rounded-sm min-h-[44px] sm:min-h-0"
     >
       {copied ? (
         <>
