@@ -26,6 +26,7 @@ export const articles = pgTable(
     publishedDay: integer("published_day"),
     authorIds: uuid("author_ids").array().notNull().default(sql`'{}'::uuid[]`),
     tagIds: uuid("tag_ids").array().notNull().default(sql`'{}'::uuid[]`),
+    featured: integer("featured").notNull().default(0),
     status: text("status").notNull().default("draft"),
     deletedAt: timestamp("deleted_at"),
     createdAt: timestamp("created_at").notNull().defaultNow(),

@@ -44,6 +44,7 @@ export const articleCreateSchema = z
     publishedDay: z.number().int().min(1).max(31).optional(),
     authorIds: z.array(z.string().uuid()).default([]),
     tagIds: z.array(z.string().uuid()).default([]),
+    featured: z.number().int().min(0).max(1).default(0),
     status: z.enum(ARTICLE_STATUSES).default("draft"),
   })
   .refine(

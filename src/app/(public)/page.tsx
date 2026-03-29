@@ -4,9 +4,12 @@ import { db } from "@/lib/db";
 import { articles, authors, courses, mentees } from "@/lib/db/schema";
 import { HeroSection } from "@/components/public/hero-section";
 import { ArticleList } from "@/components/public/article-list";
-import { TabBar, TabContent } from "@/components/public/tab-provider";
 import { TeachingList } from "@/components/public/teaching-list";
 import { MenteeList } from "@/components/public/mentee-list";
+import Link from "next/link";
+
+// How many years of teaching to show on homepage
+const RECENT_TEACHING_YEARS = 5;
 
 const getPublishedData = unstable_cache(
   async () => {
@@ -95,6 +98,36 @@ const getAcademicData = unstable_cache(
   { tags: ["academic"] }
 );
 
+const viewAllClass =
+  "text-sm font-medium text-stone-400 hover:text-indigo-600 transition-colors duration-150 whitespace-nowrap inline-flex items-center gap-1 group";
+
+function SectionHeading({
+  children,
+  viewAllHref,
+  viewAllLabel,
+}: {
+  children: React.ReactNode;
+  viewAllHref?: string;
+  viewAllLabel?: string;
+}) {
+  return (
+    <div className="flex items-baseline justify-between mb-8">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight text-stone-900">
+          {children}
+        </h2>
+        <div className="mt-2 h-1 w-16 rounded-full bg-gradient-to-r from-indigo-500 to-transparent" />
+      </div>
+      {viewAllHref && (
+        <Link href={viewAllHref} className={viewAllClass}>
+          {viewAllLabel ?? "View all"}{" "}
+          <span className="transition-transform group-hover:translate-x-0.5">&rarr;</span>
+        </Link>
+      )}
+    </div>
+  );
+}
+
 export default async function HomePage() {
   const {
     articles: publishedArticles,
@@ -121,70 +154,94 @@ export default async function HomePage() {
 
   const preprints = publishedArticles.filter((a) => a.type === "preprint");
   const published = publishedArticles.filter((a) => a.type === "published");
-
-  const researchContent = (
-    <>
-      {preprints.length > 0 && (
-        <section id="preprints" className="mt-16">
-          <h2 className="text-2xl font-semibold text-stone-900">Preprints</h2>
-          <div className="mt-2 h-0.5 w-16 bg-gradient-to-r from-indigo-500 to-transparent rounded-full" />
-          <ArticleList
-            articles={preprints}
-            authorMap={authorMap}
-            errataByParent={errataByParent}
-          />
-        </section>
-      )}
-
-      <section id="publications" className="mt-16">
-        <h2 className="text-2xl font-semibold text-stone-900">Publications</h2>
-        <div className="mt-2 h-0.5 w-16 bg-gradient-to-r from-indigo-500 to-transparent rounded-full" />
-        <ArticleList
-          articles={published}
-          authorMap={authorMap}
-          errataByParent={errataByParent}
-        />
-      </section>
-
-      {lectureNotes.length > 0 && (
-        <section id="lecture-notes" className="mt-16">
-          <h2 className="text-2xl font-semibold text-stone-900">
-            Lecture Notes
-          </h2>
-          <div className="mt-2 h-0.5 w-16 bg-gradient-to-r from-indigo-500 to-transparent rounded-full" />
-          <ArticleList
-            articles={lectureNotes}
-            authorMap={authorMap}
-            errataByParent={errataByParent}
-          />
-        </section>
-      )}
-    </>
-  );
-
-  const academicContent = (
-    <>
-      <section id="teaching" className="mt-16">
-        <h2 className="text-2xl font-semibold text-stone-900">Teaching</h2>
-        <div className="mt-2 h-0.5 w-16 bg-gradient-to-r from-indigo-500 to-transparent rounded-full" />
-        <TeachingList courses={publishedCourses} />
-      </section>
-      <section id="students" className="mt-16">
-        <h2 className="text-2xl font-semibold text-stone-900">Students</h2>
-        <div className="mt-2 h-0.5 w-16 bg-gradient-to-r from-indigo-500 to-transparent rounded-full" />
-        <MenteeList mentees={publishedMentees} />
-      </section>
-    </>
+  const selectedPublications = published.filter((a) => a.featured === 1);
+  const currentYear = new Date().getFullYear();
+  const recentCourses = publishedCourses.filter(
+    (c) => c.year >= currentYear - RECENT_TEACHING_YEARS
   );
 
   return (
     <>
-      <HeroSection />
-      <TabBar />
-      <TabContent
-        researchContent={researchContent}
-        academicContent={academicContent}
-      />
+      {/* Hero */}
+      <section className="bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+          <HeroSection />
+        </div>
+      </section>
+
+      {/* Preprints */}
+      {preprints.length > 0 && (
+        <section id="preprints" className="bg-stone-50">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+            <SectionHeading>Preprints</SectionHeading>
+            <ArticleList
+              articles={preprints}
+              authorMap={authorMap}
+              errataByParent={errataByParent}
+            />
+          </div>
+        </section>
+      )}
+
+      {/* Selected Publications */}
+      <section id="publications" className="bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+          <SectionHeading
+            viewAllHref="/publications"
+            viewAllLabel="View all publications"
+          >
+            Selected Publications
+          </SectionHeading>
+          {selectedPublications.length > 0 ? (
+            <ArticleList
+              articles={selectedPublications}
+              authorMap={authorMap}
+              errataByParent={errataByParent}
+            />
+          ) : (
+            <ArticleList
+              articles={published}
+              authorMap={authorMap}
+              errataByParent={errataByParent}
+            />
+          )}
+        </div>
+      </section>
+
+      {/* Lecture Notes */}
+      {lectureNotes.length > 0 && (
+        <section id="lecture-notes" className="bg-stone-50">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+            <SectionHeading>Lecture Notes</SectionHeading>
+            <ArticleList
+              articles={lectureNotes}
+              authorMap={authorMap}
+              errataByParent={errataByParent}
+            />
+          </div>
+        </section>
+      )}
+
+      {/* Recent Teaching */}
+      <section id="teaching" className="bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+          <SectionHeading
+            viewAllHref="/teaching"
+            viewAllLabel="View full teaching record"
+          >
+            Recent Teaching
+          </SectionHeading>
+          <TeachingList courses={recentCourses} />
+        </div>
+      </section>
+
+      {/* Students */}
+      <section id="students" className="bg-stone-50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+          <SectionHeading>Students</SectionHeading>
+          <MenteeList mentees={publishedMentees} />
+        </div>
+      </section>
     </>
   );
 }

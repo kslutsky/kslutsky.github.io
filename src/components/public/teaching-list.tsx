@@ -17,21 +17,45 @@ export function TeachingList({ courses }: { courses: Course[] }) {
   }
 
   return (
-    <div className="mt-8 space-y-8">
+    <div className="space-y-10">
       {Array.from(groups.entries()).map(([institution, items]) => (
         <div key={institution}>
-          <h3 className="text-lg font-semibold text-stone-800 border-b border-stone-200 pb-2 mb-3">
+          <h3 className="text-lg font-semibold text-stone-800 border-b border-stone-200 pb-2 mb-4">
             {institution}
           </h3>
-          <div className="space-y-0">
+
+          <div className="flex flex-col gap-6">
             {items.map((c) => (
-              <div
-                key={c.id}
-                className="grid grid-cols-[5rem_1fr_auto] sm:grid items-baseline gap-x-3 py-1.5 max-sm:flex max-sm:flex-col max-sm:gap-0.5"
-              >
-                <span className="font-mono text-sm font-semibold text-indigo-600">{c.courseNumber}</span>
-                <span className="text-sm text-stone-800">{c.courseTitle}</span>
-                <span className="text-xs text-stone-400 whitespace-nowrap">{c.semester} {c.year}</span>
+              <div key={c.id}>
+                {/* Mobile */}
+                <div className="sm:hidden">
+                  <p className="text-xs text-stone-300 font-semibold mb-1">
+                    {c.semester} {c.year}
+                  </p>
+                  <p className="text-base font-semibold leading-snug text-stone-900">
+                    {c.courseTitle}
+                  </p>
+                  <p className="mt-1 text-xs text-stone-400 italic">
+                    {c.courseNumber}
+                  </p>
+                </div>
+
+                {/* Desktop: semester+year left column, title + number right */}
+                <div className="hidden sm:flex gap-8 md:gap-12">
+                  <div className="w-12 shrink-0 pt-0.5">
+                    <span className="text-sm font-semibold tabular-nums text-stone-300 whitespace-nowrap">
+                      {c.semester.slice(0, 2)}&nbsp;{c.year}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-base font-semibold leading-snug text-stone-900">
+                      {c.courseTitle}
+                    </p>
+                    <p className="mt-1 text-xs text-stone-400 italic">
+                      {c.courseNumber}
+                    </p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

@@ -121,6 +121,9 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
   );
   const [pdfUrl, setPdfUrl] = useState(article?.pdfUrl ?? "");
 
+  // Featured
+  const [featured, setFeatured] = useState(article?.featured === 1);
+
   // UI state
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -297,6 +300,7 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
       publishedDay: publishedDay ? parseInt(publishedDay, 10) : undefined,
       authorIds,
       tagIds: article?.tagIds ?? [],
+      featured: featured ? 1 : 0,
       status,
     };
 
@@ -858,6 +862,21 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
           {pdfSection}
           <hr className="border-stone-200" />
         </>
+      )}
+
+      {/* ----------------------------------------------------------------- */}
+      {/* Featured toggle (only for published articles, not errata)          */}
+      {/* ----------------------------------------------------------------- */}
+      {type === "published" && !isErratum && (
+        <label className="flex items-center gap-2 text-sm text-stone-700">
+          <input
+            type="checkbox"
+            checked={featured}
+            onChange={(e) => setFeatured(e.target.checked)}
+            className="rounded border-stone-300 text-indigo-600 focus:ring-indigo-500"
+          />
+          Featured (show on homepage &ldquo;Selected Publications&rdquo;)
+        </label>
       )}
 
       {/* ----------------------------------------------------------------- */}
