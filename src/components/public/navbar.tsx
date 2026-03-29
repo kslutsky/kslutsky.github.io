@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeSwitcher } from "./theme-switcher";
 
 const navLinks = [
   { href: "#preprints", label: "Preprints" },
@@ -10,11 +11,11 @@ const navLinks = [
 
 export function Navbar() {
   return (
-    <header className="bg-white/95 backdrop-blur-sm border-b border-stone-200 sticky top-0 z-40">
+    <header className="bg-[var(--bg-navbar)]/95 backdrop-blur-sm border-b border-[var(--border)] sticky top-0 z-40">
       <nav className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         <Link
           href="/"
-          className="shrink-0 flex items-center justify-center w-8 h-8 rounded-md bg-indigo-600 text-white text-xs font-bold tracking-wide"
+          className="shrink-0 flex items-center justify-center w-8 h-8 rounded-md bg-[var(--logo-bg)] text-white text-xs font-bold tracking-wide"
           aria-label="Konstantin Slutsky — Home"
         >
           KS
@@ -24,11 +25,12 @@ export function Navbar() {
             <a
               key={href}
               href={href}
-              className="px-3 py-2 text-sm font-medium text-stone-400 hover:text-stone-700 transition-colors duration-150 whitespace-nowrap rounded-md hover:bg-stone-100"
+              className="px-3 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors duration-150 whitespace-nowrap rounded-md hover:bg-[var(--bg-secondary)]"
             >
               {label}
             </a>
           ))}
+          <ThemeSwitcher />
         </div>
       </nav>
     </header>
