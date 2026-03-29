@@ -376,19 +376,19 @@ export function CareerTimeline() {
         title="University of Illinois at Urbana-Champaign"
       />
 
-      {/* Postdoc Copenhagen */}
+      {/* Postdoc Copenhagen — starts 1px early for overlap with PhD */}
       <DualRect
-        x={170}
+        x={169}
         y={55}
-        width={120}
+        width={121}
         height={32}
         gradientId="seg-copen"
         title="University of Copenhagen"
       />
 
-      {/* Postdoc UIC */}
+      {/* Postdoc UIC — starts 1px early, extends 2px into S-down */}
       <DualRect
-        x={290}
+        x={289}
         y={55}
         width={150}
         height={32}
@@ -396,21 +396,21 @@ export function CareerTimeline() {
         title="University of Illinois at Chicago"
       />
 
-      {/* Postdoc Paris */}
+      {/* Postdoc Paris — starts 2px before S-up end for overlap */}
       <DualRect
-        x={810}
+        x={811}
         y={55}
-        width={110}
+        width={109}
         height={32}
         gradientId="seg-paris"
         title="CNRS / Paris Diderot University"
       />
 
-      {/* Asst Prof ISU — drawn after fork S-curve for z-order */}
+      {/* Asst Prof ISU — starts 1px early for overlap with Paris */}
       <DualRect
-        x={920}
+        x={919}
         y={55}
-        width={280}
+        width={281}
         height={32}
         gradientId="seg-isu"
         title="Iowa State University"
@@ -418,12 +418,12 @@ export function CareerTimeline() {
       {/* ISU arrow tip */}
       <path
         className="career-light"
-        d="M 1200 55 L 1210 71 L 1200 87 Z"
+        d="M 1198 55 L 1210 71 L 1198 87 Z"
         style={{ fill: ACAD_LIGHT.base }}
       />
       <path
         className="career-dark"
-        d="M 1200 55 L 1210 71 L 1200 87 Z"
+        d="M 1198 55 L 1210 71 L 1198 87 Z"
         style={{ fill: ACAD_DARK.base }}
       />
 
@@ -431,19 +431,19 @@ export function CareerTimeline() {
       {/* INDUSTRY BARS                                                 */}
       {/* ============================================================ */}
 
-      {/* Sr SWE nuTonomy */}
+      {/* Sr SWE nuTonomy — starts 2px before S-down end for overlap */}
       <DualRect
-        x={500}
+        x={501}
         y={115}
-        width={120}
+        width={119}
         height={32}
         gradientId="seg-nutswe"
         title="nuTonomy Asia (acquired by Aptiv)"
       />
 
-      {/* Sr Res Sci nuTonomy */}
+      {/* Sr Res Sci nuTonomy — starts 1px early, extends 2px into S-up */}
       <DualRect
-        x={620}
+        x={619}
         y={115}
         width={130}
         height={32}
@@ -451,11 +451,11 @@ export function CareerTimeline() {
         title="nuTonomy Asia (acquired by Aptiv)"
       />
 
-      {/* Venti */}
+      {/* Venti — starts 2px before S-fork end for overlap */}
       <DualRect
-        x={1060}
+        x={1061}
         y={115}
-        width={140}
+        width={139}
         height={32}
         gradientId="seg-venti"
         title="Venti Technologies"
@@ -463,12 +463,12 @@ export function CareerTimeline() {
       {/* Venti arrow tip */}
       <path
         className="career-light"
-        d="M 1200 115 L 1210 131 L 1200 147 Z"
+        d="M 1198 115 L 1210 131 L 1198 147 Z"
         style={{ fill: IND_LIGHT.base }}
       />
       <path
         className="career-dark"
-        d="M 1200 115 L 1210 131 L 1200 147 Z"
+        d="M 1198 115 L 1210 131 L 1198 147 Z"
         style={{ fill: IND_DARK.base }}
       />
 
