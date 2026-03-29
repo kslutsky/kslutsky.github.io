@@ -883,21 +883,23 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
       {/* Action buttons                                                    */}
       {/* ----------------------------------------------------------------- */}
       <div className="flex items-center gap-3 pt-2">
+        {article?.status !== "published" && (
+          <button
+            type="button"
+            onClick={() => handleSubmit("draft")}
+            disabled={saving || !title.trim()}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium bg-white text-stone-700 border border-stone-300 shadow-sm hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {saving ? "Saving..." : "Save as Draft"}
+          </button>
+        )}
         <button
           type="button"
-          onClick={() => handleSubmit("draft")}
-          disabled={saving || !title.trim()}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium bg-white text-stone-700 border border-stone-300 shadow-sm hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {saving ? "Saving..." : "Save as Draft"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setShowPublishConfirm(true)}
+          onClick={() => article?.status === "published" ? handleSubmit("published") : setShowPublishConfirm(true)}
           disabled={saving || !title.trim()}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium bg-indigo-600 text-white shadow-sm hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Publish
+          {saving ? "Saving..." : article?.status === "published" ? "Save" : "Publish"}
         </button>
         <button
           type="button"
