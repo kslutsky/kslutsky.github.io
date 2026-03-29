@@ -27,6 +27,10 @@
     --voronoi-line-opacity: 0.13;
     --voronoi-fill-min: 0.04;
     --voronoi-fill-range: 0.06;
+    --career-academic: #047857;
+    --career-academic-deep: #065f46;
+    --career-industry: #475569;
+    --career-industry-deep: #334155;
   }
 
   /* ------------------------------------------------------------------ */
@@ -56,6 +60,10 @@
       --voronoi-line-opacity: 0.20;
       --voronoi-fill-min: 0.06;
       --voronoi-fill-range: 0.08;
+      --career-academic: #059669;
+      --career-academic-deep: #047857;
+      --career-industry: #64748b;
+      --career-industry-deep: #475569;
     }
   }
 
@@ -85,7 +93,24 @@
     --voronoi-line-opacity: 0.20;
     --voronoi-fill-min: 0.06;
     --voronoi-fill-range: 0.08;
+    --career-academic: #059669;
+    --career-academic-deep: #047857;
+    --career-industry: #64748b;
+    --career-industry-deep: #475569;
   }
+
+  /* ------------------------------------------------------------------ */
+  /* Career timeline theme toggling                                      */
+  /* ------------------------------------------------------------------ */
+  .career-dark { display: none; }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .career-light { display: none; }
+    :root:not([data-theme="light"]) .career-dark { display: inline; }
+  }
+
+  :root[data-theme="dark"] .career-light { display: none; }
+  :root[data-theme="dark"] .career-dark { display: inline; }
 
   /* ------------------------------------------------------------------ */
   /* Base styles                                                         */

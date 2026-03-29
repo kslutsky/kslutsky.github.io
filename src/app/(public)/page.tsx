@@ -3,6 +3,7 @@ import { eq, and, isNull, sql, desc } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { articles, authors, courses, mentees } from "@/lib/db/schema";
 import { HeroSection } from "@/components/public/hero-section";
+import { CareerTimeline } from "@/components/public/career-timeline";
 import { ArticleList } from "@/components/public/article-list";
 import { TeachingList } from "@/components/public/teaching-list";
 import { MenteeList } from "@/components/public/mentee-list";
@@ -164,6 +165,15 @@ export default async function HomePage() {
     <>
       {/* Hero — full viewport with Voronoi animation */}
       <HeroSection />
+
+      {/* Career Timeline */}
+      <section className="bg-[var(--bg-primary)]">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+          <div className="overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
+            <CareerTimeline />
+          </div>
+        </div>
+      </section>
 
       {/* Preprints */}
       {preprints.length > 0 && (
