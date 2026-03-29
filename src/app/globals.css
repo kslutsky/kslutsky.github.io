@@ -1,38 +1,68 @@
 @import "tailwindcss";
 
-/* ------------------------------------------------------------------ */
-/* Light theme (default)                                               */
-/* ------------------------------------------------------------------ */
-:root {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f0efed;
-  --bg-navbar: #ffffff;
-  --bg-footer: #e7e5e4;
-  --border: #e7e5e4;
-  --text-primary: #1c1917;
-  --text-secondary: #78716c;
-  --text-muted: #a8a29e;
-  --text-tertiary: #a8a29e;
-  --accent: #059669;
-  --accent-hover: #047857;
-  --accent-bg: #ecfdf5;
-  --accent-text: #065f46;
-  --accent-border: #a7f3d0;
-  --logo-bg: #059669;
-  --gradient-accent: #059669;
-  --voronoi-fill-r: 5;
-  --voronoi-fill-g: 150;
-  --voronoi-fill-b: 105;
-  --voronoi-line-opacity: 0.13;
-  --voronoi-fill-min: 0.04;
-  --voronoi-fill-range: 0.06;
-}
+@layer base {
+  /* ------------------------------------------------------------------ */
+  /* Light theme (default)                                               */
+  /* ------------------------------------------------------------------ */
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f0efed;
+    --bg-navbar: #ffffff;
+    --bg-footer: #e7e5e4;
+    --border: #e7e5e4;
+    --text-primary: #1c1917;
+    --text-secondary: #78716c;
+    --text-muted: #a8a29e;
+    --text-tertiary: #a8a29e;
+    --accent: #059669;
+    --accent-hover: #047857;
+    --accent-bg: #ecfdf5;
+    --accent-text: #065f46;
+    --accent-border: #a7f3d0;
+    --logo-bg: #059669;
+    --gradient-accent: #059669;
+    --voronoi-fill-r: 5;
+    --voronoi-fill-g: 150;
+    --voronoi-fill-b: 105;
+    --voronoi-line-opacity: 0.13;
+    --voronoi-fill-min: 0.04;
+    --voronoi-fill-range: 0.06;
+  }
 
-/* ------------------------------------------------------------------ */
-/* Dark theme — system preference                                      */
-/* ------------------------------------------------------------------ */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  /* ------------------------------------------------------------------ */
+  /* Dark theme — system preference                                      */
+  /* ------------------------------------------------------------------ */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg-primary: #292524;
+      --bg-secondary: #1c1917;
+      --bg-navbar: #292524;
+      --bg-footer: #0c0a09;
+      --border: #44403c;
+      --text-primary: #fafaf9;
+      --text-secondary: #a8a29e;
+      --text-muted: #78716c;
+      --text-tertiary: #78716c;
+      --accent: #34d399;
+      --accent-hover: #6ee7b7;
+      --accent-bg: #064e3b;
+      --accent-text: #6ee7b7;
+      --accent-border: #065f46;
+      --logo-bg: #10b981;
+      --gradient-accent: #34d399;
+      --voronoi-fill-r: 52;
+      --voronoi-fill-g: 211;
+      --voronoi-fill-b: 153;
+      --voronoi-line-opacity: 0.20;
+      --voronoi-fill-min: 0.06;
+      --voronoi-fill-range: 0.08;
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Dark theme — manual override                                        */
+  /* ------------------------------------------------------------------ */
+  :root[data-theme="dark"] {
     --bg-primary: #292524;
     --bg-secondary: #1c1917;
     --bg-navbar: #292524;
@@ -56,50 +86,22 @@
     --voronoi-fill-min: 0.06;
     --voronoi-fill-range: 0.08;
   }
-}
 
-/* ------------------------------------------------------------------ */
-/* Dark theme — manual override                                        */
-/* ------------------------------------------------------------------ */
-[data-theme="dark"] {
-  --bg-primary: #292524;
-  --bg-secondary: #1c1917;
-  --bg-navbar: #292524;
-  --bg-footer: #0c0a09;
-  --border: #44403c;
-  --text-primary: #fafaf9;
-  --text-secondary: #a8a29e;
-  --text-muted: #78716c;
-  --text-tertiary: #78716c;
-  --accent: #34d399;
-  --accent-hover: #6ee7b7;
-  --accent-bg: #064e3b;
-  --accent-text: #6ee7b7;
-  --accent-border: #065f46;
-  --logo-bg: #10b981;
-  --gradient-accent: #34d399;
-  --voronoi-fill-r: 52;
-  --voronoi-fill-g: 211;
-  --voronoi-fill-b: 153;
-  --voronoi-line-opacity: 0.20;
-  --voronoi-fill-min: 0.06;
-  --voronoi-fill-range: 0.08;
-}
+  /* ------------------------------------------------------------------ */
+  /* Base styles                                                         */
+  /* ------------------------------------------------------------------ */
+  html { scroll-behavior: smooth; }
 
-/* ------------------------------------------------------------------ */
-/* Base styles                                                         */
-/* ------------------------------------------------------------------ */
-html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
 
-body {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
-
-section[id] {
-  scroll-margin-top: 4rem;
+  section[id] {
+    scroll-margin-top: 4rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
