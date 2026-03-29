@@ -12,6 +12,9 @@ const themeScript = `(function(){var t=localStorage.getItem('theme');if(t==='dar
 export const metadata: Metadata = {
   title: "Konstantin Slutsky",
   description: "Academic homepage of Konstantin Slutsky",
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
