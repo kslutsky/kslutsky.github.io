@@ -11,7 +11,7 @@ import { MenteeList } from "@/components/public/mentee-list";
 import Link from "next/link";
 
 // How many years of teaching to show on homepage
-const RECENT_TEACHING_YEARS = 5;
+const RECENT_TEACHING_YEARS = 3;
 
 const getPublishedData = unstable_cache(
   async () => {
