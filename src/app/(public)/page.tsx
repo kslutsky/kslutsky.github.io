@@ -162,12 +162,8 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="bg-white">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
-          <HeroSection />
-        </div>
-      </section>
+      {/* Hero — full viewport with Voronoi animation */}
+      <HeroSection />
 
       {/* Preprints */}
       {preprints.length > 0 && (
