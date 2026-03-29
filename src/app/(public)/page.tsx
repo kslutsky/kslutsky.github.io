@@ -169,7 +169,7 @@ export default async function HomePage() {
 
       {/* Career Timeline */}
       <section className="bg-[var(--bg-primary)]">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-4 pb-8 sm:pt-6 sm:pb-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
           <ScrollToEnd>
             <CareerTimeline />
           </ScrollToEnd>
