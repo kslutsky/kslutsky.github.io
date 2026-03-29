@@ -34,7 +34,10 @@ export function HeroSection() {
                 Konstantin Slutsky
               </h1>
               <p className="text-base text-[var(--text-secondary)] leading-relaxed mt-2">
-                Assistant Professor at Iowa State University
+                Assistant Professor, <a href="https://math.iastate.edu/" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors">Dept. of Mathematics</a>, <a href="https://www.iastate.edu/" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors">Iowa State University</a>
+              </p>
+              <p className="text-base text-[var(--text-secondary)] leading-relaxed mt-1">
+                Senior Adviser, <a href="https://www.ventitechnologies.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors">Venti Technologies</a>
               </p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed mt-4 max-w-prose">
                 My research focuses on descriptive set theory and its interactions
