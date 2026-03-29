@@ -5,8 +5,8 @@ const navLinks = [
   { href: "#preprints", label: "Preprints" },
   { href: "#publications", label: "Publications" },
   { href: "#lecture-notes", label: "Notes" },
+  { href: "#students", label: "Mentees" },
   { href: "#teaching", label: "Teaching" },
-  { href: "#students", label: "Students" },
 ];
 
 export function Navbar() {

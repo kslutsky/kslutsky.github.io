@@ -219,7 +219,7 @@ export default async function HomePage() {
       {lectureNotes.length > 0 && (
         <section id="lecture-notes" className="bg-[var(--bg-secondary)]">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
-            <SectionHeading>Lecture Notes</SectionHeading>
+            <SectionHeading>Notes</SectionHeading>
             <ArticleList
               articles={lectureNotes}
               authorMap={authorMap}
@@ -229,8 +229,16 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* Students */}
+      <section id="students" className="bg-[var(--bg-primary)]">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+          <SectionHeading>Mentees</SectionHeading>
+          <MenteeList mentees={publishedMentees} />
+        </div>
+      </section>
+
       {/* Recent Teaching */}
-      <section id="teaching" className="bg-[var(--bg-primary)]">
+      <section id="teaching" className="bg-[var(--bg-secondary)]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
           <SectionHeading
             viewAllHref="/teaching"
@@ -239,14 +247,6 @@ export default async function HomePage() {
             Recent Teaching
           </SectionHeading>
           <TeachingList courses={recentCourses} />
-        </div>
-      </section>
-
-      {/* Students */}
-      <section id="students" className="bg-[var(--bg-secondary)]">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
-          <SectionHeading>Students</SectionHeading>
-          <MenteeList mentees={publishedMentees} />
         </div>
       </section>
     </>
