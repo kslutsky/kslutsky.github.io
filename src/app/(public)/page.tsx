@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { articles, authors, courses, mentees } from "@/lib/db/schema";
 import { HeroSection } from "@/components/public/hero-section";
 import { CareerTimeline } from "@/components/public/career-timeline";
+import { ScrollToEnd } from "@/components/public/scroll-to-end";
 import { ArticleList } from "@/components/public/article-list";
 import { TeachingList } from "@/components/public/teaching-list";
 import { MenteeList } from "@/components/public/mentee-list";
@@ -168,10 +169,10 @@ export default async function HomePage() {
 
       {/* Career Timeline */}
       <section className="bg-[var(--bg-primary)]">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-          <div className="overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-4 pb-8 sm:pt-6 sm:pb-12">
+          <ScrollToEnd>
             <CareerTimeline />
-          </div>
+          </ScrollToEnd>
         </div>
       </section>
 
