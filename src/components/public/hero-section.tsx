@@ -10,8 +10,8 @@ const areaTags = [
 
 export function HeroSection() {
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[var(--bg-secondary)]"
-         style={{ minHeight: "max(100svh, 600px)" }}>
+    <div className="relative flex flex-col items-center justify-center overflow-hidden bg-[var(--bg-secondary)]"
+         style={{ minHeight: "max(calc(100svh - 3.5rem), 500px)", height: "calc(100svh - 3.5rem)" }}>
       {/* Animated Voronoi background */}
       <VoronoiCanvas
         pointCount={28}
