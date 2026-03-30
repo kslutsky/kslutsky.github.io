@@ -286,7 +286,7 @@ function DualPath(props: { d: string; gradientId: string }) {
 export function CareerTimeline() {
   return (
     <svg
-      viewBox="0 0 1230 220"
+      viewBox="0 0 1230 235"
       xmlns="http://www.w3.org/2000/svg"
       style={{ display: "block", minWidth: 1210 }}
       role="img"
@@ -510,11 +510,11 @@ export function CareerTimeline() {
 
       {/* Academic titles (above bars) */}
       {[
-        { x: 95, label: "PhD" },
-        { x: 230, label: "Postdoc" },
-        { x: 365, label: "Postdoc" },
-        { x: 865, label: "Postdoc" },
-        { x: 1060, label: "Assistant Professor" },
+        { x: 95, label: "PhD", full: "Doctor of Philosophy" },
+        { x: 230, label: "Postdoc", full: "Postdoctoral Researcher" },
+        { x: 365, label: "Postdoc", full: "Postdoctoral Researcher" },
+        { x: 865, label: "Postdoc", full: "Postdoctoral Researcher" },
+        { x: 1060, label: "Assistant Professor", full: "Assistant Professor" },
       ].map((t) => (
         <text
           key={`pos-${t.x}`}
@@ -526,66 +526,26 @@ export function CareerTimeline() {
           fontWeight="600"
           textAnchor="middle"
         >
+          <title>{t.full}</title>
           {t.label}
         </text>
       ))}
 
-      {/* Industry titles (below bars) — multi-line */}
-      <text
-        x={560}
-        y={160}
-        fontSize={11}
-        style={{ fill: "var(--text-primary)" }}
-        fontFamily="Inter,sans-serif"
-        fontWeight="600"
-        textAnchor="middle"
-      >
-        Sr. Software
-      </text>
-      <text
-        x={560}
-        y={173}
-        fontSize={11}
-        style={{ fill: "var(--text-primary)" }}
-        fontFamily="Inter,sans-serif"
-        fontWeight="600"
-        textAnchor="middle"
-      >
-        Engineer
-      </text>
-      <text
-        x={685}
-        y={160}
-        fontSize={11}
-        style={{ fill: "var(--text-primary)" }}
-        fontFamily="Inter,sans-serif"
-        fontWeight="600"
-        textAnchor="middle"
-      >
-        Sr. Research
-      </text>
-      <text
-        x={685}
-        y={173}
-        fontSize={11}
-        style={{ fill: "var(--text-primary)" }}
-        fontFamily="Inter,sans-serif"
-        fontWeight="600"
-        textAnchor="middle"
-      >
-        Scientist
-      </text>
-      <text
-        x={1130}
-        y={160}
-        fontSize={11}
-        style={{ fill: "var(--text-primary)" }}
-        fontFamily="Inter,sans-serif"
-        fontWeight="600"
-        textAnchor="middle"
-      >
-        Sr. Adviser
-      </text>
+      {/* Industry titles (below bars) — multi-line with tooltips */}
+      <g>
+        <title>Senior Software Engineer</title>
+        <text x={560} y={160} fontSize={11} style={{ fill: "var(--text-primary)" }} fontFamily="Inter,sans-serif" fontWeight="600" textAnchor="middle">Sr. Software</text>
+        <text x={560} y={173} fontSize={11} style={{ fill: "var(--text-primary)" }} fontFamily="Inter,sans-serif" fontWeight="600" textAnchor="middle">Engineer</text>
+      </g>
+      <g>
+        <title>Senior Research Scientist</title>
+        <text x={685} y={160} fontSize={11} style={{ fill: "var(--text-primary)" }} fontFamily="Inter,sans-serif" fontWeight="600" textAnchor="middle">Sr. Research</text>
+        <text x={685} y={173} fontSize={11} style={{ fill: "var(--text-primary)" }} fontFamily="Inter,sans-serif" fontWeight="600" textAnchor="middle">Scientist</text>
+      </g>
+      <g>
+        <title>Senior Adviser</title>
+        <text x={1130} y={160} fontSize={11} style={{ fill: "var(--text-primary)" }} fontFamily="Inter,sans-serif" fontWeight="600" textAnchor="middle">Sr. Adviser</text>
+      </g>
 
       {/* ============================================================ */}
       {/* YEAR AXIS                                                     */}
