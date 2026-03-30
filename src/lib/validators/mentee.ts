@@ -9,7 +9,10 @@ export const menteeCreateSchema = z.object({
   endYear: z.number().int().min(1900).max(2100).optional(),
   thesisTitle: z.string().optional(),
   firstPosition: z.string().optional(),
-  homepage: z.string().url().optional().or(z.literal("")),
+  homepage: z.string().refine(
+    (val) => val === "" || val.startsWith("https://") || val.startsWith("http://"),
+    "Homepage must be an http(s) URL"
+  ).optional().or(z.literal("")),
   status: z.enum(ARTICLE_STATUSES).default("draft"),
 });
 

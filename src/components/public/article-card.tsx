@@ -41,18 +41,20 @@ function buildPublicationLine(article: Article): string | null {
 }
 
 function getPdfUrl(article: Article): string | null {
+  let url: string | null = null;
   if (article.pdfSource === "arxiv" && article.arxivId) {
-    return `https://arxiv.org/pdf/${article.arxivId}`;
-  }
-  if (
+    url = `https://arxiv.org/pdf/${article.arxivId}`;
+  } else if (
     (article.pdfSource === "upload" || article.pdfSource === "external") &&
     article.pdfUrl
   ) {
-    return article.pdfUrl;
+    url = article.pdfUrl;
+  } else if (article.pdfUrl) {
+    url = article.pdfUrl;
   }
-  if (article.pdfUrl) {
-    return article.pdfUrl;
-  }
+
+  if (!url) return null;
+  if (url.startsWith("/") || url.startsWith("https://")) return url;
   return null;
 }
 
@@ -113,7 +115,7 @@ export async function ArticleCard({
           {(authors ?? authorNames.map((n) => ({ name: n, homepage: null }))).map((a, i) => (
             <span key={i}>
               {i > 0 && ", "}
-              {a.homepage ? (
+              {a.homepage && (a.homepage.startsWith("https://") || a.homepage.startsWith("http://")) ? (
                 <a
                   href={a.homepage}
                   target="_blank"
