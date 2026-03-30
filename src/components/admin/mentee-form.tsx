@@ -73,8 +73,8 @@ export default function MenteeForm({ mentee }: MenteeFormProps) {
       router.refresh();
     } else {
       setError(result.error);
-      setSaving(false);
     }
+    setSaving(false);
   }
 
   const inputClass =

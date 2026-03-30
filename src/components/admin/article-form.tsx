@@ -314,8 +314,8 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
       router.refresh();
     } else {
       setError(result.error);
-      setSaving(false);
     }
+    setSaving(false);
   }
 
   // ---------------------------------------------------------------------------

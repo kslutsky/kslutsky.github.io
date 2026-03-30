@@ -77,8 +77,8 @@ export default function AuthorForm({ author }: AuthorFormProps) {
       router.refresh();
     } else {
       setError(result.error);
-      setSaving(false);
     }
+    setSaving(false);
   }
 
   const inputClass =

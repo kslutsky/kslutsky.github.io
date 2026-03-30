@@ -55,8 +55,8 @@ export default function CourseForm({ course }: CourseFormProps) {
       router.refresh();
     } else {
       setError(result.error);
-      setSaving(false);
     }
+    setSaving(false);
   }
 
   async function handleSubmit(e: React.FormEvent) {
