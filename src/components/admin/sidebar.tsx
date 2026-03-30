@@ -18,10 +18,10 @@ export default function Sidebar() {
 
   return (
     <aside className="w-56 shrink-0 bg-zinc-900 flex flex-col h-screen sticky top-0">
-      <div className="px-4 py-5 border-b border-zinc-800">
+      <Link href="/" className="block px-4 py-5 border-b border-zinc-800 hover:bg-zinc-800 transition-colors duration-150">
         <div className="text-sm font-semibold text-white">Site</div>
         <div className="text-xs text-zinc-500 mt-0.5">Admin</div>
-      </div>
+      </Link>
 
       <nav className="flex-1 px-2 py-3 space-y-0.5">
         {navItems.map((item) => {
