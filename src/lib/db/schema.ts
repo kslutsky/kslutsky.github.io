@@ -1,5 +1,5 @@
 import {
-  pgTable, uuid, text, integer, timestamp, index, check,
+  pgTable, uuid, text, integer, timestamp, jsonb, index, check,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
@@ -127,3 +127,23 @@ export const settings = pgTable("settings", {
   value: text("value").notNull(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const auditLog = pgTable(
+  "audit_log",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    action: text("action").notNull(),
+    entityType: text("entity_type"),
+    entityId: text("entity_id"),
+    before: jsonb("before"),
+    after: jsonb("after"),
+    userLogin: text("user_login").notNull(),
+    ipAddress: text("ip_address"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("audit_log_action_created_idx").on(table.action, table.createdAt),
+    index("audit_log_entity_idx").on(table.entityType, table.entityId),
+    index("audit_log_created_idx").on(table.createdAt),
+  ]
+);
