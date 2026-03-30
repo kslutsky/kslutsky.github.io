@@ -39,7 +39,7 @@ export function MenteeList({ mentees }: { mentees: Mentee[] }) {
       {CATEGORY_ORDER.filter((cat) => groups.has(cat)).map((cat, catIndex) => (
         <div
           key={cat}
-          className={catIndex === 0 ? "" : "pt-6 border-t border-[var(--border)]"}
+          className={catIndex === 0 ? "" : "pt-6"}
         >
           <h3 className="text-lg font-semibold text-[var(--text-primary)] border-b border-[var(--border)] pb-2 mb-4">
             {CATEGORY_LABELS[cat]}
