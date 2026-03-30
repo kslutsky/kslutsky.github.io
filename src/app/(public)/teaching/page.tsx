@@ -18,7 +18,7 @@ const getAllCourses = unstable_cache(
       );
   },
   ["all-courses"],
-  { tags: ["academic"] }
+  { tags: ["academic"], revalidate: 3600 }
 );
 
 export default async function TeachingPage() {

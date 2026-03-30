@@ -68,7 +68,7 @@ const getPublishedData = unstable_cache(
     };
   },
   ["published-articles"],
-  { tags: ["articles"] }
+  { tags: ["articles"], revalidate: 3600 }
 );
 
 const getAcademicData = unstable_cache(
@@ -97,7 +97,7 @@ const getAcademicData = unstable_cache(
     return { courses: publishedCourses, mentees: publishedMentees };
   },
   ["academic-data"],
-  { tags: ["academic"] }
+  { tags: ["academic"], revalidate: 3600 }
 );
 
 const viewAllClass =

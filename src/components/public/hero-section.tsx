@@ -17,7 +17,7 @@ const getHeroBio = unstable_cache(
     return row?.value || DEFAULT_BIO;
   },
   ["hero-bio"],
-  { tags: ["settings"] }
+  { tags: ["settings"], revalidate: 3600 }
 );
 
 export async function HeroSection() {

@@ -39,7 +39,7 @@ const getPublicationsData = unstable_cache(
     return { articles: published, errata: allErrata, authors: allAuthors };
   },
   ["all-publications"],
-  { tags: ["articles"] }
+  { tags: ["articles"], revalidate: 3600 }
 );
 
 export default async function PublicationsPage() {
