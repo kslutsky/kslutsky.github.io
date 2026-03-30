@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { articles, authors, tags } from "@/lib/db/schema";
 import { requireAuth } from "@/lib/auth";
 import { articleCreateSchema } from "@/lib/validators/article";
+import { logAudit, resolveAuthorNames, enrichWithAuthors } from "@/lib/audit";
 import type { ActionResult } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
@@ -78,6 +79,15 @@ export async function createArticle(
   try {
     const [row] = await db.insert(articles).values(data).returning({ id: articles.id });
 
+    const [newRow] = await db.select().from(articles).where(eq(articles.id, row.id));
+    const authorMap = await resolveAuthorNames(data.authorIds);
+    await logAudit({
+      action: "create",
+      entityType: "article",
+      entityId: row.id,
+      after: enrichWithAuthors(JSON.parse(JSON.stringify(newRow)), authorMap),
+    }).catch((err) => console.error("[audit]", err));
+
     if (data.status === "published") {
       revalidateTag("articles");
     }
@@ -123,6 +133,8 @@ export async function updateArticle(
   }
 
   try {
+    const [beforeRow] = await db.select().from(articles).where(eq(articles.id, id));
+
     const result = await db
       .update(articles)
       .set({ ...data, updatedAt: new Date() })
@@ -132,6 +144,23 @@ export async function updateArticle(
     if (result.length === 0) {
       return { success: false, error: "Article not found" };
     }
+
+    const [afterRow] = await db.select().from(articles).where(eq(articles.id, id));
+    const authorMap = await resolveAuthorNames([
+      ...(beforeRow?.authorIds ?? []),
+      ...(data.authorIds ?? []),
+    ]);
+    await logAudit({
+      action: "update",
+      entityType: "article",
+      entityId: id,
+      before: beforeRow
+        ? enrichWithAuthors(JSON.parse(JSON.stringify(beforeRow)), authorMap)
+        : null,
+      after: afterRow
+        ? enrichWithAuthors(JSON.parse(JSON.stringify(afterRow)), authorMap)
+        : null,
+    }).catch((err) => console.error("[audit]", err));
 
     revalidateTag("articles");
     return { success: true, data: undefined };
@@ -143,6 +172,8 @@ export async function updateArticle(
 
 export async function softDeleteArticle(id: string): Promise<ActionResult> {
   await requireAuth();
+
+  const [beforeRow] = await db.select().from(articles).where(eq(articles.id, id));
 
   const now = new Date();
 
@@ -167,6 +198,15 @@ export async function softDeleteArticle(id: string): Promise<ActionResult> {
         isNull(articles.deletedAt)
       )
     );
+
+  const [afterRow] = await db.select().from(articles).where(eq(articles.id, id));
+  await logAudit({
+    action: "delete",
+    entityType: "article",
+    entityId: id,
+    before: beforeRow,
+    after: afterRow,
+  }).catch((err) => console.error("[audit]", err));
 
   revalidateTag("articles");
   return { success: true, data: undefined };
@@ -223,6 +263,15 @@ export async function restoreArticle(id: string): Promise<ActionResult> {
       )
     );
 
+  const [afterRow] = await db.select().from(articles).where(eq(articles.id, id));
+  await logAudit({
+    action: "restore",
+    entityType: "article",
+    entityId: id,
+    before: article,
+    after: afterRow,
+  }).catch((err) => console.error("[audit]", err));
+
   revalidateTag("articles");
   return { success: true, data: undefined };
 }
@@ -247,6 +296,15 @@ export async function toggleArticleStatus(
     .update(articles)
     .set({ status: newStatus, updatedAt: new Date() })
     .where(eq(articles.id, id));
+
+  const [afterRow] = await db.select().from(articles).where(eq(articles.id, id));
+  await logAudit({
+    action: "toggle_status",
+    entityType: "article",
+    entityId: id,
+    before: article,
+    after: afterRow,
+  }).catch((err) => console.error("[audit]", err));
 
   revalidateTag("articles");
   return { success: true, data: undefined };
