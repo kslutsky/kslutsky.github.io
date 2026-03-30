@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { courses } from "@/lib/db/schema";
 import { requireAuth } from "@/lib/auth";
 import { courseCreateSchema } from "@/lib/validators/course";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
@@ -37,6 +38,14 @@ export async function createCourse(
   try {
     const [row] = await db.insert(courses).values(data).returning({ id: courses.id });
 
+    const [newRow] = await db.select().from(courses).where(eq(courses.id, row.id));
+    await logAudit({
+      action: "create",
+      entityType: "course",
+      entityId: row.id,
+      after: newRow,
+    }).catch((err) => console.error("[audit]", err));
+
     if (data.status === "published") {
       revalidateTag("academic");
     }
@@ -62,6 +71,8 @@ export async function updateCourse(
   const data = parsed.data;
 
   try {
+    const [beforeRow] = await db.select().from(courses).where(eq(courses.id, id));
+
     const result = await db
       .update(courses)
       .set({ ...data, updatedAt: new Date() })
@@ -71,6 +82,15 @@ export async function updateCourse(
     if (result.length === 0) {
       return { success: false, error: "Course not found" };
     }
+
+    const [afterRow] = await db.select().from(courses).where(eq(courses.id, id));
+    await logAudit({
+      action: "update",
+      entityType: "course",
+      entityId: id,
+      before: beforeRow,
+      after: afterRow,
+    }).catch((err) => console.error("[audit]", err));
 
     revalidateTag("academic");
     return { success: true, data: undefined };
@@ -82,6 +102,8 @@ export async function updateCourse(
 
 export async function softDeleteCourse(id: string): Promise<ActionResult> {
   await requireAuth();
+
+  const [beforeRow] = await db.select().from(courses).where(eq(courses.id, id));
 
   const now = new Date();
 
@@ -95,12 +117,23 @@ export async function softDeleteCourse(id: string): Promise<ActionResult> {
     return { success: false, error: "Course not found or already deleted" };
   }
 
+  const [afterRow] = await db.select().from(courses).where(eq(courses.id, id));
+  await logAudit({
+    action: "delete",
+    entityType: "course",
+    entityId: id,
+    before: beforeRow,
+    after: afterRow,
+  }).catch((err) => console.error("[audit]", err));
+
   revalidateTag("academic");
   return { success: true, data: undefined };
 }
 
 export async function restoreCourse(id: string): Promise<ActionResult> {
   await requireAuth();
+
+  const [beforeRow] = await db.select().from(courses).where(eq(courses.id, id));
 
   const result = await db
     .update(courses)
@@ -111,6 +144,15 @@ export async function restoreCourse(id: string): Promise<ActionResult> {
   if (result.length === 0) {
     return { success: false, error: "Course not found or not deleted" };
   }
+
+  const [afterRow] = await db.select().from(courses).where(eq(courses.id, id));
+  await logAudit({
+    action: "restore",
+    entityType: "course",
+    entityId: id,
+    before: beforeRow,
+    after: afterRow,
+  }).catch((err) => console.error("[audit]", err));
 
   revalidateTag("academic");
   return { success: true, data: undefined };
@@ -134,6 +176,15 @@ export async function toggleCourseStatus(id: string): Promise<ActionResult> {
     .update(courses)
     .set({ status: newStatus, updatedAt: new Date() })
     .where(eq(courses.id, id));
+
+  const [afterRow] = await db.select().from(courses).where(eq(courses.id, id));
+  await logAudit({
+    action: "toggle_status",
+    entityType: "course",
+    entityId: id,
+    before: course,
+    after: afterRow,
+  }).catch((err) => console.error("[audit]", err));
 
   revalidateTag("academic");
   return { success: true, data: undefined };

@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { mentees } from "@/lib/db/schema";
 import { requireAuth } from "@/lib/auth";
 import { menteeCreateSchema } from "@/lib/validators/mentee";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
@@ -38,6 +39,14 @@ export async function createMentee(
   try {
     const [row] = await db.insert(mentees).values(data).returning({ id: mentees.id });
 
+    const [newRow] = await db.select().from(mentees).where(eq(mentees.id, row.id));
+    await logAudit({
+      action: "create",
+      entityType: "mentee",
+      entityId: row.id,
+      after: newRow,
+    }).catch((err) => console.error("[audit]", err));
+
     if (data.status === "published") {
       revalidateTag("academic");
     }
@@ -63,6 +72,8 @@ export async function updateMentee(
   const data = parsed.data;
 
   try {
+    const [beforeRow] = await db.select().from(mentees).where(eq(mentees.id, id));
+
     const result = await db
       .update(mentees)
       .set({ ...data, updatedAt: new Date() })
@@ -72,6 +83,15 @@ export async function updateMentee(
     if (result.length === 0) {
       return { success: false, error: "Mentee not found" };
     }
+
+    const [afterRow] = await db.select().from(mentees).where(eq(mentees.id, id));
+    await logAudit({
+      action: "update",
+      entityType: "mentee",
+      entityId: id,
+      before: beforeRow,
+      after: afterRow,
+    }).catch((err) => console.error("[audit]", err));
 
     revalidateTag("academic");
     return { success: true, data: undefined };
@@ -83,6 +103,8 @@ export async function updateMentee(
 
 export async function softDeleteMentee(id: string): Promise<ActionResult> {
   await requireAuth();
+
+  const [beforeRow] = await db.select().from(mentees).where(eq(mentees.id, id));
 
   const now = new Date();
 
@@ -96,12 +118,23 @@ export async function softDeleteMentee(id: string): Promise<ActionResult> {
     return { success: false, error: "Mentee not found or already deleted" };
   }
 
+  const [afterRow] = await db.select().from(mentees).where(eq(mentees.id, id));
+  await logAudit({
+    action: "delete",
+    entityType: "mentee",
+    entityId: id,
+    before: beforeRow,
+    after: afterRow,
+  }).catch((err) => console.error("[audit]", err));
+
   revalidateTag("academic");
   return { success: true, data: undefined };
 }
 
 export async function restoreMentee(id: string): Promise<ActionResult> {
   await requireAuth();
+
+  const [beforeRow] = await db.select().from(mentees).where(eq(mentees.id, id));
 
   const result = await db
     .update(mentees)
@@ -112,6 +145,15 @@ export async function restoreMentee(id: string): Promise<ActionResult> {
   if (result.length === 0) {
     return { success: false, error: "Mentee not found" };
   }
+
+  const [afterRow] = await db.select().from(mentees).where(eq(mentees.id, id));
+  await logAudit({
+    action: "restore",
+    entityType: "mentee",
+    entityId: id,
+    before: beforeRow,
+    after: afterRow,
+  }).catch((err) => console.error("[audit]", err));
 
   revalidateTag("academic");
   return { success: true, data: undefined };
@@ -135,6 +177,15 @@ export async function toggleMenteeStatus(id: string): Promise<ActionResult> {
     .update(mentees)
     .set({ status: newStatus, updatedAt: new Date() })
     .where(eq(mentees.id, id));
+
+  const [afterRow] = await db.select().from(mentees).where(eq(mentees.id, id));
+  await logAudit({
+    action: "toggle_status",
+    entityType: "mentee",
+    entityId: id,
+    before: mentee,
+    after: afterRow,
+  }).catch((err) => console.error("[audit]", err));
 
   revalidateTag("academic");
   return { success: true, data: undefined };
