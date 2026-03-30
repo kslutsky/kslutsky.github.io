@@ -140,7 +140,7 @@ export async function fetchArxivMetadata(arxivId: string): Promise<ArxivResult> 
   const response = await fetchWithTimeout(url, {
     headers: {
       "User-Agent":
-        "kslutsky-homepage/1.0 (https://kslutsky.github.io; mailto:kslutsky@example.com)",
+        `AcademicHomepage/1.0 (mailto:${process.env.CONTACT_EMAIL ?? "kslutsky@iastate.edu"})`,
     },
   });
 

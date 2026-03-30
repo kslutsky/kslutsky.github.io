@@ -36,7 +36,7 @@ export function parseOpenAlexAuthor(data: any): OpenAlexAuthorResult {
 
 export async function fetchOpenAlexAuthor(query: string): Promise<OpenAlexAuthorResult> {
   const headers = {
-    "User-Agent": "kslutsky.github.io/1.0 (mailto:kslutsky@iastate.edu)",
+    "User-Agent": `AcademicHomepage/1.0 (mailto:${process.env.CONTACT_EMAIL ?? "kslutsky@iastate.edu"})`,
   };
 
   let url: string;
