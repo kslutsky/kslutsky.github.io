@@ -21,6 +21,7 @@ const navGroups = [
   {
     label: null,
     items: [
+      { label: "Settings", href: "/admin/settings" },
       { label: "Preview", href: "/admin/preview" },
     ],
   },

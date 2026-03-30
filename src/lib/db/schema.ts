@@ -121,3 +121,9 @@ export const mentees = pgTable(
     check("mentees_end_year_check", sql`${table.endYear} IS NULL OR (${table.endYear} >= 1900 AND ${table.endYear} <= 2100)`),
   ]
 );
+
+export const settings = pgTable("settings", {
+  key: text("key").primaryKey(),
+  value: text("value").notNull(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});

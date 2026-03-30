@@ -1,14 +1,28 @@
 import Image from "next/image";
+import { unstable_cache } from "next/cache";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { settings } from "@/lib/db/schema";
 import { VoronoiCanvas } from "./voronoi-canvas";
 
-const areaTags = [
-  "Descriptive set theory",
-  "Ergodic theory",
-  "Topological dynamics",
-  "Motion planning",
-];
+const DEFAULT_BIO =
+  "My research lies at the intersection of descriptive set theory and ergodic theory, with a focus on Borel dynamics of flows — including orbit equivalence, cross sections, and full groups. I am also interested in applications of formal methods and planning algorithms to autonomous systems.";
 
-export function HeroSection() {
+const getHeroBio = unstable_cache(
+  async () => {
+    const [row] = await db
+      .select()
+      .from(settings)
+      .where(eq(settings.key, "hero_bio"));
+    return row?.value || DEFAULT_BIO;
+  },
+  ["hero-bio"],
+  { tags: ["settings"] }
+);
+
+export async function HeroSection() {
+  const bio = await getHeroBio();
+
   return (
     <div className="relative flex flex-col items-center justify-center overflow-hidden bg-[var(--bg-secondary)]"
          style={{ minHeight: "max(calc(100svh - 3.5rem), 500px)", height: "calc(100svh - 3.5rem)" }}>
@@ -40,20 +54,8 @@ export function HeroSection() {
                 Senior Adviser, <a href="https://www.ventitechnologies.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors">Venti Technologies</a>
               </p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed mt-4 max-w-prose">
-                My research focuses on descriptive set theory and its interactions
-                with ergodic theory and topological dynamics. I am also interested
-                in applications of topology to motion planning in robotics.
+                {bio}
               </p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {areaTags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[var(--accent-bg)] text-[var(--accent-text)] border border-[var(--accent-border)]"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
             </div>
           </div>
         </div>
