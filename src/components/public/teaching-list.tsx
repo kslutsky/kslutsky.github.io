@@ -35,9 +35,11 @@ export function TeachingList({ courses }: { courses: Course[] }) {
                   <p className="text-base font-semibold leading-snug text-[var(--text-primary)]">
                     {c.courseTitle}
                   </p>
-                  <p className="mt-1 text-xs text-[var(--text-tertiary)] italic">
-                    {c.courseNumber}
-                  </p>
+                  {c.courseNumber && (
+                    <p className="mt-1 text-xs text-[var(--text-tertiary)] italic">
+                      {c.courseNumber}
+                    </p>
+                  )}
                 </div>
 
                 {/* Desktop: semester+year left column, title + number right */}
@@ -51,9 +53,11 @@ export function TeachingList({ courses }: { courses: Course[] }) {
                     <p className="text-base font-semibold leading-snug text-[var(--text-primary)]">
                       {c.courseTitle}
                     </p>
-                    <p className="mt-1 text-xs text-[var(--text-tertiary)] italic">
-                      {c.courseNumber}
-                    </p>
+                    {c.courseNumber && (
+                      <p className="mt-1 text-xs text-[var(--text-tertiary)] italic">
+                        {c.courseNumber}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
