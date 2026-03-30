@@ -41,9 +41,9 @@ export function TeachingList({ courses }: { courses: Course[] }) {
                 </div>
 
                 {/* Desktop: semester+year left column, title + number right */}
-                <div className="hidden sm:flex gap-8 md:gap-12">
-                  <div className="w-12 shrink-0 pt-0.5">
-                    <span className="text-sm font-semibold tabular-nums text-[var(--text-muted)] whitespace-nowrap">
+                <div className="hidden sm:flex items-baseline gap-8 md:gap-12">
+                  <div className="w-12 shrink-0">
+                    <span className="text-base font-semibold tabular-nums text-[var(--text-muted)] whitespace-nowrap">
                       {c.semester.slice(0, 2)}&nbsp;{c.year}
                     </span>
                   </div>

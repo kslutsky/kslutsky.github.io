@@ -79,9 +79,9 @@ export function MenteeList({ mentees }: { mentees: Mentee[] }) {
                 </div>
 
                 {/* Desktop: year-range left column */}
-                <div className="hidden sm:flex gap-8 md:gap-12">
-                  <div className="w-12 shrink-0 pt-0.5">
-                    <span className="text-sm font-semibold tabular-nums text-[var(--text-muted)] whitespace-nowrap">
+                <div className="hidden sm:flex items-baseline gap-8 md:gap-12">
+                  <div className="w-12 shrink-0">
+                    <span className="text-base font-semibold tabular-nums text-[var(--text-muted)] whitespace-nowrap">
                       {formatYearRange(m.startYear, m.endYear)}
                     </span>
                   </div>

@@ -76,7 +76,7 @@ export function ArticleList({
         <div key={year ?? "no-year"}>
           {/* Mobile: stacked layout */}
           <div className="sm:hidden">
-            <h3 className="text-sm font-semibold tabular-nums text-[var(--text-muted)] mb-4">
+            <h3 className="text-base font-semibold tabular-nums text-[var(--text-muted)] mb-4">
               {year ?? ""}
             </h3>
             <div className="flex flex-col gap-5">
@@ -95,14 +95,14 @@ export function ArticleList({
 
           {/* Desktop: year-anchored two-column layout */}
           <div
-            className={`hidden sm:flex gap-8 md:gap-12 ${
+            className={`hidden sm:flex items-baseline gap-8 md:gap-12 ${
               groupIndex === 0
                 ? ""
                 : "pt-6 border-t border-[var(--border)]"
             }`}
           >
-            <div className="w-12 shrink-0 pt-0.5">
-              <span className="text-sm font-semibold tabular-nums text-[var(--text-muted)]">
+            <div className="w-12 shrink-0">
+              <span className="text-base font-semibold tabular-nums text-[var(--text-muted)]">
                 {year ?? ""}
               </span>
             </div>
