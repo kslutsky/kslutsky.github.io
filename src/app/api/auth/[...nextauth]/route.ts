@@ -1,13 +1,14 @@
+import { type NextRequest } from "next/server";
 import { handlers, auth } from "@/lib/auth";
 import { logAudit } from "@/lib/audit";
 
 export const GET = handlers.GET;
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const forwarded = request.headers.get("x-forwarded-for");
   const ip = forwarded
     ? forwarded.split(",")[0].trim()
-    : request.headers.get("x-real-ip") ?? null;
+    : request.headers.get("x-real-ip") ?? undefined;
 
   const response = await handlers.POST(request);
 
