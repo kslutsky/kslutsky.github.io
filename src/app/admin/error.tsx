@@ -3,10 +3,10 @@
 import { signOut } from "next-auth/react";
 
 export default function AdminError({
-  reset,
+  unstable_retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  unstable_retry: () => void;
 }) {
   return (
     <div
@@ -29,7 +29,7 @@ export default function AdminError({
       </p>
       <div style={{ display: "flex", gap: "0.75rem" }}>
         <button
-          onClick={reset}
+          onClick={unstable_retry}
           style={{
             padding: "0.5rem 1.25rem",
             borderRadius: "0.375rem",
