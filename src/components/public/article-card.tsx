@@ -14,6 +14,7 @@ type Erratum = InferSelectModel<typeof articles>;
 interface ArticleCardProps {
   article: Article;
   authorNames: string[];
+  authors?: { name: string; homepage: string | null }[];
   errata: Erratum[];
   showDraftBadge?: boolean;
   disambiguationSuffix?: string;
@@ -61,6 +62,7 @@ const iconLinkClass =
 export async function ArticleCard({
   article,
   authorNames,
+  authors,
   errata,
   showDraftBadge,
   disambiguationSuffix,
@@ -108,7 +110,23 @@ export async function ArticleCard({
       {/* Authors */}
       {authorNames.length > 0 && (
         <p className="mt-2 text-sm text-[var(--text-secondary)]">
-          {authorNames.join(", ")}
+          {(authors ?? authorNames.map((n) => ({ name: n, homepage: null }))).map((a, i) => (
+            <span key={i}>
+              {i > 0 && ", "}
+              {a.homepage ? (
+                <a
+                  href={a.homepage}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors"
+                >
+                  {a.name}
+                </a>
+              ) : (
+                a.name
+              )}
+            </span>
+          ))}
         </p>
       )}
 

@@ -46,6 +46,16 @@ function resolveAuthorNames(
     .filter((name): name is string => name != null);
 }
 
+function resolveAuthors(
+  article: Article,
+  authorMap: Map<string, Author>
+): { name: string; homepage: string | null }[] {
+  return article.authorIds
+    .map((id) => authorMap.get(id))
+    .filter((a): a is Author => a != null)
+    .map((a) => ({ name: a.name, homepage: a.homepage }));
+}
+
 export function ArticleList({
   articles: articleList,
   authorMap,
@@ -85,6 +95,7 @@ export function ArticleList({
                   key={article.id}
                   article={article}
                   authorNames={resolveAuthorNames(article, authorMap)}
+                  authors={resolveAuthors(article, authorMap)}
                   errata={errataByParent.get(article.id) ?? []}
                   showDraftBadge={showDraftBadge}
                   disambiguationSuffix={disambiguationMap.get(article.id)}
@@ -112,6 +123,7 @@ export function ArticleList({
                   key={article.id}
                   article={article}
                   authorNames={resolveAuthorNames(article, authorMap)}
+                  authors={resolveAuthors(article, authorMap)}
                   errata={errataByParent.get(article.id) ?? []}
                   showDraftBadge={showDraftBadge}
                   disambiguationSuffix={disambiguationMap.get(article.id)}
