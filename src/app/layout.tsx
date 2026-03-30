@@ -21,13 +21,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} font-sans antialiased`} suppressHydrationWarning>
-      <head>
+      <body className="min-h-full flex flex-col">
         <Script
           id="theme-init"
           strategy="beforeInteractive"
-        >{`(function(){var t=localStorage.getItem('theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}})()`}</Script>
-      </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var t=localStorage.getItem('theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}})()`,
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

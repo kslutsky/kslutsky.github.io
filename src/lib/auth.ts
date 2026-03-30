@@ -3,6 +3,21 @@ import GitHub from "next-auth/providers/github";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [GitHub],
+  events: {
+    async signIn({ user, profile }) {
+      const login = (profile as { login?: string } | undefined)?.login ?? user?.email ?? "unknown";
+      try {
+        // Dynamic import to avoid circular dependency
+        const { logAudit } = await import("@/lib/audit");
+        await logAudit({
+          action: "login",
+          userLogin: login,
+        });
+      } catch (err) {
+        console.error("[audit:login]", err);
+      }
+    },
+  },
   callbacks: {
     async signIn({ profile }) {
       const allowed = process.env.ALLOWED_GITHUB_USERNAME;

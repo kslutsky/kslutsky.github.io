@@ -16,11 +16,12 @@ export default auth((req) => {
     // Defense-in-depth: the signIn callback in auth.ts already rejects wrong-account
     // users (they never get a session). This check guards against edge cases like
     // a stale session from before the login field was added to the JWT, or if the
-    // signIn callback is ever removed. Redirect to signout (not signin) to avoid
-    // an infinite redirect loop.
+    // signIn callback is ever removed. Redirect to a client-side signout page
+    // (not /api/auth/signout — GET only shows confirmation, actual signout
+    // requires POST with CSRF token via next-auth/react signOut()).
     const login = (req.auth.user as { login?: string } | undefined)?.login;
     if (!allowed || login?.toLowerCase() !== allowed.toLowerCase()) {
-      const signOutUrl = new URL("/api/auth/signout", req.nextUrl.origin);
+      const signOutUrl = new URL("/auth/signout", req.nextUrl.origin);
       return Response.redirect(signOutUrl);
     }
   }
