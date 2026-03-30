@@ -31,7 +31,7 @@ interface SectionDef {
 const sections: SectionDef[] = [
   { id: "preprints", label: "Preprints", group: "research" },
   { id: "publications", label: "Publications", group: "research" },
-  { id: "lecture-notes", label: "Lecture Notes", group: "research" },
+  { id: "lecture-notes", label: "Notes", group: "research" },
   { id: "teaching", label: "Teaching", group: "academic" },
   { id: "students", label: "Students", group: "academic" },
 ];

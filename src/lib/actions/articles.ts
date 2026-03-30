@@ -288,7 +288,7 @@ export async function getPublishedArticles() {
       and(
         eq(articles.status, "published"),
         isNull(articles.deletedAt),
-        sql`${articles.type} NOT IN ('erratum', 'lecture_notes')`
+        sql`${articles.type} NOT IN ('erratum', 'notes')`
       )
     )
     .orderBy(
@@ -305,7 +305,7 @@ export async function getPublishedLectureNotes() {
     .from(articles)
     .where(
       and(
-        eq(articles.type, "lecture_notes"),
+        eq(articles.type, "notes"),
         eq(articles.status, "published"),
         isNull(articles.deletedAt)
       )

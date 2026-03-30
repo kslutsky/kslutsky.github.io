@@ -10,7 +10,7 @@ export default async function PreviewPage() {
   const allArticles = await db
     .select()
     .from(articles)
-    .where(sql`${articles.type} NOT IN ('erratum', 'lecture_notes') AND ${articles.deletedAt} IS NULL`)
+    .where(sql`${articles.type} NOT IN ('erratum', 'notes') AND ${articles.deletedAt} IS NULL`)
     .orderBy(
       sql`${articles.publishedYear} DESC NULLS LAST`,
       sql`${articles.publishedMonth} DESC NULLS LAST`,
@@ -26,7 +26,7 @@ export default async function PreviewPage() {
   const lectureNotes = await db
     .select()
     .from(articles)
-    .where(sql`${articles.type} = 'lecture_notes' AND ${articles.deletedAt} IS NULL`)
+    .where(sql`${articles.type} = 'notes' AND ${articles.deletedAt} IS NULL`)
     .orderBy(desc(articles.createdAt));
 
   const allAuthors = await db.select().from(authors);

@@ -66,7 +66,7 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
   const router = useRouter();
   const isEdit = !!article;
   const isErratum = !!parent;
-  const isLectureNotes = article?.type === "lecture_notes" || false;
+  const isNotes = article?.type === "notes" || false;
 
   // Fetch fields
   const [arxivIdInput, setArxivIdInput] = useState(article?.arxivId ?? "");
@@ -117,7 +117,7 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
 
   // PDF — default to "upload" in erratum and lecture notes mode
   const [pdfSource, setPdfSource] = useState<PdfSource>(
-    (article?.pdfSource as PdfSource) ?? (isErratum || type === "lecture_notes" ? "upload" : "arxiv")
+    (article?.pdfSource as PdfSource) ?? (isErratum || type === "notes" ? "upload" : "arxiv")
   );
   const [pdfUrl, setPdfUrl] = useState(article?.pdfUrl ?? "");
 
@@ -423,7 +423,7 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
       {/* ----------------------------------------------------------------- */}
       {/* PDF section (shown first in erratum and lecture notes mode)        */}
       {/* ----------------------------------------------------------------- */}
-      {(isErratum || type === "lecture_notes") && (
+      {(isErratum || type === "notes") && (
         <>
           {pdfSection}
           <hr className="border-stone-200" />
@@ -433,7 +433,7 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
       {/* ----------------------------------------------------------------- */}
       {/* Fetch section (hidden in erratum and lecture notes mode)           */}
       {/* ----------------------------------------------------------------- */}
-      {!isErratum && type !== "lecture_notes" && (
+      {!isErratum && type !== "notes" && (
         <>
           <section className="space-y-4">
             <h2 className="text-sm font-semibold text-stone-500 uppercase tracking-wider">
@@ -547,7 +547,7 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
           <div>
             <label className={labelClass}>Type</label>
             <div className="flex flex-wrap gap-4">
-              {(["preprint", "published", "lecture_notes", "erratum"] as const).map((t) => (
+              {(["preprint", "published", "notes", "erratum"] as const).map((t) => (
                 <label key={t} className="flex items-center gap-2 text-sm text-stone-700">
                   <input
                     type="radio"
@@ -556,11 +556,11 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
                     checked={type === t}
                     onChange={() => {
                       setType(t);
-                      if (t === "lecture_notes") setPdfSource("upload");
+                      if (t === "notes") setPdfSource("upload");
                     }}
                     className="text-indigo-600 focus:ring-indigo-500"
                   />
-                  {t === "lecture_notes" ? "Lecture Notes" : t.charAt(0).toUpperCase() + t.slice(1)}
+                  {t === "notes" ? "Notes" : t.charAt(0).toUpperCase() + t.slice(1)}
                 </label>
               ))}
             </div>
@@ -605,7 +605,7 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
         </div>
 
         {/* Journal fields — hidden for lecture notes, collapsible for erratum, visible otherwise */}
-        {type === "lecture_notes" ? null : isErratum ? (
+        {type === "notes" ? null : isErratum ? (
           <div>
             <button
               type="button"
@@ -857,7 +857,7 @@ export function ArticleForm({ article, authors, parent }: ArticleFormProps) {
       {/* ----------------------------------------------------------------- */}
       {/* PDF section (shown at bottom in normal mode)                      */}
       {/* ----------------------------------------------------------------- */}
-      {!isErratum && type !== "lecture_notes" && (
+      {!isErratum && type !== "notes" && (
         <>
           {pdfSection}
           <hr className="border-stone-200" />

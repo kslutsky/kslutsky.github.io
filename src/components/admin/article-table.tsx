@@ -70,6 +70,12 @@ function TypeBadge({ type }: { type: string }) {
           Erratum
         </span>
       );
+    case "notes":
+      return (
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-violet-50 text-violet-700 border border-violet-200">
+          Notes
+        </span>
+      );
     default:
       return null;
   }

@@ -22,7 +22,7 @@ const getPublishedData = unstable_cache(
         and(
           eq(articles.status, "published"),
           isNull(articles.deletedAt),
-          sql`${articles.type} NOT IN ('erratum', 'lecture_notes')`
+          sql`${articles.type} NOT IN ('erratum', 'notes')`
         )
       )
       .orderBy(
@@ -48,7 +48,7 @@ const getPublishedData = unstable_cache(
       .from(articles)
       .where(
         and(
-          eq(articles.type, "lecture_notes"),
+          eq(articles.type, "notes"),
           eq(articles.status, "published"),
           isNull(articles.deletedAt)
         )
@@ -215,7 +215,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Lecture Notes */}
+      {/* Notes */}
       {lectureNotes.length > 0 && (
         <section id="lecture-notes" className="bg-[var(--bg-secondary)]">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
