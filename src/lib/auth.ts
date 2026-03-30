@@ -7,14 +7,30 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async signIn({ profile }) {
       const allowed = process.env.ALLOWED_GITHUB_USERNAME;
       if (!allowed) return false;
-      const login = (profile as { login?: string } | undefined)?.login;
-      return login?.toLowerCase() === allowed.toLowerCase();
+      return (profile as { login?: string } | undefined)?.login?.toLowerCase() === allowed.toLowerCase();
+    },
+    async jwt({ token, profile }) {
+      if (profile) {
+        token.login = (profile as { login?: string }).login;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token.login) {
+        (session.user as Record<string, unknown>).login = token.login;
+      }
+      return session;
     },
   },
 });
 
 export async function requireAuth() {
   const session = await auth();
-  if (!session) throw new Error("Unauthorized");
+  const allowed = process.env.ALLOWED_GITHUB_USERNAME;
+  if (!session || !allowed) throw new Error("Unauthorized");
+  const login = (session?.user as { login?: string } | undefined)?.login;
+  if (!login || login.toLowerCase() !== allowed.toLowerCase()) {
+    throw new Error("Unauthorized");
+  }
   return session;
 }
