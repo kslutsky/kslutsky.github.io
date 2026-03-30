@@ -2,11 +2,11 @@ import Link from "next/link";
 import { ThemeSwitcher } from "./theme-switcher";
 
 const navLinks = [
-  { href: "#preprints", label: "Preprints" },
-  { href: "#publications", label: "Publications" },
-  { href: "#lecture-notes", label: "Notes" },
-  { href: "#students", label: "Mentees" },
-  { href: "#teaching", label: "Teaching" },
+  { href: "/#preprints", label: "Preprints" },
+  { href: "/#publications", label: "Publications" },
+  { href: "/#lecture-notes", label: "Notes" },
+  { href: "/#students", label: "Mentees" },
+  { href: "/#teaching", label: "Teaching" },
 ];
 
 export function Navbar() {

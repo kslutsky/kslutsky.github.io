@@ -406,11 +406,11 @@ export function CareerTimeline() {
         title="CNRS / Paris Diderot University"
       />
 
-      {/* Asst Prof ISU — starts 1px early for overlap with Paris */}
+      {/* Asst Prof ISU — extends 1px past arrow base for overlap */}
       <DualRect
         x={919}
         y={55}
-        width={281}
+        width={282}
         height={32}
         gradientId="seg-isu"
         title="Iowa State University"
@@ -418,12 +418,12 @@ export function CareerTimeline() {
       {/* ISU arrow tip */}
       <path
         className="career-light"
-        d="M 1198 55 L 1210 71 L 1198 87 Z"
+        d="M 1200 55 L 1212 71 L 1200 87 Z"
         style={{ fill: ACAD_LIGHT.base }}
       />
       <path
         className="career-dark"
-        d="M 1198 55 L 1210 71 L 1198 87 Z"
+        d="M 1200 55 L 1212 71 L 1200 87 Z"
         style={{ fill: ACAD_DARK.base }}
       />
 
@@ -451,11 +451,11 @@ export function CareerTimeline() {
         title="nuTonomy Asia (acquired by Aptiv)"
       />
 
-      {/* Venti — starts 2px before S-fork end for overlap */}
+      {/* Venti — extends 1px past arrow base for overlap */}
       <DualRect
         x={1061}
         y={115}
-        width={139}
+        width={140}
         height={32}
         gradientId="seg-venti"
         title="Venti Technologies"
@@ -463,12 +463,12 @@ export function CareerTimeline() {
       {/* Venti arrow tip */}
       <path
         className="career-light"
-        d="M 1198 115 L 1210 131 L 1198 147 Z"
+        d="M 1200 115 L 1212 131 L 1200 147 Z"
         style={{ fill: IND_LIGHT.base }}
       />
       <path
         className="career-dark"
-        d="M 1198 115 L 1210 131 L 1198 147 Z"
+        d="M 1200 115 L 1212 131 L 1200 147 Z"
         style={{ fill: IND_DARK.base }}
       />
 
@@ -476,12 +476,12 @@ export function CareerTimeline() {
       {/* INSTITUTION LABELS (inside bars, white text)                  */}
       {/* ============================================================ */}
       {[
-        { x: 95, y: 71, size: 12, label: "UIUC", fullName: "University of Illinois at Urbana-Champaign" },
+        { x: 95, y: 71, size: 11, label: "UIUC", fullName: "University of Illinois at Urbana-Champaign" },
         { x: 230, y: 71, size: 11, label: "Copenhagen", fullName: "University of Copenhagen" },
-        { x: 365, y: 71, size: 12, label: "UIC", fullName: "University of Illinois at Chicago" },
+        { x: 365, y: 71, size: 11, label: "UIC", fullName: "University of Illinois at Chicago" },
         { x: 560, y: 131, size: 11, label: "nuTonomy", fullName: "nuTonomy Asia" },
         { x: 685, y: 131, size: 11, label: "nuTonomy", fullName: "nuTonomy Asia" },
-        { x: 865, y: 71, size: 10, label: "CNRS / Paris", fullName: "CNRS / Paris Diderot University", letterSpacing: "-0.3" },
+        { x: 865, y: 71, size: 11, label: "Paris Diderot", fullName: "CNRS / Paris Diderot University", letterSpacing: "-0.3" },
         { x: 1060, y: 71, size: 11, label: "Iowa State", fullName: "Iowa State University" },
         { x: 1130, y: 131, size: 11, label: "Venti", fullName: "Venti Technologies" },
       ].map((t) => (
