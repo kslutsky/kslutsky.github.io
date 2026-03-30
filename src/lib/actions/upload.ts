@@ -2,6 +2,7 @@
 
 import { put, del } from "@vercel/blob";
 import { requireAuth } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "@/lib/types";
 
 const MAX_PDF_BYTES = 25 * 1024 * 1024;
@@ -33,6 +34,14 @@ export async function uploadPdf(
     access: "public",
     addRandomSuffix: true,
   });
+
+  await logAudit({
+    action: "upload_pdf",
+    entityType: "pdf",
+    entityId: blob.url,
+    after: { url: blob.url, filename: file.name },
+  }).catch((err) => console.error("[audit]", err));
+
   return { success: true, data: { url: blob.url } };
 }
 
@@ -52,6 +61,13 @@ export async function deletePdf(url: string): Promise<ActionResult> {
       return { success: false, error: "Invalid blob URL" };
     }
   }
+
+  await logAudit({
+    action: "delete_pdf",
+    entityType: "pdf",
+    entityId: url,
+    before: { url },
+  }).catch((err) => console.error("[audit]", err));
 
   await del(url);
   return { success: true, data: undefined };
