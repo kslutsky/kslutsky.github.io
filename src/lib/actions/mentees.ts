@@ -143,6 +143,7 @@ export async function toggleMenteeStatus(id: string): Promise<ActionResult> {
 // ---------------------------------------------------------------------------
 
 export async function getMentees(includeDeleted?: boolean) {
+  await requireAuth();
   if (includeDeleted) {
     return db
       .select()
@@ -169,6 +170,7 @@ export async function getPublishedMentees() {
 }
 
 export async function getMentee(id: string) {
+  await requireAuth();
   const [row] = await db.select().from(mentees).where(eq(mentees.id, id));
   return row ?? null;
 }

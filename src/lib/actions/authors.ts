@@ -77,10 +77,12 @@ export async function deleteAuthor(id: string): Promise<ActionResult> {
 }
 
 export async function getAuthors() {
+  await requireAuth();
   return db.select().from(authors).orderBy(authors.name);
 }
 
 export async function getAuthor(id: string) {
+  await requireAuth();
   const [row] = await db.select().from(authors).where(eq(authors.id, id));
   return row ?? null;
 }

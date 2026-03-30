@@ -255,6 +255,7 @@ export async function toggleArticleStatus(
 // ---------------------------------------------------------------------------
 
 export async function getArticles(includeDeleted?: boolean) {
+  await requireAuth();
   if (includeDeleted) {
     return db
       .select()
@@ -330,11 +331,13 @@ export async function getPublishedErrata() {
 }
 
 export async function getArticle(id: string) {
+  await requireAuth();
   const [row] = await db.select().from(articles).where(eq(articles.id, id));
   return row ?? null;
 }
 
 export async function getErrata(parentId: string) {
+  await requireAuth();
   return db
     .select()
     .from(articles)

@@ -142,6 +142,7 @@ export async function toggleCourseStatus(id: string): Promise<ActionResult> {
 // ---------------------------------------------------------------------------
 
 export async function getCourses(includeDeleted?: boolean) {
+  await requireAuth();
   if (includeDeleted) {
     return db
       .select()
@@ -168,6 +169,7 @@ export async function getPublishedCourses() {
 }
 
 export async function getCourse(id: string) {
+  await requireAuth();
   const [row] = await db.select().from(courses).where(eq(courses.id, id));
   return row ?? null;
 }

@@ -7,7 +7,15 @@ import { settings } from "@/lib/db/schema";
 import { requireAuth } from "@/lib/auth";
 import type { ActionResult } from "@/lib/types";
 
+const ALLOWED_SETTING_KEYS = ["hero_bio"] as const;
+
 export async function getSetting(key: string): Promise<string | null> {
+  await requireAuth();
+
+  if (!ALLOWED_SETTING_KEYS.includes(key as (typeof ALLOWED_SETTING_KEYS)[number])) {
+    return null;
+  }
+
   const [row] = await db
     .select()
     .from(settings)
@@ -21,6 +29,10 @@ export async function setSetting(
 ): Promise<ActionResult> {
   await requireAuth();
 
+  if (!ALLOWED_SETTING_KEYS.includes(key as (typeof ALLOWED_SETTING_KEYS)[number])) {
+    return { success: false, error: "Invalid setting key" };
+  }
+
   try {
     await db
       .insert(settings)
@@ -33,9 +45,10 @@ export async function setSetting(
     revalidateTag("settings");
     return { success: true, data: undefined };
   } catch (e) {
+    console.error("[setSetting]", e);
     return {
       success: false,
-      error: e instanceof Error ? e.message : "Failed to save setting",
+      error: "Failed to save setting. Please try again.",
     };
   }
 }
