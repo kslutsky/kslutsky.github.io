@@ -7,10 +7,21 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://kslutsky.com"),
   title: "Konstantin Slutsky",
-  description: "Academic homepage of Konstantin Slutsky",
+  description: "Assistant Professor at Iowa State University. Research in descriptive set theory, ergodic theory, and autonomous systems.",
+  openGraph: {
+    title: "Konstantin Slutsky",
+    description: "Assistant Professor at Iowa State University. Research in descriptive set theory, ergodic theory, and autonomous systems.",
+    url: "https://kslutsky.com",
+    siteName: "Konstantin Slutsky",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+  },
   icons: {
-    icon: '/favicon.svg',
+    icon: "/favicon.svg",
   },
 };
 
