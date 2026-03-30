@@ -106,6 +106,9 @@ export async function updateArticle(
 ): Promise<ActionResult> {
   await requireAuth();
 
+  const idParsed = z.string().uuid().safeParse(id);
+  if (!idParsed.success) return { success: false, error: "Invalid ID" };
+
   const parsed = articleCreateSchema.safeParse(input);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };

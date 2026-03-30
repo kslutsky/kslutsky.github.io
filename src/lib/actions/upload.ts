@@ -31,7 +31,8 @@ export async function uploadPdf(
     return { success: false, error: "File does not appear to be a valid PDF" };
   }
 
-  const blob = await put(`papers/${file.name}`, file, {
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 100) || "upload.pdf";
+  const blob = await put(`papers/${safeName}`, file, {
     access: "public",
     addRandomSuffix: true,
   });

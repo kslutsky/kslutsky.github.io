@@ -46,6 +46,7 @@ type Article = {
   publishedDay: number | null;
   authorIds: string[];
   tagIds: string[];
+  featured: number;
   status: string;
   deletedAt: Date | null;
   createdAt: Date;
