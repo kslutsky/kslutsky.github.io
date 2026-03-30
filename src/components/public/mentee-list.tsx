@@ -65,15 +65,14 @@ export function MenteeList({ mentees }: { mentees: Mentee[] }) {
                   ) : (
                     <p className="text-base font-semibold leading-snug text-[var(--text-primary)]">{m.name}</p>
                   )}
-                  <p className="mt-1 text-xs text-[var(--text-muted)] italic">{m.institution}</p>
                   {m.thesisTitle && (
-                    <p className="mt-1 text-xs text-[var(--text-muted)] italic">
-                      Thesis: &ldquo;{m.thesisTitle}&rdquo;
+                    <p className="mt-1 text-xs text-[var(--text-muted)]">
+                      Thesis: <span className="italic">&ldquo;{m.thesisTitle}&rdquo;</span>
                     </p>
                   )}
                   {m.firstPosition && (
                     <p className="mt-1 text-xs text-[var(--text-muted)]">
-                      Now: {m.firstPosition}
+                      Job after: {m.firstPosition}
                     </p>
                   )}
                 </div>
@@ -98,15 +97,14 @@ export function MenteeList({ mentees }: { mentees: Mentee[] }) {
                     ) : (
                       <p className="text-base font-semibold leading-snug text-[var(--text-primary)]">{m.name}</p>
                     )}
-                    <p className="mt-1 text-xs text-[var(--text-muted)] italic">{m.institution}</p>
                     {m.thesisTitle && (
-                      <p className="mt-1 text-xs text-[var(--text-muted)] italic">
-                        Thesis: &ldquo;{m.thesisTitle}&rdquo;
+                      <p className="mt-1 text-xs text-[var(--text-muted)]">
+                        Thesis: <span className="italic">&ldquo;{m.thesisTitle}&rdquo;</span>
                       </p>
                     )}
                     {m.firstPosition && (
                       <p className="mt-1 text-xs text-[var(--text-muted)]">
-                        Now: {m.firstPosition}
+                        Job after: {m.firstPosition}
                       </p>
                     )}
                   </div>
