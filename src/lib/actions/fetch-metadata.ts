@@ -33,9 +33,10 @@ export async function fetchArxiv(
     const result = await fetchArxivMetadata(arxivId);
     return { success: true, data: result };
   } catch (error) {
+    console.error("[fetchArxiv]", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to fetch arXiv metadata",
+      error: "Failed to fetch arXiv metadata. Please try again.",
     };
   }
 }
@@ -49,9 +50,10 @@ export async function fetchDoi(
     const result = await fetchCrossRefMetadata(doi);
     return { success: true, data: result };
   } catch (error) {
+    console.error("[fetchDoi]", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to fetch CrossRef metadata",
+      error: "Failed to fetch CrossRef metadata. Please try again.",
     };
   }
 }
@@ -65,9 +67,10 @@ export async function fetchAuthorMetadata(
     const result = await fetchOpenAlexAuthor(query);
     return { success: true, data: result };
   } catch (error) {
+    console.error("[fetchAuthorMetadata]", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to fetch author metadata",
+      error: "Failed to fetch author metadata. Please try again.",
     };
   }
 }
@@ -126,9 +129,10 @@ export async function matchAuthors(
 
     return { success: true, data: { matched, unmatched } };
   } catch (error) {
+    console.error("[matchAuthors]", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to match authors",
+      error: "Failed to match authors. Please try again.",
     };
   }
 }

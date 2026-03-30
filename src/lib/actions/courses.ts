@@ -43,7 +43,8 @@ export async function createCourse(
 
     return { success: true, data: { id: row.id } };
   } catch (e) {
-    return { success: false, error: e instanceof Error ? e.message : "Failed to create course" };
+    console.error("[createCourse]", e);
+    return { success: false, error: "Failed to create course. Please try again." };
   }
 }
 
@@ -74,7 +75,8 @@ export async function updateCourse(
     revalidateTag("academic");
     return { success: true, data: undefined };
   } catch (e) {
-    return { success: false, error: e instanceof Error ? e.message : "Failed to update course" };
+    console.error("[updateCourse]", e);
+    return { success: false, error: "Failed to update course. Please try again." };
   }
 }
 

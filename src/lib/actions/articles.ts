@@ -84,7 +84,8 @@ export async function createArticle(
 
     return { success: true, data: { id: row.id } };
   } catch (e) {
-    return { success: false, error: e instanceof Error ? e.message : "Failed to create article" };
+    console.error("[createArticle]", e);
+    return { success: false, error: "Failed to create article. Please try again." };
   }
 }
 
@@ -135,7 +136,8 @@ export async function updateArticle(
     revalidateTag("articles");
     return { success: true, data: undefined };
   } catch (e) {
-    return { success: false, error: e instanceof Error ? e.message : "Failed to update article" };
+    console.error("[updateArticle]", e);
+    return { success: false, error: "Failed to update article. Please try again." };
   }
 }
 

@@ -44,7 +44,8 @@ export async function createMentee(
 
     return { success: true, data: { id: row.id } };
   } catch (e) {
-    return { success: false, error: e instanceof Error ? e.message : "Failed to create mentee" };
+    console.error("[createMentee]", e);
+    return { success: false, error: "Failed to create mentee. Please try again." };
   }
 }
 
@@ -75,7 +76,8 @@ export async function updateMentee(
     revalidateTag("academic");
     return { success: true, data: undefined };
   } catch (e) {
-    return { success: false, error: e instanceof Error ? e.message : "Failed to update mentee" };
+    console.error("[updateMentee]", e);
+    return { success: false, error: "Failed to update mentee. Please try again." };
   }
 }
 
