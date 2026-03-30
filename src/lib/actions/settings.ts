@@ -56,7 +56,7 @@ export async function setSetting(
       after: { key, value },
     }).catch((err) => console.error("[audit]", err));
 
-    revalidateTag("settings");
+    revalidateTag("settings", "max");
     return { success: true, data: undefined };
   } catch (e) {
     console.error("[setSetting]", e);

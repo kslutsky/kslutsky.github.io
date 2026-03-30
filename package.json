@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/d3-delaunay": "^6.0.4",
     "@types/katex": "^0.16.8",
     "@types/node": "^20",
     "@types/react": "^19",

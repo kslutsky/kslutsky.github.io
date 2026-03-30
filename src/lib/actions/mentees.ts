@@ -49,7 +49,7 @@ export async function createMentee(
     }).catch((err) => console.error("[audit]", err));
 
     if (data.status === "published") {
-      revalidateTag("academic");
+      revalidateTag("academic", "max");
     }
 
     return { success: true, data: { id: row.id } };
@@ -97,7 +97,7 @@ export async function updateMentee(
       after: afterRow,
     }).catch((err) => console.error("[audit]", err));
 
-    revalidateTag("academic");
+    revalidateTag("academic", "max");
     return { success: true, data: undefined };
   } catch (e) {
     console.error("[updateMentee]", e);
@@ -135,7 +135,7 @@ export async function softDeleteMentee(id: string): Promise<ActionResult> {
       after: afterRow,
     }).catch((err) => console.error("[audit]", err));
 
-    revalidateTag("academic");
+    revalidateTag("academic", "max");
     return { success: true, data: undefined };
   } catch (e) {
     console.error("[softDeleteMentee]", e);
@@ -171,7 +171,7 @@ export async function restoreMentee(id: string): Promise<ActionResult> {
       after: afterRow,
     }).catch((err) => console.error("[audit]", err));
 
-    revalidateTag("academic");
+    revalidateTag("academic", "max");
     return { success: true, data: undefined };
   } catch (e) {
     console.error("[restoreMentee]", e);
@@ -211,7 +211,7 @@ export async function toggleMenteeStatus(id: string): Promise<ActionResult> {
       after: afterRow,
     }).catch((err) => console.error("[audit]", err));
 
-    revalidateTag("academic");
+    revalidateTag("academic", "max");
     return { success: true, data: undefined };
   } catch (e) {
     console.error("[toggleMenteeStatus]", e);

@@ -90,7 +90,7 @@ export async function createArticle(
     }).catch((err) => console.error("[audit]", err));
 
     if (data.status === "published") {
-      revalidateTag("articles");
+      revalidateTag("articles", "max");
     }
 
     return { success: true, data: { id: row.id } };
@@ -166,7 +166,7 @@ export async function updateArticle(
         : null,
     }).catch((err) => console.error("[audit]", err));
 
-    revalidateTag("articles");
+    revalidateTag("articles", "max");
     return { success: true, data: undefined };
   } catch (e) {
     console.error("[updateArticle]", e);
@@ -216,7 +216,7 @@ export async function softDeleteArticle(id: string): Promise<ActionResult> {
       after: afterRow,
     }).catch((err) => console.error("[audit]", err));
 
-    revalidateTag("articles");
+    revalidateTag("articles", "max");
     return { success: true, data: undefined };
   } catch (e) {
     console.error("[softDeleteArticle]", e);
@@ -288,7 +288,7 @@ export async function restoreArticle(id: string): Promise<ActionResult> {
       after: afterRow,
     }).catch((err) => console.error("[audit]", err));
 
-    revalidateTag("articles");
+    revalidateTag("articles", "max");
     return { success: true, data: undefined };
   } catch (e) {
     console.error("[restoreArticle]", e);
@@ -330,7 +330,7 @@ export async function toggleArticleStatus(
       after: afterRow,
     }).catch((err) => console.error("[audit]", err));
 
-    revalidateTag("articles");
+    revalidateTag("articles", "max");
     return { success: true, data: undefined };
   } catch (e) {
     console.error("[toggleArticleStatus]", e);

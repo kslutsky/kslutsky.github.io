@@ -74,7 +74,7 @@ export async function updateAuthor(
       after: afterRow,
     }).catch((err) => console.error("[audit]", err));
 
-    revalidateTag("articles");
+    revalidateTag("articles", "max");
     return { success: true, data: undefined };
   } catch (e) {
     console.error("[updateAuthor]", e);

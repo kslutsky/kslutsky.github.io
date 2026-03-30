@@ -48,7 +48,7 @@ export async function createCourse(
     }).catch((err) => console.error("[audit]", err));
 
     if (data.status === "published") {
-      revalidateTag("academic");
+      revalidateTag("academic", "max");
     }
 
     return { success: true, data: { id: row.id } };
@@ -96,7 +96,7 @@ export async function updateCourse(
       after: afterRow,
     }).catch((err) => console.error("[audit]", err));
 
-    revalidateTag("academic");
+    revalidateTag("academic", "max");
     return { success: true, data: undefined };
   } catch (e) {
     console.error("[updateCourse]", e);
@@ -134,7 +134,7 @@ export async function softDeleteCourse(id: string): Promise<ActionResult> {
       after: afterRow,
     }).catch((err) => console.error("[audit]", err));
 
-    revalidateTag("academic");
+    revalidateTag("academic", "max");
     return { success: true, data: undefined };
   } catch (e) {
     console.error("[softDeleteCourse]", e);
@@ -170,7 +170,7 @@ export async function restoreCourse(id: string): Promise<ActionResult> {
       after: afterRow,
     }).catch((err) => console.error("[audit]", err));
 
-    revalidateTag("academic");
+    revalidateTag("academic", "max");
     return { success: true, data: undefined };
   } catch (e) {
     console.error("[restoreCourse]", e);
@@ -210,7 +210,7 @@ export async function toggleCourseStatus(id: string): Promise<ActionResult> {
       after: afterRow,
     }).catch((err) => console.error("[audit]", err));
 
-    revalidateTag("academic");
+    revalidateTag("academic", "max");
     return { success: true, data: undefined };
   } catch (e) {
     console.error("[toggleCourseStatus]", e);
