@@ -343,5 +343,10 @@ export async function getErrata(parentId: string) {
   return db
     .select()
     .from(articles)
-    .where(eq(articles.parentId, parentId));
+    .where(
+      and(
+        eq(articles.parentId, parentId),
+        isNull(articles.deletedAt)
+      )
+    );
 }

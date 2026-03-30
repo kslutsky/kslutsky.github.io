@@ -21,7 +21,7 @@ export default async function EditArticlePage({
         Edit Article
       </h1>
       <ArticleForm article={article} authors={allAuthors} />
-      {article.type !== "erratum" && (
+      {article.type !== "erratum" && !article.deletedAt && (
         <div className="mt-8 border-t border-stone-200 pt-6">
           <h2 className="text-lg font-semibold text-stone-900">Errata</h2>
           {errata.length === 0 && (
