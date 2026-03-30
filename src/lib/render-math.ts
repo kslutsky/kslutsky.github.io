@@ -38,8 +38,9 @@ const katexSchema = {
     "*": [
       ...(defaultSchema.attributes?.["*"] ?? []),
       "className",
-      "style",
       "aria-hidden",
+      // "style" intentionally omitted from wildcard — only KaTeX <span> elements
+      // use inline styles; granting style to all elements would be a CSS injection surface.
     ],
     math: ["xmlns", "display"],
     annotation: ["encoding"],

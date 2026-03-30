@@ -60,7 +60,7 @@ export async function deleteAuthor(id: string): Promise<ActionResult> {
   if (refs.length > 0) {
     return {
       success: false,
-      error: "Cannot delete author: referenced by one or more articles",
+      error: "This author is in use and cannot be deleted.",
     };
   }
 
