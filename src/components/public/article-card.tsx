@@ -30,7 +30,9 @@ function buildPublicationLine(article: Article): string | null {
   }
 
   if (article.type === "preprint") {
-    // No publication line for preprints — the section header and arXiv link are sufficient
+    if (article.journalName) {
+      return `To appear in ${article.journalName}`;
+    }
     return null;
   }
 
