@@ -35,7 +35,7 @@ export async function HeroSection() {
       {/* Hero content */}
       <div className="relative z-[2] w-full max-w-3xl mx-auto px-4 sm:px-6 py-24">
         <div className="flex flex-col sm:flex-row sm:items-center sm:gap-12 gap-6">
-            <div className="w-36 h-44 sm:w-44 sm:h-56 shrink-0 self-center sm:self-auto bg-[var(--bg-primary)] rounded-2xl">
+            <div className="w-36 h-44 sm:w-44 sm:h-56 shrink-0 self-center sm:self-auto">
               <Image
                 src="/pencil-photo.png"
                 alt="Konstantin Slutsky"
