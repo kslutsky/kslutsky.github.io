@@ -76,6 +76,23 @@ export async function ArticleCard({
     ? await renderMath(article.abstract)
     : null;
 
+  const renderedErrata = errata
+    ? await Promise.all(
+        errata.map(async (erratum) => {
+          const renderedErratumAbstract = erratum.abstract
+            ? await renderMath(erratum.abstract)
+            : undefined;
+          return (
+            <ErratumBadge
+              key={erratum.id}
+              erratum={erratum}
+              renderedAbstract={renderedErratumAbstract}
+            />
+          );
+        })
+      )
+    : null;
+
   const bibtex = generateBibtex(
     {
       type: article.type as "preprint" | "published" | "erratum",
@@ -188,18 +205,7 @@ export async function ArticleCard({
       </div>
 
       {/* Errata */}
-      {errata?.map(async (erratum) => {
-        const renderedErratumAbstract = erratum.abstract
-          ? await renderMath(erratum.abstract)
-          : undefined;
-        return (
-          <ErratumBadge
-            key={erratum.id}
-            erratum={erratum}
-            renderedAbstract={renderedErratumAbstract}
-          />
-        );
-      })}
+      {renderedErrata}
     </article>
   );
 }

@@ -5,6 +5,7 @@ import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { mentees } from "@/lib/db/schema";
 import { requireAuth } from "@/lib/auth";
+import { z } from "zod";
 import { menteeCreateSchema } from "@/lib/validators/mentee";
 import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "@/lib/types";
@@ -104,6 +105,9 @@ export async function updateMentee(
 export async function softDeleteMentee(id: string): Promise<ActionResult> {
   await requireAuth();
 
+  const parsed = z.string().uuid().safeParse(id);
+  if (!parsed.success) return { success: false, error: "Invalid ID" };
+
   try {
     const [beforeRow] = await db.select().from(mentees).where(eq(mentees.id, id));
 
@@ -139,17 +143,20 @@ export async function softDeleteMentee(id: string): Promise<ActionResult> {
 export async function restoreMentee(id: string): Promise<ActionResult> {
   await requireAuth();
 
+  const parsed = z.string().uuid().safeParse(id);
+  if (!parsed.success) return { success: false, error: "Invalid ID" };
+
   try {
     const [beforeRow] = await db.select().from(mentees).where(eq(mentees.id, id));
 
     const result = await db
       .update(mentees)
       .set({ deletedAt: null, updatedAt: new Date() })
-      .where(eq(mentees.id, id))
+      .where(and(eq(mentees.id, id), isNotNull(mentees.deletedAt)))
       .returning({ id: mentees.id });
 
     if (result.length === 0) {
-      return { success: false, error: "Mentee not found" };
+      return { success: false, error: "Mentee not found or not deleted" };
     }
 
     const [afterRow] = await db.select().from(mentees).where(eq(mentees.id, id));
@@ -171,6 +178,9 @@ export async function restoreMentee(id: string): Promise<ActionResult> {
 
 export async function toggleMenteeStatus(id: string): Promise<ActionResult> {
   await requireAuth();
+
+  const parsed = z.string().uuid().safeParse(id);
+  if (!parsed.success) return { success: false, error: "Invalid ID" };
 
   try {
     const [mentee] = await db

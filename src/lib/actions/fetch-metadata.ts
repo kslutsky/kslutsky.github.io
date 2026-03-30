@@ -89,40 +89,27 @@ export async function matchAuthors(
     const matched: MatchResult["matched"] = [];
     const unmatched: MatchResult["unmatched"] = [];
 
-    // Fetch all authors once for fallback candidate matching
     const allAuthors = await db.select().from(authors);
+
+    // Build lookup maps for O(1) matching
+    const byOrcid = new Map<string, Author>();
+    const byNameLower = new Map<string, Author>();
+    for (const a of allAuthors) {
+      if (a.orcid) byOrcid.set(a.orcid, a);
+      byNameLower.set(a.name.toLowerCase(), a);
+    }
 
     for (let i = 0; i < fetchedNames.length; i++) {
       const name = fetchedNames[i];
       const orcid = fetchedOrcids[i];
-      let found: Author | undefined;
 
-      // (a) If ORCID provided, query by exact ORCID match
-      if (orcid) {
-        const [byOrcid] = await db
-          .select()
-          .from(authors)
-          .where(sql`${authors.orcid} = ${orcid}`);
-        if (byOrcid) {
-          found = byOrcid;
-        }
-      }
-
-      // (b) If no ORCID match, query by case-insensitive name
-      if (!found) {
-        const [byName] = await db
-          .select()
-          .from(authors)
-          .where(sql`LOWER(${authors.name}) = LOWER(${name})`);
-        if (byName) {
-          found = byName;
-        }
-      }
+      // (a) Try ORCID match first, then case-insensitive name
+      const found = (orcid && byOrcid.get(orcid)) || byNameLower.get(name.toLowerCase());
 
       if (found) {
         matched.push({ fetchedName: name, author: found });
       } else {
-        // (c) No exact match — return all authors as candidates for the UI
+        // No exact match — return all authors as candidates for the UI
         unmatched.push({ fetchedName: name, candidates: allAuthors });
       }
     }

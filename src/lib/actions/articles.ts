@@ -5,6 +5,7 @@ import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { articles, authors, tags } from "@/lib/db/schema";
 import { requireAuth } from "@/lib/auth";
+import { z } from "zod";
 import { articleCreateSchema } from "@/lib/validators/article";
 import { logAudit, resolveAuthorNames, enrichWithAuthors } from "@/lib/audit";
 import type { ActionResult } from "@/lib/types";
@@ -173,6 +174,9 @@ export async function updateArticle(
 export async function softDeleteArticle(id: string): Promise<ActionResult> {
   await requireAuth();
 
+  const parsed = z.string().uuid().safeParse(id);
+  if (!parsed.success) return { success: false, error: "Invalid ID" };
+
   try {
     const [beforeRow] = await db.select().from(articles).where(eq(articles.id, id));
 
@@ -219,6 +223,9 @@ export async function softDeleteArticle(id: string): Promise<ActionResult> {
 
 export async function restoreArticle(id: string): Promise<ActionResult> {
   await requireAuth();
+
+  const parsed = z.string().uuid().safeParse(id);
+  if (!parsed.success) return { success: false, error: "Invalid ID" };
 
   try {
     // Get the article to restore
@@ -291,6 +298,9 @@ export async function toggleArticleStatus(
 ): Promise<ActionResult> {
   await requireAuth();
 
+  const parsed = z.string().uuid().safeParse(id);
+  if (!parsed.success) return { success: false, error: "Invalid ID" };
+
   try {
     const [article] = await db
       .select({ id: articles.id, status: articles.status })
@@ -353,55 +363,6 @@ export async function getArticles(includeDeleted?: boolean) {
       sql`${articles.publishedMonth} DESC NULLS LAST`,
       sql`${articles.publishedDay} DESC NULLS LAST`,
       desc(articles.createdAt)
-    );
-}
-
-export async function getPublishedArticles() {
-  return db
-    .select()
-    .from(articles)
-    .where(
-      and(
-        eq(articles.status, "published"),
-        isNull(articles.deletedAt),
-        sql`${articles.type} NOT IN ('erratum', 'notes')`
-      )
-    )
-    .orderBy(
-      sql`${articles.publishedYear} DESC NULLS LAST`,
-      sql`${articles.publishedMonth} DESC NULLS LAST`,
-      sql`${articles.publishedDay} DESC NULLS LAST`,
-      desc(articles.createdAt)
-    );
-}
-
-export async function getPublishedLectureNotes() {
-  return db
-    .select()
-    .from(articles)
-    .where(
-      and(
-        eq(articles.type, "notes"),
-        eq(articles.status, "published"),
-        isNull(articles.deletedAt)
-      )
-    )
-    .orderBy(
-      sql`${articles.publishedYear} DESC NULLS LAST`,
-      desc(articles.createdAt)
-    );
-}
-
-export async function getPublishedErrata() {
-  return db
-    .select()
-    .from(articles)
-    .where(
-      and(
-        eq(articles.type, "erratum"),
-        eq(articles.status, "published"),
-        isNull(articles.deletedAt)
-      )
     );
 }
 

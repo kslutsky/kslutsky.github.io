@@ -5,6 +5,7 @@ import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { courses } from "@/lib/db/schema";
 import { requireAuth } from "@/lib/auth";
+import { z } from "zod";
 import { courseCreateSchema } from "@/lib/validators/course";
 import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "@/lib/types";
@@ -103,6 +104,9 @@ export async function updateCourse(
 export async function softDeleteCourse(id: string): Promise<ActionResult> {
   await requireAuth();
 
+  const parsed = z.string().uuid().safeParse(id);
+  if (!parsed.success) return { success: false, error: "Invalid ID" };
+
   try {
     const [beforeRow] = await db.select().from(courses).where(eq(courses.id, id));
 
@@ -138,13 +142,16 @@ export async function softDeleteCourse(id: string): Promise<ActionResult> {
 export async function restoreCourse(id: string): Promise<ActionResult> {
   await requireAuth();
 
+  const parsed = z.string().uuid().safeParse(id);
+  if (!parsed.success) return { success: false, error: "Invalid ID" };
+
   try {
     const [beforeRow] = await db.select().from(courses).where(eq(courses.id, id));
 
     const result = await db
       .update(courses)
       .set({ deletedAt: null, updatedAt: new Date() })
-      .where(eq(courses.id, id))
+      .where(and(eq(courses.id, id), isNotNull(courses.deletedAt)))
       .returning({ id: courses.id });
 
     if (result.length === 0) {
@@ -170,6 +177,9 @@ export async function restoreCourse(id: string): Promise<ActionResult> {
 
 export async function toggleCourseStatus(id: string): Promise<ActionResult> {
   await requireAuth();
+
+  const parsed = z.string().uuid().safeParse(id);
+  if (!parsed.success) return { success: false, error: "Invalid ID" };
 
   try {
     const [course] = await db

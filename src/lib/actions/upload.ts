@@ -1,6 +1,7 @@
 "use server";
 
 import { put, del } from "@vercel/blob";
+import { z } from "zod";
 import { requireAuth } from "@/lib/auth";
 import { logAudit } from "@/lib/audit";
 import type { ActionResult } from "@/lib/types";
@@ -47,6 +48,9 @@ export async function uploadPdf(
 
 export async function deletePdf(url: string): Promise<ActionResult> {
   await requireAuth();
+
+  const parsed = z.string().min(1).safeParse(url);
+  if (!parsed.success) return { success: false, error: "Invalid URL" };
 
   if (url.startsWith("/papers/")) {
     // Static local file — nothing to delete from Blob storage.
