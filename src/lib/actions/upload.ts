@@ -48,27 +48,34 @@ export async function uploadPdf(
 export async function deletePdf(url: string): Promise<ActionResult> {
   await requireAuth();
 
-  // Validate URL before deleting
   if (url.startsWith("/papers/")) {
-    // Relative path to a local paper — allowed
-  } else {
-    try {
-      const parsed = new URL(url);
-      if (!parsed.hostname.endsWith(".public.blob.vercel-storage.com")) {
-        return { success: false, error: "Invalid blob URL" };
-      }
-    } catch {
-      return { success: false, error: "Invalid blob URL" };
-    }
+    // Static local file — nothing to delete from Blob storage.
+    // No audit log needed: no actual deletion occurred.
+    return { success: true, data: undefined };
   }
 
-  await logAudit({
-    action: "delete_pdf",
-    entityType: "pdf",
-    entityId: url,
-    before: { url },
-  }).catch((err) => console.error("[audit]", err));
+  try {
+    const parsed = new URL(url);
+    if (!parsed.hostname.endsWith(".public.blob.vercel-storage.com")) {
+      return { success: false, error: "Invalid blob URL" };
+    }
+  } catch {
+    return { success: false, error: "Invalid blob URL" };
+  }
 
-  await del(url);
-  return { success: true, data: undefined };
+  try {
+    await del(url);
+
+    await logAudit({
+      action: "delete_pdf",
+      entityType: "pdf",
+      entityId: url,
+      before: { url },
+    }).catch((err) => console.error("[audit]", err));
+
+    return { success: true, data: undefined };
+  } catch (e) {
+    console.error("[deletePdf]", e);
+    return { success: false, error: "Failed to delete PDF. Please try again." };
+  }
 }

@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, isNull, isNotNull, sql } from "drizzle-orm";
+import { eq, and, isNull, isNotNull, sql } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { mentees } from "@/lib/db/schema";
@@ -104,91 +104,106 @@ export async function updateMentee(
 export async function softDeleteMentee(id: string): Promise<ActionResult> {
   await requireAuth();
 
-  const [beforeRow] = await db.select().from(mentees).where(eq(mentees.id, id));
+  try {
+    const [beforeRow] = await db.select().from(mentees).where(eq(mentees.id, id));
 
-  const now = new Date();
+    const now = new Date();
 
-  const result = await db
-    .update(mentees)
-    .set({ deletedAt: now, updatedAt: now })
-    .where(eq(mentees.id, id))
-    .returning({ id: mentees.id });
+    const result = await db
+      .update(mentees)
+      .set({ deletedAt: now, updatedAt: now })
+      .where(and(eq(mentees.id, id), isNull(mentees.deletedAt)))
+      .returning({ id: mentees.id });
 
-  if (result.length === 0) {
-    return { success: false, error: "Mentee not found or already deleted" };
+    if (result.length === 0) {
+      return { success: false, error: "Mentee not found or already deleted" };
+    }
+
+    const [afterRow] = await db.select().from(mentees).where(eq(mentees.id, id));
+    await logAudit({
+      action: "delete",
+      entityType: "mentee",
+      entityId: id,
+      before: beforeRow,
+      after: afterRow,
+    }).catch((err) => console.error("[audit]", err));
+
+    revalidateTag("academic");
+    return { success: true, data: undefined };
+  } catch (e) {
+    console.error("[softDeleteMentee]", e);
+    return { success: false, error: "Failed to delete mentee. Please try again." };
   }
-
-  const [afterRow] = await db.select().from(mentees).where(eq(mentees.id, id));
-  await logAudit({
-    action: "delete",
-    entityType: "mentee",
-    entityId: id,
-    before: beforeRow,
-    after: afterRow,
-  }).catch((err) => console.error("[audit]", err));
-
-  revalidateTag("academic");
-  return { success: true, data: undefined };
 }
 
 export async function restoreMentee(id: string): Promise<ActionResult> {
   await requireAuth();
 
-  const [beforeRow] = await db.select().from(mentees).where(eq(mentees.id, id));
+  try {
+    const [beforeRow] = await db.select().from(mentees).where(eq(mentees.id, id));
 
-  const result = await db
-    .update(mentees)
-    .set({ deletedAt: null, updatedAt: new Date() })
-    .where(eq(mentees.id, id))
-    .returning({ id: mentees.id });
+    const result = await db
+      .update(mentees)
+      .set({ deletedAt: null, updatedAt: new Date() })
+      .where(eq(mentees.id, id))
+      .returning({ id: mentees.id });
 
-  if (result.length === 0) {
-    return { success: false, error: "Mentee not found" };
+    if (result.length === 0) {
+      return { success: false, error: "Mentee not found" };
+    }
+
+    const [afterRow] = await db.select().from(mentees).where(eq(mentees.id, id));
+    await logAudit({
+      action: "restore",
+      entityType: "mentee",
+      entityId: id,
+      before: beforeRow,
+      after: afterRow,
+    }).catch((err) => console.error("[audit]", err));
+
+    revalidateTag("academic");
+    return { success: true, data: undefined };
+  } catch (e) {
+    console.error("[restoreMentee]", e);
+    return { success: false, error: "Failed to restore mentee. Please try again." };
   }
-
-  const [afterRow] = await db.select().from(mentees).where(eq(mentees.id, id));
-  await logAudit({
-    action: "restore",
-    entityType: "mentee",
-    entityId: id,
-    before: beforeRow,
-    after: afterRow,
-  }).catch((err) => console.error("[audit]", err));
-
-  revalidateTag("academic");
-  return { success: true, data: undefined };
 }
 
 export async function toggleMenteeStatus(id: string): Promise<ActionResult> {
   await requireAuth();
 
-  const [mentee] = await db
-    .select({ id: mentees.id, status: mentees.status })
-    .from(mentees)
-    .where(eq(mentees.id, id));
+  try {
+    const [mentee] = await db
+      .select({ id: mentees.id, status: mentees.status })
+      .from(mentees)
+      .where(eq(mentees.id, id));
 
-  if (!mentee) {
-    return { success: false, error: "Mentee not found" };
+    if (!mentee) {
+      return { success: false, error: "Mentee not found" };
+    }
+
+    const newStatus = mentee.status === "draft" ? "published" : "draft";
+
+    await db
+      .update(mentees)
+      .set({ status: newStatus, updatedAt: new Date() })
+      .where(eq(mentees.id, id));
+
+    const [afterRow] = await db.select().from(mentees).where(eq(mentees.id, id));
+    await logAudit({
+      action: "toggle_status",
+      entityType: "mentee",
+      entityId: id,
+      before: mentee,
+      after: afterRow,
+    }).catch((err) => console.error("[audit]", err));
+
+    revalidateTag("academic");
+    return { success: true, data: undefined };
+  } catch (e) {
+    console.error("[toggleMenteeStatus]", e);
+    return { success: false, error: "Failed to toggle mentee status. Please try again." };
   }
-
-  const newStatus = mentee.status === "draft" ? "published" : "draft";
-
-  await db
-    .update(mentees)
-    .set({ status: newStatus, updatedAt: new Date() })
-    .where(eq(mentees.id, id));
-
-  const [afterRow] = await db.select().from(mentees).where(eq(mentees.id, id));
-  await logAudit({
-    action: "toggle_status",
-    entityType: "mentee",
-    entityId: id,
-    before: mentee,
-    after: afterRow,
-  }).catch((err) => console.error("[audit]", err));
-
-  revalidateTag("academic");
-  return { success: true, data: undefined };
 }
 
 // ---------------------------------------------------------------------------

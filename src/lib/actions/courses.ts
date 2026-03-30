@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, isNull, isNotNull, sql } from "drizzle-orm";
+import { eq, and, isNull, isNotNull, sql } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { courses } from "@/lib/db/schema";
@@ -103,91 +103,106 @@ export async function updateCourse(
 export async function softDeleteCourse(id: string): Promise<ActionResult> {
   await requireAuth();
 
-  const [beforeRow] = await db.select().from(courses).where(eq(courses.id, id));
+  try {
+    const [beforeRow] = await db.select().from(courses).where(eq(courses.id, id));
 
-  const now = new Date();
+    const now = new Date();
 
-  const result = await db
-    .update(courses)
-    .set({ deletedAt: now, updatedAt: now })
-    .where(eq(courses.id, id))
-    .returning({ id: courses.id });
+    const result = await db
+      .update(courses)
+      .set({ deletedAt: now, updatedAt: now })
+      .where(and(eq(courses.id, id), isNull(courses.deletedAt)))
+      .returning({ id: courses.id });
 
-  if (result.length === 0) {
-    return { success: false, error: "Course not found or already deleted" };
+    if (result.length === 0) {
+      return { success: false, error: "Course not found or already deleted" };
+    }
+
+    const [afterRow] = await db.select().from(courses).where(eq(courses.id, id));
+    await logAudit({
+      action: "delete",
+      entityType: "course",
+      entityId: id,
+      before: beforeRow,
+      after: afterRow,
+    }).catch((err) => console.error("[audit]", err));
+
+    revalidateTag("academic");
+    return { success: true, data: undefined };
+  } catch (e) {
+    console.error("[softDeleteCourse]", e);
+    return { success: false, error: "Failed to delete course. Please try again." };
   }
-
-  const [afterRow] = await db.select().from(courses).where(eq(courses.id, id));
-  await logAudit({
-    action: "delete",
-    entityType: "course",
-    entityId: id,
-    before: beforeRow,
-    after: afterRow,
-  }).catch((err) => console.error("[audit]", err));
-
-  revalidateTag("academic");
-  return { success: true, data: undefined };
 }
 
 export async function restoreCourse(id: string): Promise<ActionResult> {
   await requireAuth();
 
-  const [beforeRow] = await db.select().from(courses).where(eq(courses.id, id));
+  try {
+    const [beforeRow] = await db.select().from(courses).where(eq(courses.id, id));
 
-  const result = await db
-    .update(courses)
-    .set({ deletedAt: null, updatedAt: new Date() })
-    .where(eq(courses.id, id))
-    .returning({ id: courses.id });
+    const result = await db
+      .update(courses)
+      .set({ deletedAt: null, updatedAt: new Date() })
+      .where(eq(courses.id, id))
+      .returning({ id: courses.id });
 
-  if (result.length === 0) {
-    return { success: false, error: "Course not found or not deleted" };
+    if (result.length === 0) {
+      return { success: false, error: "Course not found or not deleted" };
+    }
+
+    const [afterRow] = await db.select().from(courses).where(eq(courses.id, id));
+    await logAudit({
+      action: "restore",
+      entityType: "course",
+      entityId: id,
+      before: beforeRow,
+      after: afterRow,
+    }).catch((err) => console.error("[audit]", err));
+
+    revalidateTag("academic");
+    return { success: true, data: undefined };
+  } catch (e) {
+    console.error("[restoreCourse]", e);
+    return { success: false, error: "Failed to restore course. Please try again." };
   }
-
-  const [afterRow] = await db.select().from(courses).where(eq(courses.id, id));
-  await logAudit({
-    action: "restore",
-    entityType: "course",
-    entityId: id,
-    before: beforeRow,
-    after: afterRow,
-  }).catch((err) => console.error("[audit]", err));
-
-  revalidateTag("academic");
-  return { success: true, data: undefined };
 }
 
 export async function toggleCourseStatus(id: string): Promise<ActionResult> {
   await requireAuth();
 
-  const [course] = await db
-    .select({ id: courses.id, status: courses.status })
-    .from(courses)
-    .where(eq(courses.id, id));
+  try {
+    const [course] = await db
+      .select({ id: courses.id, status: courses.status })
+      .from(courses)
+      .where(eq(courses.id, id));
 
-  if (!course) {
-    return { success: false, error: "Course not found" };
+    if (!course) {
+      return { success: false, error: "Course not found" };
+    }
+
+    const newStatus = course.status === "draft" ? "published" : "draft";
+
+    await db
+      .update(courses)
+      .set({ status: newStatus, updatedAt: new Date() })
+      .where(eq(courses.id, id));
+
+    const [afterRow] = await db.select().from(courses).where(eq(courses.id, id));
+    await logAudit({
+      action: "toggle_status",
+      entityType: "course",
+      entityId: id,
+      before: course,
+      after: afterRow,
+    }).catch((err) => console.error("[audit]", err));
+
+    revalidateTag("academic");
+    return { success: true, data: undefined };
+  } catch (e) {
+    console.error("[toggleCourseStatus]", e);
+    return { success: false, error: "Failed to toggle course status. Please try again." };
   }
-
-  const newStatus = course.status === "draft" ? "published" : "draft";
-
-  await db
-    .update(courses)
-    .set({ status: newStatus, updatedAt: new Date() })
-    .where(eq(courses.id, id));
-
-  const [afterRow] = await db.select().from(courses).where(eq(courses.id, id));
-  await logAudit({
-    action: "toggle_status",
-    entityType: "course",
-    entityId: id,
-    before: course,
-    after: afterRow,
-  }).catch((err) => console.error("[audit]", err));
-
-  revalidateTag("academic");
-  return { success: true, data: undefined };
 }
 
 // ---------------------------------------------------------------------------

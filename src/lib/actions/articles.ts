@@ -173,107 +173,117 @@ export async function updateArticle(
 export async function softDeleteArticle(id: string): Promise<ActionResult> {
   await requireAuth();
 
-  const [beforeRow] = await db.select().from(articles).where(eq(articles.id, id));
+  try {
+    const [beforeRow] = await db.select().from(articles).where(eq(articles.id, id));
 
-  const now = new Date();
+    const now = new Date();
 
-  // Soft-delete the article itself
-  const result = await db
-    .update(articles)
-    .set({ deletedAt: now, updatedAt: now })
-    .where(and(eq(articles.id, id), isNull(articles.deletedAt)))
-    .returning({ id: articles.id });
+    // Soft-delete the article itself
+    const result = await db
+      .update(articles)
+      .set({ deletedAt: now, updatedAt: now })
+      .where(and(eq(articles.id, id), isNull(articles.deletedAt)))
+      .returning({ id: articles.id });
 
-  if (result.length === 0) {
-    return { success: false, error: "Article not found or already deleted" };
+    if (result.length === 0) {
+      return { success: false, error: "Article not found or already deleted" };
+    }
+
+    // Cascade: soft-delete errata where parentId matches and not already deleted
+    await db
+      .update(articles)
+      .set({ deletedAt: now, updatedAt: now })
+      .where(
+        and(
+          eq(articles.parentId, id),
+          isNull(articles.deletedAt)
+        )
+      );
+
+    const [afterRow] = await db.select().from(articles).where(eq(articles.id, id));
+    await logAudit({
+      action: "delete",
+      entityType: "article",
+      entityId: id,
+      before: beforeRow,
+      after: afterRow,
+    }).catch((err) => console.error("[audit]", err));
+
+    revalidateTag("articles");
+    return { success: true, data: undefined };
+  } catch (e) {
+    console.error("[softDeleteArticle]", e);
+    return { success: false, error: "Failed to delete article. Please try again." };
   }
-
-  // Cascade: soft-delete errata where parentId matches and not already deleted
-  await db
-    .update(articles)
-    .set({ deletedAt: now, updatedAt: now })
-    .where(
-      and(
-        eq(articles.parentId, id),
-        isNull(articles.deletedAt)
-      )
-    );
-
-  const [afterRow] = await db.select().from(articles).where(eq(articles.id, id));
-  await logAudit({
-    action: "delete",
-    entityType: "article",
-    entityId: id,
-    before: beforeRow,
-    after: afterRow,
-  }).catch((err) => console.error("[audit]", err));
-
-  revalidateTag("articles");
-  return { success: true, data: undefined };
 }
 
 export async function restoreArticle(id: string): Promise<ActionResult> {
   await requireAuth();
 
-  // Get the article to restore
-  const [article] = await db
-    .select({
-      id: articles.id,
-      type: articles.type,
-      parentId: articles.parentId,
-      deletedAt: articles.deletedAt,
-    })
-    .from(articles)
-    .where(eq(articles.id, id));
-
-  if (!article || !article.deletedAt) {
-    return { success: false, error: "Article not found or not deleted" };
-  }
-
-  // If erratum, check that the parent is not in trash
-  if (article.type === "erratum" && article.parentId) {
-    const [parent] = await db
-      .select({ id: articles.id, deletedAt: articles.deletedAt })
+  try {
+    // Get the article to restore
+    const [article] = await db
+      .select({
+        id: articles.id,
+        type: articles.type,
+        parentId: articles.parentId,
+        deletedAt: articles.deletedAt,
+      })
       .from(articles)
-      .where(eq(articles.id, article.parentId));
-    if (parent && parent.deletedAt) {
-      return {
-        success: false,
-        error: "Cannot restore erratum: parent article is in trash",
-      };
+      .where(eq(articles.id, id));
+
+    if (!article || !article.deletedAt) {
+      return { success: false, error: "Article not found or not deleted" };
     }
+
+    // If erratum, check that the parent is not in trash
+    if (article.type === "erratum" && article.parentId) {
+      const [parent] = await db
+        .select({ id: articles.id, deletedAt: articles.deletedAt })
+        .from(articles)
+        .where(eq(articles.id, article.parentId));
+      if (parent && parent.deletedAt) {
+        return {
+          success: false,
+          error: "Cannot restore erratum: parent article is in trash",
+        };
+      }
+    }
+
+    const deletedAt = article.deletedAt;
+
+    // Restore the article
+    await db
+      .update(articles)
+      .set({ deletedAt: null, updatedAt: new Date() })
+      .where(eq(articles.id, id));
+
+    // Cascade-restore errata that share the EXACT same deletedAt timestamp
+    await db
+      .update(articles)
+      .set({ deletedAt: null, updatedAt: new Date() })
+      .where(
+        and(
+          eq(articles.parentId, id),
+          eq(articles.deletedAt, deletedAt)
+        )
+      );
+
+    const [afterRow] = await db.select().from(articles).where(eq(articles.id, id));
+    await logAudit({
+      action: "restore",
+      entityType: "article",
+      entityId: id,
+      before: article,
+      after: afterRow,
+    }).catch((err) => console.error("[audit]", err));
+
+    revalidateTag("articles");
+    return { success: true, data: undefined };
+  } catch (e) {
+    console.error("[restoreArticle]", e);
+    return { success: false, error: "Failed to restore article. Please try again." };
   }
-
-  const deletedAt = article.deletedAt;
-
-  // Restore the article
-  await db
-    .update(articles)
-    .set({ deletedAt: null, updatedAt: new Date() })
-    .where(eq(articles.id, id));
-
-  // Cascade-restore errata that share the EXACT same deletedAt timestamp
-  await db
-    .update(articles)
-    .set({ deletedAt: null, updatedAt: new Date() })
-    .where(
-      and(
-        eq(articles.parentId, id),
-        eq(articles.deletedAt, deletedAt)
-      )
-    );
-
-  const [afterRow] = await db.select().from(articles).where(eq(articles.id, id));
-  await logAudit({
-    action: "restore",
-    entityType: "article",
-    entityId: id,
-    before: article,
-    after: afterRow,
-  }).catch((err) => console.error("[audit]", err));
-
-  revalidateTag("articles");
-  return { success: true, data: undefined };
 }
 
 export async function toggleArticleStatus(
@@ -281,33 +291,38 @@ export async function toggleArticleStatus(
 ): Promise<ActionResult> {
   await requireAuth();
 
-  const [article] = await db
-    .select({ id: articles.id, status: articles.status })
-    .from(articles)
-    .where(eq(articles.id, id));
+  try {
+    const [article] = await db
+      .select({ id: articles.id, status: articles.status })
+      .from(articles)
+      .where(eq(articles.id, id));
 
-  if (!article) {
-    return { success: false, error: "Article not found" };
+    if (!article) {
+      return { success: false, error: "Article not found" };
+    }
+
+    const newStatus = article.status === "draft" ? "published" : "draft";
+
+    await db
+      .update(articles)
+      .set({ status: newStatus, updatedAt: new Date() })
+      .where(eq(articles.id, id));
+
+    const [afterRow] = await db.select().from(articles).where(eq(articles.id, id));
+    await logAudit({
+      action: "toggle_status",
+      entityType: "article",
+      entityId: id,
+      before: article,
+      after: afterRow,
+    }).catch((err) => console.error("[audit]", err));
+
+    revalidateTag("articles");
+    return { success: true, data: undefined };
+  } catch (e) {
+    console.error("[toggleArticleStatus]", e);
+    return { success: false, error: "Failed to toggle article status. Please try again." };
   }
-
-  const newStatus = article.status === "draft" ? "published" : "draft";
-
-  await db
-    .update(articles)
-    .set({ status: newStatus, updatedAt: new Date() })
-    .where(eq(articles.id, id));
-
-  const [afterRow] = await db.select().from(articles).where(eq(articles.id, id));
-  await logAudit({
-    action: "toggle_status",
-    entityType: "article",
-    entityId: id,
-    before: article,
-    after: afterRow,
-  }).catch((err) => console.error("[audit]", err));
-
-  revalidateTag("articles");
-  return { success: true, data: undefined };
 }
 
 // ---------------------------------------------------------------------------

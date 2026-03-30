@@ -20,6 +20,7 @@ const getPublicationsData = unstable_cache(
       .orderBy(
         sql`${articles.publishedYear} DESC NULLS LAST`,
         sql`${articles.publishedMonth} DESC NULLS LAST`,
+        sql`${articles.publishedDay} DESC NULLS LAST`,
         desc(articles.createdAt)
       );
 

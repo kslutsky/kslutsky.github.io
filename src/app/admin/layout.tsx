@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { requireAuth } from "@/lib/auth";
 import ViewportWarning from "@/components/admin/viewport-warning";
 import Sidebar from "@/components/admin/sidebar";
 
@@ -8,9 +8,9 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
+  const session = await requireAuth().catch(() => null);
   if (!session) {
-    redirect("/api/auth/signin");
+    redirect("/auth/signout");
   }
 
   return (
