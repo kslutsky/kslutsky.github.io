@@ -1,3 +1,5 @@
+import { fetchWithTimeout } from "./utils";
+
 export interface CrossRefAuthor {
   name: string;
   orcid?: string;
@@ -84,7 +86,7 @@ export async function fetchCrossRefMetadata(
   doi: string
 ): Promise<CrossRefResult> {
   const url = `https://api.crossref.org/works/${encodeURIComponent(doi)}`;
-  const response = await fetch(url, {
+  const response = await fetchWithTimeout(url, {
     headers: {
       "User-Agent":
         "kslutsky-homepage/1.0 (https://kslutsky.github.io; mailto:admin@example.com)",

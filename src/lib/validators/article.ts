@@ -9,14 +9,14 @@ export const arxivIdSchema = z
     return val;
   })
   .pipe(
-    z.string().regex(
+    z.string().max(50).regex(
       /^(\d{4}\.\d{4,5}(v\d+)?|[a-zA-Z-]+(\.[A-Z]{2})?\/\d{7}(v\d+)?)$/,
       "Invalid arXiv ID format"
     )
   )
   .transform((val) => val.replace(/v\d+$/, "")); // Version stripped — extracted separately by fetcher
 
-export const doiSchema = z.string().regex(/^10\.\d{4,9}\//, "Invalid DOI format");
+export const doiSchema = z.string().max(150).regex(/^10\.\d{4,9}\//, "Invalid DOI format");
 
 // Date validation helper
 function isValidDate(year: number, month: number, day: number): boolean {

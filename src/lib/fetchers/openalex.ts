@@ -1,3 +1,5 @@
+import { fetchWithTimeout } from "./utils";
+
 export interface OpenAlexAuthorResult {
   name: string;
   openAlexId: string;
@@ -53,7 +55,7 @@ export async function fetchOpenAlexAuthor(query: string): Promise<OpenAlexAuthor
     url = `${OPENALEX_BASE_URL}/authors?${params.toString()}`;
   }
 
-  const response = await fetch(url, { headers });
+  const response = await fetchWithTimeout(url, { headers });
 
   if (!response.ok) {
     throw new Error(`OpenAlex API error: ${response.status} ${response.statusText}`);

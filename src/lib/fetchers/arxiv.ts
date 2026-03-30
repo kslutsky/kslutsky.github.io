@@ -1,3 +1,5 @@
+import { fetchWithTimeout } from "./utils";
+
 export interface ArxivResult {
   arxivId: string;
   arxivVersion: number;
@@ -135,7 +137,7 @@ export async function fetchArxivMetadata(arxivId: string): Promise<ArxivResult> 
   await arxivRateLimit();
 
   const url = `https://export.arxiv.org/api/query?id_list=${encodeURIComponent(normalizedId)}`;
-  const response = await fetch(url, {
+  const response = await fetchWithTimeout(url, {
     headers: {
       "User-Agent":
         "kslutsky-homepage/1.0 (https://kslutsky.github.io; mailto:kslutsky@example.com)",
