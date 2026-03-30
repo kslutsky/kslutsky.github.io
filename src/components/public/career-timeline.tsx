@@ -290,9 +290,9 @@ export function CareerTimeline() {
       xmlns="http://www.w3.org/2000/svg"
       style={{ display: "block", minWidth: 1210 }}
       role="img"
-      aria-label="Career timeline of Konstantin Slutsky"
+      aria-labelledby="career-timeline-title"
     >
-      <title>Career timeline of Konstantin Slutsky</title>
+      <title id="career-timeline-title">Career timeline of Konstantin Slutsky</title>
 
       {/* ============================================================ */}
       {/* GRADIENT DEFINITIONS — light and dark sets                    */}

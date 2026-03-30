@@ -190,29 +190,15 @@ export function VoronoiCanvas({
     );
     io.observe(canvas);
 
-    // Watch for data-theme attribute changes (manual theme toggle)
-    const mo = new MutationObserver(() => {
-      // Next animation frame will pick up new CSS variable values automatically
-    });
-    mo.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"],
-    });
-
-    // Watch for system color scheme preference changes
-    const darkMq = window.matchMedia("(prefers-color-scheme: dark)");
-    const onSchemeChange = () => {
-      // Next animation frame will pick up new CSS variable values automatically
-    };
-    darkMq.addEventListener("change", onSchemeChange);
+    // Theme changes (data-theme mutation, system prefers-color-scheme) are picked
+    // up automatically because draw() reads CSS variables via getComputedStyle on
+    // every animation frame. No observers needed.
 
     return () => {
       cancelled = true;
       cancelAnimationFrame(rafId);
       ro.disconnect();
       io.disconnect();
-      mo.disconnect();
-      darkMq.removeEventListener("change", onSchemeChange);
     };
   }, [pointCount]);
 
