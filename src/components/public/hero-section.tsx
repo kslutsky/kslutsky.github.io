@@ -17,15 +17,20 @@ const getHeroBio = unstable_cache(
     return row?.value || DEFAULT_BIO;
   },
   ["hero-bio"],
-  { tags: ["settings"], revalidate: 3600 }
+  { tags: ["settings"], revalidate: 3600 },
 );
 
 export async function HeroSection() {
   const bio = await getHeroBio();
 
   return (
-    <div className="relative flex flex-col items-center justify-center overflow-hidden bg-[var(--bg-secondary)]"
-         style={{ minHeight: "max(calc(100svh - 3.5rem), 500px)", height: "calc(100svh - 3.5rem)" }}>
+    <div
+      className="relative flex flex-col items-center justify-center overflow-hidden bg-[var(--bg-secondary)]"
+      style={{
+        minHeight: "max(calc(100svh - 3.5rem), 500px)",
+        height: "calc(100svh - 3.5rem)",
+      }}
+    >
       {/* Animated Voronoi background */}
       <VoronoiCanvas
         pointCount={28}
@@ -35,35 +40,56 @@ export async function HeroSection() {
       {/* Hero content */}
       <div className="relative z-[2] w-full max-w-3xl mx-auto px-4 sm:px-6 py-24">
         <div className="flex flex-col sm:flex-row sm:items-center sm:gap-12 gap-6">
-            <div className="w-36 h-44 sm:w-44 sm:h-56 shrink-0 self-center sm:self-auto">
-              <Image
-                src="/pencil-photo.png"
-                alt="Konstantin Slutsky"
-                width={176}
-                height={224}
-                priority
-                className="w-full h-full object-cover object-top"
-              />
-            </div>
-            <div className="text-center sm:text-left">
-              <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-[var(--text-primary)]">
-                Konstantin Slutsky
-              </h1>
-              <p className="text-base text-[var(--text-secondary)] leading-relaxed mt-2">
-                <span className="sm:inline block">Assistant Professor,{" "}</span>
-                <a href="https://math.iastate.edu/" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors"><span className="sm:inline block">Dept. of Mathematics,{" "}</span></a>
-                <a href="https://www.iastate.edu/" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors"><span className="sm:inline block">Iowa State University</span></a>
-              </p>
-              <p className="text-base text-[var(--text-secondary)] leading-relaxed mt-1">
-                <span className="sm:inline block">Senior Adviser,{" "}</span>
-                <a href="https://www.ventitechnologies.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors"><span className="sm:inline block">Venti Technologies</span></a>
-              </p>
-              <p className="text-sm text-[var(--text-secondary)] leading-relaxed mt-4 max-w-prose text-left mx-auto sm:mx-0">
-                {bio}
-              </p>
-            </div>
+          <div className="w-36 h-44 sm:w-44 sm:h-56 shrink-0 self-center sm:self-auto">
+            <Image
+              src="/pencil-photo.png"
+              alt="Konstantin Slutsky"
+              width={176}
+              height={224}
+              priority
+              className="w-full h-full object-cover object-top"
+            />
+          </div>
+          <div className="text-center sm:text-left">
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-[var(--text-primary)]">
+              Konstantin Slutsky
+            </h1>
+            <p className="text-base text-[var(--text-secondary)] leading-relaxed mt-2">
+              <span className="sm:inline block">Assistant Professor, </span>
+              <a
+                href="https://math.iastate.edu/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors"
+              >
+                <span className="sm:inline block">Dept. of Mathematics, </span>
+              </a>
+              <a
+                href="https://www.iastate.edu/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors"
+              >
+                <span className="sm:inline block">Iowa State University</span>
+              </a>
+            </p>
+            <p className="text-base text-[var(--text-secondary)] leading-relaxed mt-1">
+              <span className="sm:inline block">Senior Advisor, </span>
+              <a
+                href="https://www.ventitechnologies.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors"
+              >
+                <span className="sm:inline block">Venti Technologies</span>
+              </a>
+            </p>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed mt-4 max-w-prose text-left mx-auto sm:mx-0">
+              {bio}
+            </p>
           </div>
         </div>
       </div>
+    </div>
   );
 }

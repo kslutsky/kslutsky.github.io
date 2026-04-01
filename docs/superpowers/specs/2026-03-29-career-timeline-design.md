@@ -47,7 +47,7 @@ Reference mockup: `.superpowers/brainstorm/49069-1774806467/career-path-v9.html`
 5. Sr. Research Scientist — nuTonomy Asia (2018-2019) — industry
 6. Postdoc — CNRS / Paris Diderot University (2019-2020) — academic
 7. Assistant Professor — Iowa State University (2020-present) — academic
-8. Sr. Adviser — Venti Technologies (2022-present) — industry (concurrent)
+8. Sr. Advisor — Venti Technologies (2022-present) — industry (concurrent)
 
 ### Gradient transitions
 - Same-track boundaries: gradients blend between adjacent segments (~15-20% of bar width)

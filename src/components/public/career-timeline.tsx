@@ -265,16 +265,8 @@ function DualPath(props: { d: string; gradientId: string }) {
   const { d, gradientId } = props;
   return (
     <>
-      <path
-        className="career-light"
-        d={d}
-        fill={`url(#${gradientId}-light)`}
-      />
-      <path
-        className="career-dark"
-        d={d}
-        fill={`url(#${gradientId}-dark)`}
-      />
+      <path className="career-light" d={d} fill={`url(#${gradientId}-light)`} />
+      <path className="career-dark" d={d} fill={`url(#${gradientId}-dark)`} />
     </>
   );
 }
@@ -292,7 +284,9 @@ export function CareerTimeline() {
       role="img"
       aria-labelledby="career-timeline-title"
     >
-      <title id="career-timeline-title">Career timeline of Konstantin Slutsky</title>
+      <title id="career-timeline-title">
+        Career timeline of Konstantin Slutsky
+      </title>
 
       {/* ============================================================ */}
       {/* GRADIENT DEFINITIONS — light and dark sets                    */}
@@ -476,14 +470,63 @@ export function CareerTimeline() {
       {/* INSTITUTION LABELS (inside bars, white text)                  */}
       {/* ============================================================ */}
       {[
-        { x: 95, y: 71, size: 11, label: "UIUC", fullName: "University of Illinois at Urbana-Champaign" },
-        { x: 230, y: 71, size: 11, label: "Copenhagen", fullName: "University of Copenhagen" },
-        { x: 365, y: 71, size: 11, label: "UIC", fullName: "University of Illinois at Chicago" },
-        { x: 560, y: 131, size: 11, label: "nuTonomy", fullName: "nuTonomy Asia" },
-        { x: 685, y: 131, size: 11, label: "nuTonomy", fullName: "nuTonomy Asia" },
-        { x: 865, y: 71, size: 11, label: "Paris Diderot", fullName: "CNRS / Paris Diderot University", letterSpacing: "-0.3" },
-        { x: 1060, y: 71, size: 11, label: "Iowa State", fullName: "Iowa State University" },
-        { x: 1130, y: 131, size: 11, label: "Venti", fullName: "Venti Technologies" },
+        {
+          x: 95,
+          y: 71,
+          size: 11,
+          label: "UIUC",
+          fullName: "University of Illinois at Urbana-Champaign",
+        },
+        {
+          x: 230,
+          y: 71,
+          size: 11,
+          label: "Copenhagen",
+          fullName: "University of Copenhagen",
+        },
+        {
+          x: 365,
+          y: 71,
+          size: 11,
+          label: "UIC",
+          fullName: "University of Illinois at Chicago",
+        },
+        {
+          x: 560,
+          y: 131,
+          size: 11,
+          label: "nuTonomy",
+          fullName: "nuTonomy Asia",
+        },
+        {
+          x: 685,
+          y: 131,
+          size: 11,
+          label: "nuTonomy",
+          fullName: "nuTonomy Asia",
+        },
+        {
+          x: 865,
+          y: 71,
+          size: 11,
+          label: "Paris Diderot",
+          fullName: "CNRS / Paris Diderot University",
+          letterSpacing: "-0.3",
+        },
+        {
+          x: 1060,
+          y: 71,
+          size: 11,
+          label: "Iowa State",
+          fullName: "Iowa State University",
+        },
+        {
+          x: 1130,
+          y: 131,
+          size: 11,
+          label: "Venti",
+          fullName: "Venti Technologies",
+        },
       ].map((t) => (
         <text
           key={`${t.x}-${t.y}`}
@@ -534,17 +577,67 @@ export function CareerTimeline() {
       {/* Industry titles (below bars) — multi-line with tooltips */}
       <g>
         <title>Senior Software Engineer</title>
-        <text x={560} y={160} fontSize={11} style={{ fill: "var(--text-primary)" }} fontFamily="Inter,sans-serif" fontWeight="600" textAnchor="middle">Sr. Software</text>
-        <text x={560} y={173} fontSize={11} style={{ fill: "var(--text-primary)" }} fontFamily="Inter,sans-serif" fontWeight="600" textAnchor="middle">Engineer</text>
+        <text
+          x={560}
+          y={160}
+          fontSize={11}
+          style={{ fill: "var(--text-primary)" }}
+          fontFamily="Inter,sans-serif"
+          fontWeight="600"
+          textAnchor="middle"
+        >
+          Sr. Software
+        </text>
+        <text
+          x={560}
+          y={173}
+          fontSize={11}
+          style={{ fill: "var(--text-primary)" }}
+          fontFamily="Inter,sans-serif"
+          fontWeight="600"
+          textAnchor="middle"
+        >
+          Engineer
+        </text>
       </g>
       <g>
         <title>Senior Research Scientist</title>
-        <text x={685} y={160} fontSize={11} style={{ fill: "var(--text-primary)" }} fontFamily="Inter,sans-serif" fontWeight="600" textAnchor="middle">Sr. Research</text>
-        <text x={685} y={173} fontSize={11} style={{ fill: "var(--text-primary)" }} fontFamily="Inter,sans-serif" fontWeight="600" textAnchor="middle">Scientist</text>
+        <text
+          x={685}
+          y={160}
+          fontSize={11}
+          style={{ fill: "var(--text-primary)" }}
+          fontFamily="Inter,sans-serif"
+          fontWeight="600"
+          textAnchor="middle"
+        >
+          Sr. Research
+        </text>
+        <text
+          x={685}
+          y={173}
+          fontSize={11}
+          style={{ fill: "var(--text-primary)" }}
+          fontFamily="Inter,sans-serif"
+          fontWeight="600"
+          textAnchor="middle"
+        >
+          Scientist
+        </text>
       </g>
       <g>
-        <title>Senior Adviser</title>
-        <text x={1130} y={160} fontSize={11} style={{ fill: "var(--text-primary)" }} fontFamily="Inter,sans-serif" fontWeight="600" textAnchor="middle">Sr. Adviser</text>
+        <title>Senior Advisor</title>
+        <text
+          x={1130}
+          y={160}
+          fontSize={11}
+          style={{ fill: "var(--text-primary)" }}
+          fontFamily="Inter,sans-serif"
+          fontWeight="600"
+          textAnchor="middle"
+        >
+          Sr. Advisor
+        </text>
       </g>
 
       {/* ============================================================ */}
