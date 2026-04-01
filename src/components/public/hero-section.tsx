@@ -50,10 +50,13 @@ export async function HeroSection() {
                 Konstantin Slutsky
               </h1>
               <p className="text-base text-[var(--text-secondary)] leading-relaxed mt-2">
-                Assistant Professor, <a href="https://math.iastate.edu/" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors">Dept. of Mathematics</a>, <a href="https://www.iastate.edu/" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors">Iowa State University</a>
+                <span className="sm:inline block">Assistant Professor,{" "}</span>
+                <a href="https://math.iastate.edu/" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors"><span className="sm:inline block">Dept. of Mathematics,{" "}</span></a>
+                <a href="https://www.iastate.edu/" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors"><span className="sm:inline block">Iowa State University</span></a>
               </p>
               <p className="text-base text-[var(--text-secondary)] leading-relaxed mt-1">
-                Senior Adviser, <a href="https://www.ventitechnologies.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors">Venti Technologies</a>
+                <span className="sm:inline block">Senior Adviser,{" "}</span>
+                <a href="https://www.ventitechnologies.com/" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline underline-offset-2 decoration-[var(--accent-border)] hover:decoration-[var(--accent)] transition-colors"><span className="sm:inline block">Venti Technologies</span></a>
               </p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed mt-4 max-w-prose text-left mx-auto sm:mx-0">
                 {bio}
